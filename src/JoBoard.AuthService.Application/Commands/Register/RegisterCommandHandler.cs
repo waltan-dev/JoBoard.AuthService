@@ -43,7 +43,7 @@ public class RegisterCommandHandler : IRequestHandler<RegisterCommand, AuthInfo>
             email: new Email(request.Email),
             accountType: request.AccountType,
             passwordHash: _passwordHasher.Hash(request.Password),
-            confirmationToken: ConfirmationToken.Generate(_config.ExpiresInHours));
+            confirmationToken: ConfirmationToken.Generate(expiresInHours: _config.ExpiresInHours));
 
         _userRepository.Add(newUser, ct);
         await _unitOfWork.SaveChangesAsync(ct);

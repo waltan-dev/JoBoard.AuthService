@@ -27,7 +27,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand, AuthInfo>
     {
         var hash = _passwordHasher.Hash(request.Password);
         var email = new Email(request.Email);
-        var user = await _userRepository.GetByEmailAndPasswordAsync(email, hash, ct);
+        var user = await _userRepository.FindByEmailAndPasswordAsync(email, hash, ct);
         if(user == null)
             throw new ValidationException("Invalid email or password");
         user.CheckStatus();

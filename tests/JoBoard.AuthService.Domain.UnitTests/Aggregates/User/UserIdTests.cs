@@ -2,7 +2,7 @@
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
 
-public class UserIdTest
+public class UserIdTests
 {
     [Fact]
     public void CreateValid()

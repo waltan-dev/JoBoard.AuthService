@@ -7,9 +7,9 @@ public class User : Entity<UserId>
     public DateTime RegisteredAt { get; }
     public FullName FullName { get; }
     public Email Email { get; }
-    public bool EmailConfirmed { get; }
+    public bool EmailConfirmed { get; private set; }
     public AccountType AccountType { get; }
-    public UserStatus Status { get; }
+    public UserStatus Status { get; private set; }
     
     public string PasswordHash { get; }
     public ConfirmationToken? ConfirmationToken { get; }
@@ -26,6 +26,15 @@ public class User : Entity<UserId>
         Status = UserStatus.Pending;
         PasswordHash = passwordHash;
         ConfirmationToken = confirmationToken;
+    }
+
+    public void ConfirmEmail(string token)
+    {
+        if (ConfirmationToken == null || ConfirmationToken.IsValid(token) == false)
+            throw new DomainException("Invalid token");
+        
+        EmailConfirmed = true;
+        Status = UserStatus.Active;
     }
     
     public void CheckStatus()

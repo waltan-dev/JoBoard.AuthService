@@ -1,6 +1,7 @@
-
-Функционал / Use Cases:
-1) Регистрация нового юзера + Подтверждение email
-2) Вход в систему / Получение токена
-3) Запрос на сброс пароля + Сброс
-4) Изменение email + Подтверждение нового email
+Use Cases:
+1) Register new user
+2) Confirm email
+3) Login / Get access token
+4) Reset password request
+5) Reset password command
+6) Change email

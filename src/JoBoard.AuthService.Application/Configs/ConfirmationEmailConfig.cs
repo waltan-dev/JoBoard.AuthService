@@ -2,5 +2,5 @@
 
 public class ConfirmationEmailConfig
 {
-    public uint ExpiresInHours { get; set; }
+    public int ExpiresInHours { get; set; }
 }

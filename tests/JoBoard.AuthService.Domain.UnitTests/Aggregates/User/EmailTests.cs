@@ -2,7 +2,7 @@
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
 
-public class EmailTest
+public class EmailTests
 {
     [Fact]
     public void CreateValidEmail()

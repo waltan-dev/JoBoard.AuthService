@@ -2,7 +2,7 @@
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
 
-public class FullNameTest
+public class FullNameTests
 {
     [Fact]
     public void CreateValid()

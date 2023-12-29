@@ -11,17 +11,22 @@ public class ConfirmationToken : ValueObject
     private ConfirmationToken(string value, DateTime expiration)
     {
         Guard.Against.Default(value);
-        if (expiration < DateTime.UtcNow)
-            throw new ArgumentException("Expiration must be a date in the future");
-        
         Value = value;
         Expiration = expiration;
     }
 
-    public static ConfirmationToken Generate(uint expiresInHours)
+    public static ConfirmationToken Generate(int expiresInHours)
     {
         Guard.Against.Default(expiresInHours);
         return new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(expiresInHours));
+    }
+
+    public bool IsValid(string token)
+    {
+        if (Value != token || DateTime.UtcNow > Expiration)
+            return false;
+        
+        return true;
     }
     
     protected override IEnumerable<object?> GetEqualityComponents()

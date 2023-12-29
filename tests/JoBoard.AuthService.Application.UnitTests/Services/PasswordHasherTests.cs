@@ -2,7 +2,7 @@
 
 namespace JoBoard.AuthService.Application.UnitTests.Services;
 
-public class PasswordHasherTest
+public class PasswordHasherTests
 {
     [Fact]
     public void Hash()
