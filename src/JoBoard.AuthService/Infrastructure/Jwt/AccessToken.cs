@@ -1,7 +1,7 @@
-﻿using System.IdentityModel.Tokens.Jwt;
-using JoBoard.AuthService.Application.Exceptions;
+﻿using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
 
-namespace JoBoard.AuthService.Application;
+namespace JoBoard.AuthService.Infrastructure.Jwt;
 
 public class AccessToken
 {

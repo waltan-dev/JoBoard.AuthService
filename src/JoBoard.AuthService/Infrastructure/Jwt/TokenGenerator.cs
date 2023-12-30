@@ -1,9 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Application;
 using Microsoft.Extensions.Options;
 
-namespace JoBoard.AuthService.Application.Services;
+namespace JoBoard.AuthService.Infrastructure.Jwt;
 
 public interface ITokenGenerator
 {
@@ -48,6 +48,6 @@ public class TokenGenerator : ITokenGenerator
 
     private static string GetUserId(IEnumerable<Claim> claims)
     {
-        return claims.First(x => x.Type == nameof(UserId)).Value;
+        return claims.First(x => x.Type == nameof(AccessToken.UserId)).Value;
     }
 }

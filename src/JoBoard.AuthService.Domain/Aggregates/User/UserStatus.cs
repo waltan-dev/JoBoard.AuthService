@@ -2,8 +2,8 @@
 
 public enum UserStatus
 {
-    Pending,
-    Active,
-    Blocked,
-    Deactivated
+    Pending, // waiting for email confirmation
+    Active, // email confirmed and user is active
+    Blocked, // user blocked by admin
+    Deactivated // user has been deactivated his account
 }

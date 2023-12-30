@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Core;
+﻿using JoBoard.AuthService.Domain.Common;
+using JoBoard.AuthService.Domain.Core;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -7,7 +8,7 @@ public class Email : ValueObject
     public Email(string value)
     {
         if(IsValid(value) == false)
-            throw new InvalidEmailException("Invalid email address");
+            throw new ArgumentException("Invalid email address");
         
         Value = value.Trim().ToLower();
     }

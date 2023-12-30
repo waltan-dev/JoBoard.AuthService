@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Common;
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
 
@@ -15,7 +16,7 @@ public class EmailTests
     [Fact]
     public void CreateInvalidEmail()
     {
-        Assert.Throws<InvalidEmailException>(() =>
+        Assert.Throws<ArgumentException>(() =>
         {
             _ = new Email("invalid-email");
         });
@@ -24,7 +25,7 @@ public class EmailTests
     [Fact]
     public void CreateEmptyEmail()
     {
-        Assert.Throws<InvalidEmailException>(() =>
+        Assert.Throws<ArgumentException>(() =>
         {
             _ = new Email(string.Empty);
         });

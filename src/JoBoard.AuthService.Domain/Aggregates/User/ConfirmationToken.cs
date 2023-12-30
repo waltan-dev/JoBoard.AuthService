@@ -3,6 +3,9 @@ using JoBoard.AuthService.Domain.Core;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
+/// <summary>
+/// Token for email confirmation or password recovering
+/// </summary>
 public class ConfirmationToken : ValueObject
 {
     public string Value { get; }
