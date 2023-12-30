@@ -22,7 +22,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{506007
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Domain.UnitTests", "tests\JoBoard.AuthService.Domain.UnitTests\JoBoard.AuthService.Domain.UnitTests.csproj", "{B40FBE57-83D3-4A0D-A6F5-286271875EA1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Application.UnitTests", "tests\JoBoard.AuthService.Application.UnitTests\JoBoard.AuthService.Application.UnitTests.csproj", "{ACA48C23-D481-45E1-843E-278EF511BF69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.UnitTests", "tests\JoBoard.AuthService.Infrastructure.UnitTests\JoBoard.AuthService.Infrastructure.UnitTests.csproj", "{ACA48C23-D481-45E1-843E-278EF511BF69}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

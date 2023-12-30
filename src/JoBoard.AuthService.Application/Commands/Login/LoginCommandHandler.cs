@@ -1,6 +1,6 @@
-﻿using JoBoard.AuthService.Application.Contracts;
-using JoBoard.AuthService.Application.Exceptions;
-using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.Services;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.Commands.Login;
@@ -24,7 +24,7 @@ public class LoginCommandHandler : IRequestHandler<LoginCommand>
         var email = new Email(request.Email);
         var user = await _userRepository.FindByEmailAndPasswordAsync(email, hash, ct);
         if(user == null)
-            throw new ValidationException("Invalid email or password");
+            throw new DomainException("Invalid email or password");
         user.CheckStatus();
     }
 }

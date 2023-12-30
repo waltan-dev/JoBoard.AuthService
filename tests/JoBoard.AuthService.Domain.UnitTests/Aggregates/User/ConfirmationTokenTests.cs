@@ -5,9 +5,9 @@ namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
 public class ConfirmationTokenTests
 {
     [Fact]
-    public void GenerateValid()
+    public void CreateValid()
     {
-        var newToken = ConfirmationToken.Generate(expiresInHours: 1);
+        var newToken = new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(1));
         
         Assert.NotEqual(Guid.Empty, Guid.Parse(newToken.Value));
         Assert.True(DateTime.UtcNow.AddMinutes(59) < newToken.Expiration);
@@ -15,42 +15,44 @@ public class ConfirmationTokenTests
     }
     
     [Fact]
-    public void GenerateInvalid()
+    public void CreateInvalid()
     {
         Assert.Throws<ArgumentException>(() =>
         {
-            _ = ConfirmationToken.Generate(expiresInHours: 0);
+            _ = new ConfirmationToken(" ", DateTime.UtcNow);
         });
     }
     
     [Fact]
-    public void Validate()
+    public void VerifyValid()
     {
-        var newToken = ConfirmationToken.Generate(expiresInHours: 1);
-        var value = newToken.Value;
+        var value = Guid.NewGuid().ToString();
+        var newToken = new ConfirmationToken(value, DateTime.UtcNow.AddHours(1));
 
-        var isValid = newToken.IsValid(value);
+        var isValid = newToken.Verify(value);
         
         Assert.True(isValid);
     }
     
     [Fact]
-    public void ValidateInvalid()
+    public void VerifyInvalid()
     {
-        var newToken = ConfirmationToken.Generate(expiresInHours: 1);
+        var value = Guid.NewGuid().ToString();
+        var newToken = new ConfirmationToken(value, DateTime.UtcNow.AddHours(1));
             
-        var isValid = newToken.IsValid("invalid-token");
+        var isValid = newToken.Verify("invalid-token");
         
         Assert.False(isValid);
     }
     
     [Fact]
-    public void ValidateExpired()
+    public void VerifyExpired()
     {
-        var newToken = ConfirmationToken.Generate(expiresInHours: -1);
-        var value = newToken.Value;
-            
-        var isValid = newToken.IsValid(value);
+        var value = Guid.NewGuid().ToString();
+        var newToken = new ConfirmationToken(value, DateTime.UtcNow.AddHours(1));
+
+        var futureTime = DateTime.UtcNow.AddHours(2);
+        var isValid = newToken.Verify(value, dateTimeNow: futureTime);
         
         Assert.False(isValid);
     }

@@ -1,5 +1,5 @@
-﻿using Ardalis.GuardClauses;
-using JoBoard.AuthService.Domain.Core;
+﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -10,7 +10,7 @@ public class ExternalNetworkAccount : ValueObject
     
     public ExternalNetworkAccount(string externalUserId, ExternalNetwork network)
     {
-        Guard.Against.NullOrWhiteSpace(externalUserId);
+        Guard.IsNotNullOrWhiteSpace(externalUserId);
         
         ExternalUserId = externalUserId;
         Network = network;

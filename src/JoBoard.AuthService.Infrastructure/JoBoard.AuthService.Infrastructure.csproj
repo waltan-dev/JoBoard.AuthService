@@ -20,6 +20,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <ProjectReference Include="..\JoBoard.AuthService.Application\JoBoard.AuthService.Application.csproj" />
       <ProjectReference Include="..\JoBoard.AuthService.Domain\JoBoard.AuthService.Domain.csproj" />
     </ItemGroup>
 

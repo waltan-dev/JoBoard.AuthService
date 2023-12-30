@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Common;
-using JoBoard.AuthService.Domain.Core;
+﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -7,6 +7,8 @@ public class Email : ValueObject
 {
     public Email(string value)
     {
+        Guard.IsNotNullOrWhiteSpace(value);
+        
         if(IsValid(value) == false)
             throw new ArgumentException("Invalid email address");
         
@@ -17,9 +19,6 @@ public class Email : ValueObject
 
     private static bool IsValid(string email)
     {
-        if (string.IsNullOrWhiteSpace(email))
-            return false;
-        
         try
         {
             var addr = new System.Net.Mail.MailAddress(email);

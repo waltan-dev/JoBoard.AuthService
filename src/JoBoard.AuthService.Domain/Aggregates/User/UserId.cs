@@ -1,5 +1,5 @@
-﻿using Ardalis.GuardClauses;
-using JoBoard.AuthService.Domain.Core;
+﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -9,7 +9,7 @@ public class UserId : ValueObject
     
     public UserId(Guid value)
     {
-        Guard.Against.Default(value);
+        Guard.IsNotDefault(value);
         Value = value;
     }
 

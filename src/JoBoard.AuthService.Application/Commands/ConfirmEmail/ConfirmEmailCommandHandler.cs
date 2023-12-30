@@ -1,5 +1,6 @@
-﻿using JoBoard.AuthService.Application.Contracts;
-using JoBoard.AuthService.Domain.Common;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.SeedWork;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.Commands.ConfirmEmail;
@@ -25,6 +26,7 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand>
         
         user.ConfirmEmail(request.Token);
 
+        await _userRepository.UpdateAsync(user, ct);
         await _unitOfWork.SaveChangesAsync(ct);
     }
 }

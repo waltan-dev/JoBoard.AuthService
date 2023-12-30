@@ -1,5 +1,5 @@
-﻿using Ardalis.GuardClauses;
-using JoBoard.AuthService.Domain.Core;
+﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -11,28 +11,25 @@ public class ConfirmationToken : ValueObject
     public string Value { get; }
     public DateTime Expiration { get; }
     
-    private ConfirmationToken(string value, DateTime expiration)
+    public ConfirmationToken(string value, DateTime expiration)
     {
-        Guard.Against.Default(value);
+        Guard.IsNotNullOrWhiteSpace(value);
+        Guard.IsNotDefault(expiration);
+        Guard.IsGreaterThan(expiration, DateTime.UtcNow);
+        
         Value = value;
         Expiration = expiration;
     }
-
-    public static ConfirmationToken Generate(int expiresInHours)
+    
+    public bool Verify(string token, DateTime? dateTimeNow = null)
     {
-        Guard.Against.Default(expiresInHours);
-        return new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(expiresInHours));
-    }
-
-    public bool IsValid(string token)
-    {
-        if (Value != token || DateTime.UtcNow > Expiration)
-            return false;
+        Guard.IsNotNullOrWhiteSpace(token);
         
-        return true;
+        dateTimeNow ??= DateTime.UtcNow;
+        return Value == token && dateTimeNow <= Expiration;
     }
     
-    protected override IEnumerable<object?> GetEqualityComponents()
+    protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
         yield return Expiration;

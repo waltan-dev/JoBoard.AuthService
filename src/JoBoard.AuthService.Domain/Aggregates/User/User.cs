@@ -1,4 +1,7 @@
-﻿using JoBoard.AuthService.Domain.Common;
+﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -10,12 +13,12 @@ public class User : Entity<UserId>
     public bool EmailConfirmed { get; private set; }
     public AccountType AccountType { get; }
     public UserStatus Status { get; private set; }
-    public string? PasswordHash { get; }
-    public ConfirmationToken? ConfirmationToken { get; }
+    public string? PasswordHash { get; private set; }
+    public ConfirmationToken? ConfirmationToken { get; private set; }
     private ICollection<ExternalNetworkAccount> _externalNetworkAccounts { get; }
     public IReadOnlyCollection<ExternalNetworkAccount> ExternalNetworkAccounts 
         => (IReadOnlyCollection<ExternalNetworkAccount>)_externalNetworkAccounts;
-
+    
     /// <summary>
     /// Register new user by email and password
     /// </summary>
@@ -50,16 +53,21 @@ public class User : Entity<UserId>
         ConfirmationToken = confirmationToken;
         _externalNetworkAccounts = new List<ExternalNetworkAccount>() { externalNetworkAccount };
     }
-
-    public void ConfirmEmail(string token)
+    
+    public void ConfirmEmail(string token, DateTime? dateTimeNow = null)
     {
+        Guard.IsNotNullOrWhiteSpace(token);
+        
+        dateTimeNow ??= DateTime.UtcNow;
+        
         if(EmailConfirmed)
             return;
         
-        if(ConfirmationToken?.IsValid(token) is null or false)
+        if(ConfirmationToken?.Verify(token, dateTimeNow) is null or false)
             throw new DomainException("Invalid token");
         
         EmailConfirmed = true;
+        ConfirmationToken = null;
         if(Status == UserStatus.Pending)
             Status = UserStatus.Active;
     }
@@ -70,6 +78,50 @@ public class User : Entity<UserId>
             return;
         
         _externalNetworkAccounts.Add(externalAccount);
+    }
+
+    public void RequestPasswordReset(ConfirmationToken newToken, DateTime? dateTimeNow = null)
+    {
+        dateTimeNow ??= DateTime.UtcNow;
+
+        if (EmailConfirmed == false)
+            throw new DomainException("Email is not confirmed");
+        
+        if (ConfirmationToken != null && ConfirmationToken.Expiration > dateTimeNow)
+            throw new DomainException("Password reset has been requested already");
+        
+        ConfirmationToken = newToken;
+    }
+
+    public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher, DateTime? dateTimeNow = null)
+    {
+        Guard.IsNotNullOrWhiteSpace(token);
+        Guard.IsNotNullOrWhiteSpace(newPassword);
+        
+        dateTimeNow ??= DateTime.UtcNow;
+        
+        if (dateTimeNow > ConfirmationToken?.Expiration)
+            throw new DomainException("Confirmation token is expired");
+
+        if(ConfirmationToken?.Verify(token, dateTimeNow) is null or false)
+            throw new DomainException("Invalid token");
+
+        PasswordHash = passwordHasher.Hash(newPassword);
+        ConfirmationToken = null;
+    }
+
+    public void ChangePassword(string currentPassword, string newPassword, IPasswordHasher passwordHasher)
+    {
+        Guard.IsNotNullOrWhiteSpace(currentPassword);
+        Guard.IsNotNullOrWhiteSpace(newPassword);
+        
+        if(PasswordHash == null)
+            throw new DomainException("No current password");
+
+        if (passwordHasher.Verify(PasswordHash, currentPassword) == false)
+            throw new DomainException("Incorrect current password");
+        
+        PasswordHash = passwordHasher.Hash(newPassword);
     }
     
     public void CheckStatus()

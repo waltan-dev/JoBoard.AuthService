@@ -1,26 +1,25 @@
-﻿using JoBoard.AuthService.Application.Configs;
-using JoBoard.AuthService.Application.Contracts;
-using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Common;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Services;
 using MediatR;
-using Microsoft.Extensions.Options;
 
 namespace JoBoard.AuthService.Application.Commands.RegisterByExternalAccount;
 
 public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterByExternalAccountCommand>
 {
+    private readonly ITokenizer _tokenizer;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ConfirmationEmailConfig _config;
 
     public RegisterByExternalAccountCommandHandler(
+        ITokenizer tokenizer,
         IUserRepository userRepository,
-        IUnitOfWork unitOfWork,
-        IOptions<ConfirmationEmailConfig> options)
+        IUnitOfWork unitOfWork)
     {
+        _tokenizer = tokenizer;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
-        _config = options.Value;
     }
     
     public async Task Handle(RegisterByExternalAccountCommand request, CancellationToken ct)
@@ -42,9 +41,9 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
             email: new Email(request.Email),
             accountType: request.AccountType,
             externalNetworkAccount: externalAccount,
-            confirmationToken: ConfirmationToken.Generate(expiresInHours: _config.ExpiresInHours));
+            confirmationToken: _tokenizer.Generate());
 
-        _userRepository.Add(newUser, ct);
+        await _userRepository.AddAsync(newUser, ct);
         await _unitOfWork.SaveChangesAsync(ct);
         
         // TODO send confirmation email

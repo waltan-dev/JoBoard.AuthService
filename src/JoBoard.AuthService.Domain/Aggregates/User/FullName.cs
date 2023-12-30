@@ -1,5 +1,5 @@
-﻿using Ardalis.GuardClauses;
-using JoBoard.AuthService.Domain.Core;
+﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -10,8 +10,8 @@ public class FullName : ValueObject
     
     public FullName(string firstName, string lastName)
     {
-        Guard.Against.NullOrWhiteSpace(firstName);
-        Guard.Against.NullOrWhiteSpace(lastName);
+        Guard.IsNotNullOrWhiteSpace(firstName);
+        Guard.IsNotNullOrWhiteSpace(lastName);
         
         FirstName = firstName.Trim();
         LastName = lastName.Trim();

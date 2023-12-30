@@ -1,9 +1,8 @@
-﻿using JoBoard.AuthService.Application.Configs;
-using JoBoard.AuthService.Application.Contracts;
-using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Common;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Services;
 using MediatR;
-using Microsoft.Extensions.Options;
 
 namespace JoBoard.AuthService.Application.Commands.RegisterByEmail;
 
@@ -11,19 +10,19 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly ITokenizer _tokenizer;
     private readonly IUnitOfWork _unitOfWork;
-    private readonly ConfirmationEmailConfig _config;
 
     public RegisterByEmailCommandHandler(
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
-        IUnitOfWork unitOfWork,
-        IOptions<ConfirmationEmailConfig> options)
+        ITokenizer tokenizer,
+        IUnitOfWork unitOfWork)
     {
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
+        _tokenizer = tokenizer;
         _unitOfWork = unitOfWork;
-        _config = options.Value;
     }
     
     public async Task Handle(RegisterByEmailCommand request, CancellationToken ct)
@@ -39,9 +38,9 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             email: new Email(request.Email),
             accountType: request.AccountType,
             passwordHash: _passwordHasher.Hash(request.Password),
-            confirmationToken: ConfirmationToken.Generate(expiresInHours: _config.ExpiresInHours));
+            confirmationToken: _tokenizer.Generate());
 
-        _userRepository.Add(newUser, ct);
+        await _userRepository.AddAsync(newUser, ct);
         await _unitOfWork.SaveChangesAsync(ct);
         
         // TODO send confirmation email
