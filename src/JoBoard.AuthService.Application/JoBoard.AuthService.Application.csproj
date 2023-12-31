@@ -18,6 +18,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <Folder Include="Commands\Register\" />
       <Folder Include="Queries\" />
     </ItemGroup>
 

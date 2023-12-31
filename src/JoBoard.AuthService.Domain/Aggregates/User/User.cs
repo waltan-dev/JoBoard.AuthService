@@ -9,15 +9,23 @@ public class User : Entity<UserId>
 {
     public DateTime RegisteredAt { get; }
     public FullName FullName { get; }
-    public Email Email { get; }
+    public Email Email { get; private set; }
     public bool EmailConfirmed { get; private set; }
     public AccountType AccountType { get; }
     public UserStatus Status { get; private set; }
     public string? PasswordHash { get; private set; }
+    
+    // field for email confirmation after registration and for password resetting
     public ConfirmationToken? ConfirmationToken { get; private set; }
+    
+    // fields for manage external accounts
     private ICollection<ExternalNetworkAccount> _externalNetworkAccounts { get; }
     public IReadOnlyCollection<ExternalNetworkAccount> ExternalNetworkAccounts 
         => (IReadOnlyCollection<ExternalNetworkAccount>)_externalNetworkAccounts;
+    
+    // temp fields for email changing
+    public Email? NewEmail { get; private set; }
+    public ConfirmationToken? NewEmailConfirmationToken { get; private set; }
     
     /// <summary>
     /// Register new user by email and password
@@ -122,6 +130,38 @@ public class User : Entity<UserId>
             throw new DomainException("Incorrect current password");
         
         PasswordHash = passwordHasher.Hash(newPassword);
+    }
+
+    public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken, DateTime? dateTimeNow = null)
+    {
+        if (Status != UserStatus.Active)
+            throw new DomainException("User is not active");
+        if(Email.Equals(newEmail))
+            throw new DomainException("New email is the same as current");
+
+        dateTimeNow ??= DateTime.UtcNow;
+        if (NewEmailConfirmationToken != null && NewEmailConfirmationToken.Expiration > dateTimeNow)
+            throw new DomainException("Email change has been requested already");
+
+        NewEmail = newEmail;
+        NewEmailConfirmationToken = confirmationToken;
+    }
+
+    public void ChangeEmail(string token, DateTime? dateTimeNow = null)
+    {
+        Guard.IsNotNullOrWhiteSpace(token);
+        dateTimeNow ??= DateTime.UtcNow;
+
+        if (NewEmailConfirmationToken == null || NewEmail == null)
+            throw new DomainException("Email change has not been requested");
+
+        if (NewEmailConfirmationToken.Verify(token, dateTimeNow) == false)
+            throw new DomainException("Invalid confirmation token");
+
+        Email = NewEmail;
+        EmailConfirmed = true;
+        NewEmail = null;
+        NewEmailConfirmationToken = null;
     }
     
     public void CheckStatus()

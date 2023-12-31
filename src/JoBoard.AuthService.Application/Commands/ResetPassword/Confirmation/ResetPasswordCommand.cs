@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.ResetPassword;
+namespace JoBoard.AuthService.Application.Commands.ResetPassword.Confirmation;
 
 public class ResetPasswordCommand : IRequest
 {

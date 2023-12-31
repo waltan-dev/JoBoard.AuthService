@@ -8,7 +8,7 @@ public class AttachExternalAccountTests
     [Fact]
     public void AttachExternalAccount()
     {
-        var user = new UserBuilder().BuildWithEmailAndPassword(UserStatus.Active);
+        var user = new UserBuilder().WithActiveStatus().Build();
 
         var externalAccount = new ExternalNetworkAccount("externalUserId", ExternalNetwork.Google);
         user.AttachNetwork(externalAccount);
@@ -20,7 +20,7 @@ public class AttachExternalAccountTests
     [Fact]
     public void AttachSameExternalAccountTwice()
     {
-        var user = new UserBuilder().BuildWithEmailAndPassword(UserStatus.Active);
+        var user = new UserBuilder().WithActiveStatus().Build();
 
         var externalAccount = new ExternalNetworkAccount("externalUserId", ExternalNetwork.Google);
         user.AttachNetwork(externalAccount);

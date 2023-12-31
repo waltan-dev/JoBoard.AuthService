@@ -18,7 +18,7 @@ public class UserId : ValueObject
         return new UserId(Guid.NewGuid());
     }
     
-    protected override IEnumerable<object?> GetEqualityComponents()
+    protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
     }

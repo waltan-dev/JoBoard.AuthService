@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.RequestPasswordReset;
+namespace JoBoard.AuthService.Application.Commands.ResetPassword.Request;
 
 public class RequestPasswordResetCommand : IRequest
 {

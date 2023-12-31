@@ -1,7 +1,7 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.RegisterByEmail;
+namespace JoBoard.AuthService.Application.Commands.Register.ByEmail;
 
 public class RegisterByEmailCommand : IRequest
 {

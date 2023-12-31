@@ -4,7 +4,7 @@ using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Domain.Services;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.RegisterByEmail;
+namespace JoBoard.AuthService.Application.Commands.Register.ByEmail;
 
 public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailCommand>
 {

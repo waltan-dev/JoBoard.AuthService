@@ -31,7 +31,7 @@ public class Email : ValueObject
         }
     }
     
-    protected override IEnumerable<object?> GetEqualityComponents()
+    protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return Value;
     }

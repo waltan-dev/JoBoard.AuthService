@@ -9,15 +9,14 @@ public class UserRegistrationTests
     [Fact]
     public void CreateNewUserByEmailAndPassword()
     {
-        var userBuilder = new UserBuilder();
-        var newUser = userBuilder.BuildWithEmailAndPassword(UserStatus.Pending);
+        var newUser = new UserBuilder().Build();
 
-        Assert.Equal(userBuilder.UserId, newUser.Id);
-        Assert.Equal(userBuilder.FullName, newUser.FullName);
-        Assert.Equal(userBuilder.Email, newUser.Email);
-        Assert.Equal(userBuilder.AccountType, newUser.AccountType);
-        Assert.Equal(userBuilder.PasswordHash, newUser.PasswordHash);
-        Assert.Equal(userBuilder.ConfirmationToken, newUser.ConfirmationToken);
+        Assert.Equal(UserTestsHelper.DefaultUserId, newUser.Id);
+        Assert.Equal(UserTestsHelper.DefaultFullName, newUser.FullName);
+        Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
+        Assert.Equal(UserTestsHelper.DefaultAccountType, newUser.AccountType);
+        Assert.Equal(UserTestsHelper.DefaultPasswordHash, newUser.PasswordHash);
+        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.ConfirmationToken);
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
@@ -26,28 +25,27 @@ public class UserRegistrationTests
     [Fact]
     public void CreateNewUserByExternalNetworkAccount()
     {
-        var userBuilder = new UserBuilder();
-        var newUser = userBuilder.BuildWithExternalAccount(UserStatus.Pending);
+        var newUser = new UserBuilder().WithExternalAccount().Build();
 
-        Assert.Equal(userBuilder.UserId, newUser.Id);
-        Assert.Equal(userBuilder.FullName, newUser.FullName);
-        Assert.Equal(userBuilder.Email, newUser.Email);
-        Assert.Equal(userBuilder.AccountType, newUser.AccountType);
-        Assert.Equal(userBuilder.ConfirmationToken, newUser.ConfirmationToken);
+        Assert.Equal(UserTestsHelper.DefaultUserId, newUser.Id);
+        Assert.Equal(UserTestsHelper.DefaultFullName, newUser.FullName);
+        Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
+        Assert.Equal(UserTestsHelper.DefaultAccountType, newUser.AccountType);
+        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.ConfirmationToken);
+        Assert.Equal(UserTestsHelper.DefaultExternalNetworkAccount, newUser.ExternalNetworkAccounts.First());
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
         Assert.Null(newUser.PasswordHash);
-        Assert.Equal(userBuilder.ExternalNetworkAccount, newUser.ExternalNetworkAccounts.First());
     }
 
     [Fact]
     public void ConfirmEmailWithValidToken()
     {
         var userBuilder = new UserBuilder();
-        var user = userBuilder.BuildWithEmailAndPassword(UserStatus.Pending);
+        var user = userBuilder.Build();
 
-        user.ConfirmEmail(userBuilder.ConfirmationToken.Value);
+        user.ConfirmEmail(UserTestsHelper.DefaultConfirmationToken.Value);
 
         Assert.Equal(UserStatus.Active, user.Status);
         Assert.True(user.EmailConfirmed);
@@ -56,7 +54,7 @@ public class UserRegistrationTests
     [Fact]
     public void ConfirmEmailWithInvalidToken()
     {
-        var user = new UserBuilder().BuildWithEmailAndPassword(UserStatus.Pending);
+        var user = new UserBuilder().Build();
 
         Assert.Throws<DomainException>(() =>
         {
@@ -67,14 +65,13 @@ public class UserRegistrationTests
     [Fact]
     public void ConfirmEmailWithExpiredToken()
     {
-        var expiredToken = new ConfirmationToken("valid-token", DateTime.UtcNow.AddHours(1));
-        var userBuilder = new UserBuilder { ConfirmationToken = expiredToken };
-        var user = userBuilder.BuildWithEmailAndPassword(UserStatus.Pending);
+        var userBuilder = new UserBuilder();
+        var user = userBuilder.Build();
 
         Assert.Throws<DomainException>(() =>
         {
-            var futureTime = DateTime.UtcNow.AddHours(2);
-            user.ConfirmEmail(expiredToken.Value, dateTimeNow: futureTime);
+            var futureTime = DateTime.UtcNow.AddDays(2);
+            user.ConfirmEmail(UserTestsHelper.DefaultConfirmationToken.Value, dateTimeNow: futureTime);
         });
     }
 }

@@ -4,7 +4,7 @@ using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Domain.Services;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.RegisterByExternalAccount;
+namespace JoBoard.AuthService.Application.Commands.Register.ByExternalAccount;
 
 public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterByExternalAccountCommand>
 {

@@ -4,7 +4,7 @@ using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Domain.Services;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.RequestPasswordReset;
+namespace JoBoard.AuthService.Application.Commands.ResetPassword.Request;
 
 public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswordResetCommand>
 {

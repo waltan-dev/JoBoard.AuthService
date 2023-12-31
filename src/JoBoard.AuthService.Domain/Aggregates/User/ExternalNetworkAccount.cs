@@ -16,7 +16,7 @@ public class ExternalNetworkAccount : ValueObject
         Network = network;
     }
 
-    protected override IEnumerable<object?> GetEqualityComponents()
+    protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return ExternalUserId;
         yield return Network;

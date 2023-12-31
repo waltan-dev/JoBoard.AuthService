@@ -17,7 +17,7 @@ public class FullName : ValueObject
         LastName = lastName.Trim();
     }
     
-    protected override IEnumerable<object?> GetEqualityComponents()
+    protected override IEnumerable<object> GetEqualityComponents()
     {
         yield return FirstName;
         yield return LastName;
