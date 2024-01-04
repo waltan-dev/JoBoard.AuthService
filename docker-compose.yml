@@ -1,0 +1,10 @@
+﻿version: "3.8"
+
+services:
+  joboard.authservice:
+    image: joboard.authservice
+    build:
+      context: .
+      dockerfile: src/JoBoard.AuthService/Dockerfile
+    ports:
+      - "8080:5000"
