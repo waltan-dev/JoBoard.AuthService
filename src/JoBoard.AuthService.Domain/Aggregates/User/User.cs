@@ -82,12 +82,14 @@ public class User : Entity<UserId>
         
         EmailConfirmed = true;
         ConfirmationToken = null;
-        if(Status == UserStatus.Pending)
+        if(Status.Equals(UserStatus.Pending))
             Status = UserStatus.Active;
     }
 
     public void AttachNetwork(ExternalNetworkAccount externalAccount)
     {
+        CheckStatus();
+        
         if (_externalNetworkAccounts.Contains(externalAccount))
             return;
         
@@ -96,10 +98,9 @@ public class User : Entity<UserId>
 
     public void RequestPasswordReset(ConfirmationToken newToken, DateTime? dateTimeNow = null)
     {
+        CheckStatus();
+        
         dateTimeNow ??= DateTime.UtcNow;
-
-        if (EmailConfirmed == false)
-            throw new DomainException("Email is not confirmed");
         
         if (ConfirmationToken != null && ConfirmationToken.Expiration > dateTimeNow)
             throw new DomainException("Password reset has been requested already");
@@ -109,6 +110,8 @@ public class User : Entity<UserId>
 
     public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher, DateTime? dateTimeNow = null)
     {
+        CheckStatus();
+        
         Guard.IsNotNullOrWhiteSpace(token);
         Guard.IsNotNullOrWhiteSpace(newPassword);
         
@@ -126,6 +129,8 @@ public class User : Entity<UserId>
 
     public void ChangePassword(string currentPassword, string newPassword, IPasswordHasher passwordHasher)
     {
+        CheckStatus();
+        
         Guard.IsNotNullOrWhiteSpace(currentPassword);
         Guard.IsNotNullOrWhiteSpace(newPassword);
         
@@ -140,8 +145,8 @@ public class User : Entity<UserId>
 
     public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken, DateTime? dateTimeNow = null)
     {
-        if (Status != UserStatus.Active)
-            throw new DomainException("User is not active");
+        CheckStatus();
+        
         if(Email.Equals(newEmail))
             throw new DomainException("New email is the same as current");
 
@@ -155,6 +160,8 @@ public class User : Entity<UserId>
 
     public void ChangeEmail(string token, DateTime? dateTimeNow = null)
     {
+        CheckStatus();
+        
         Guard.IsNotNullOrWhiteSpace(token);
         dateTimeNow ??= DateTime.UtcNow;
 
@@ -172,23 +179,28 @@ public class User : Entity<UserId>
 
     public void ChangeRole(UserRole newRole)
     {
+        CheckStatus();
+        
         if (newRole.Equals(UserRole.Hirer) == false && newRole.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
 
         Role = newRole;
     }
+
+    public void Deactivate()
+    {
+        CheckStatus();
+        
+        Status = UserStatus.Deactivated;
+    }
     
     public void CheckStatus()
     {
-        switch (Status)
-        {
-            case UserStatus.Blocked:
-                throw new DomainException("User is blocked");
-            case UserStatus.Deactivated:
-                throw new DomainException("Your account has been deactivated");
-            case UserStatus.Pending:
-                //    throw new UserStatusException("Email is not confirmed yet");
-                break;
-        }
+        if(Status.Equals(UserStatus.Pending))
+            throw new DomainException("Email is not confirmed yet");
+        if(Status.Equals(UserStatus.Deactivated))
+            throw new DomainException("Your account has been deactivated");
+        if(Status.Equals(UserStatus.Blocked))
+            throw new DomainException("User is blocked");
     }
 }

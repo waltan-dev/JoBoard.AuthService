@@ -1,6 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.Services;
-using JoBoard.AuthService.Domain.UnitTests.Builders;
 using Moq;
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
@@ -28,10 +27,10 @@ public class ChangePasswordTests
         var passwordHasherStub = GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
         var newPassword = GetNewPassword();
-        var newPasswordHash = GetNewPasswordHash();
         
         user.ChangePassword(UserTestsHelper.DefaultPassword, newPassword, passwordHasherStub);
         
+        var newPasswordHash = GetNewPasswordHash();
         Assert.Equal(newPasswordHash, user.PasswordHash);
     }
     
@@ -68,6 +67,19 @@ public class ChangePasswordTests
         Assert.Throws<ArgumentException>(() =>
         {
             user.ChangePassword(" ", " ", passwordHasherStub);
+        });
+    }
+    
+    [Fact]
+    public void ChangePasswordWithInactiveStatus()
+    {
+        var passwordHasherStub = GetPasswordHasherStub();
+        var user = new UserBuilder().Build();
+        var newPassword = GetNewPassword();
+
+        Assert.Throws<DomainException>(() =>
+        {
+            user.ChangePassword(UserTestsHelper.DefaultPassword, newPassword, passwordHasherStub);
         });
     }
 }

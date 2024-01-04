@@ -20,9 +20,9 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand>
     
     public async Task Handle(ConfirmEmailCommand request, CancellationToken ct)
     {
-        var user = await _userRepository.FindByConfirmationTokenAsync(request.Token, ct);
+        var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
-            throw new DomainException("Invalid token");
+            throw new DomainException("User not found");
         
         user.ConfirmEmail(request.Token);
 

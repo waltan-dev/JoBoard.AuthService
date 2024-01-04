@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.ChangeEmail.Request;
+namespace JoBoard.AuthService.Application.Commands.Manage.ChangeEmail.Request;
 
 public class RequestEmailChangeCommand : IRequest
 {

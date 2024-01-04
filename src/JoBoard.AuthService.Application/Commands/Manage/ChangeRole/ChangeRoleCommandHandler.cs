@@ -3,7 +3,7 @@ using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.SeedWork;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.ChangeRole;
+namespace JoBoard.AuthService.Application.Commands.Manage.ChangeRole;
 
 public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand>
 {

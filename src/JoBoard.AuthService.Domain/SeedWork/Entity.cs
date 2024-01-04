@@ -6,7 +6,7 @@ public abstract class Entity<TKey>
 {
     private int? _requestedHashCode;
 
-    public virtual TKey Id { get; protected set; }
+    public TKey Id { get; protected set; }
 
     private readonly List<INotification> _domainEvents = new();
         

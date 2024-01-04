@@ -1,5 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.UnitTests.Builders;
+using JoBoard.AuthService.Domain.Exceptions;
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
 
@@ -28,5 +28,17 @@ public class AttachExternalAccountTests
         
         Assert.Equal(1, user.ExternalNetworkAccounts.Count);
         Assert.Equal(externalAccount, user.ExternalNetworkAccounts.First());
+    }
+    
+    [Fact]
+    public void AttachExternalAccountWithInactiveStatus()
+    {
+        var user = new UserBuilder().Build();
+        var externalAccount = new ExternalNetworkAccount("externalUserId", ExternalNetwork.Google);
+
+        Assert.Throws<DomainException>(() =>
+        {
+            user.AttachNetwork(externalAccount);
+        });
     }
 }

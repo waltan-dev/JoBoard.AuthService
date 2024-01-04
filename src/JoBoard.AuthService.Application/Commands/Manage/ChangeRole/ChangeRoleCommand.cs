@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.ChangeRole;
+namespace JoBoard.AuthService.Application.Commands.Manage.ChangeRole;
 
 public class ChangeRoleCommand : IRequest
 {

@@ -1,6 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.Services;
-using JoBoard.AuthService.Domain.UnitTests.Builders;
 using Moq;
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
@@ -48,7 +47,7 @@ public class ResetPasswordTests
     }
     
     [Fact]
-    public void RequestResetPasswordWithoutEmailConfirmation()
+    public void RequestResetPasswordWithInactiveStatus()
     {
         var user = new UserBuilder().Build();
         var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
@@ -111,6 +110,20 @@ public class ResetPasswordTests
         Assert.Throws<DomainException>(() =>
         {
             user.ResetPassword("invalid-token", "newPasswordHash", passwordHasherStub);
+        });
+    }
+    
+    [Fact]
+    public void ResetPasswordWithInactiveStatus()
+    {
+        var passwordHasherStub = GetPasswordHasherStub();
+        var user = new UserBuilder().Build();
+        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.RequestPasswordReset(confirmationToken);
+            user.ResetPassword(confirmationToken.Value, "someNewPassword", passwordHasherStub);
         });
     }
     

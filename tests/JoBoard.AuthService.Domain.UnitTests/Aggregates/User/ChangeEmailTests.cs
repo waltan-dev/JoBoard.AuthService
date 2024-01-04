@@ -1,6 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
-using JoBoard.AuthService.Domain.UnitTests.Builders;
 
 namespace JoBoard.AuthService.Domain.UnitTests.Aggregates.User;
 
@@ -12,12 +11,12 @@ public class ChangeEmailTests
     public void RequestChangeEmail()
     {
         var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
-        var oldEmail = UserTestsHelper.DefaultEmail;
         var newEmail = CreateNewEmail();
         var user = new UserBuilder().WithActiveStatus().Build();
         
         user.RequestEmailChange(newEmail, confirmationToken);
         
+        var oldEmail = UserTestsHelper.DefaultEmail;
         Assert.Equal(oldEmail, user.Email);
         Assert.Equal(newEmail, user.NewEmail);
         Assert.Equal(confirmationToken, user.NewEmailConfirmationToken);
@@ -78,6 +77,19 @@ public class ChangeEmailTests
         Assert.Equal(oldEmail, user.Email);
         Assert.Equal(newEmail, user.NewEmail);
         Assert.Equal(confirmationToken, user.NewEmailConfirmationToken);
+    }
+    
+    [Fact]
+    public void RequestChangeEmailWithInactiveStatus()
+    {
+        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var newEmail = CreateNewEmail();
+        var user = new UserBuilder().Build();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.RequestEmailChange(newEmail, confirmationToken);
+        });
     }
 
     [Fact]
@@ -141,5 +153,19 @@ public class ChangeEmailTests
             user.ChangeEmail(confirmationToken.Value);
         });
         Assert.Equal(oldEmail, user.Email);
+    }
+    
+    [Fact]
+    public void ChangeEmailWithInactiveStatus()
+    {
+        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var newEmail = CreateNewEmail();
+        var user = new UserBuilder().Build();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.RequestEmailChange(newEmail, confirmationToken);
+            user.ChangeEmail(confirmationToken.Value);
+        });
     }
 }

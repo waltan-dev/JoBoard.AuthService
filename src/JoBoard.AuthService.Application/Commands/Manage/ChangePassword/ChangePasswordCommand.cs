@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace JoBoard.AuthService.Application.Commands.ChangePassword;
+namespace JoBoard.AuthService.Application.Commands.Manage.ChangePassword;
 
 public class ChangePasswordCommand : IRequest
 {
