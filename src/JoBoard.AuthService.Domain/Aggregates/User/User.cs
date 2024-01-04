@@ -5,7 +5,7 @@ using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
-public class User : Entity<UserId>
+public class User : Entity<UserId>, IAggregateRoot
 {
     public DateTime RegisteredAt { get; }
     public FullName FullName { get; }
@@ -14,16 +14,11 @@ public class User : Entity<UserId>
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
     public string? PasswordHash { get; private set; }
-    
-    // field for email confirmation after registration and for password resetting
-    public ConfirmationToken? ConfirmationToken { get; private set; }
-    
-    // fields for manage external accounts
+    public ConfirmationToken RegisterConfirmToken { get; private set; }
+    public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
     private ICollection<ExternalNetworkAccount> _externalNetworkAccounts { get; }
     public IReadOnlyCollection<ExternalNetworkAccount> ExternalNetworkAccounts 
         => (IReadOnlyCollection<ExternalNetworkAccount>)_externalNetworkAccounts;
-    
-    // temp fields for email changing
     public Email? NewEmail { get; private set; }
     public ConfirmationToken? NewEmailConfirmationToken { get; private set; }
     
@@ -31,7 +26,7 @@ public class User : Entity<UserId>
     /// Register new user by email and password
     /// </summary>
     public User(UserId userId, FullName fullName, Email email, UserRole role, 
-        string passwordHash, ConfirmationToken confirmationToken)
+        string passwordHash, ConfirmationToken registerConfirmToken)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -44,7 +39,7 @@ public class User : Entity<UserId>
         Role = role;
         Status = UserStatus.Pending;
         PasswordHash = passwordHash;
-        ConfirmationToken = confirmationToken;
+        RegisterConfirmToken = registerConfirmToken;
         _externalNetworkAccounts = new List<ExternalNetworkAccount>();
     }
     
@@ -52,7 +47,7 @@ public class User : Entity<UserId>
     /// Register new user by external network account
     /// </summary>
     public User(UserId userId, FullName fullName, Email email, UserRole role, 
-        ExternalNetworkAccount externalNetworkAccount, ConfirmationToken confirmationToken)
+        ExternalNetworkAccount externalNetworkAccount, ConfirmationToken registerConfirmToken)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -64,7 +59,7 @@ public class User : Entity<UserId>
         EmailConfirmed = false;
         Role = role;
         Status = UserStatus.Pending;
-        ConfirmationToken = confirmationToken;
+        RegisterConfirmToken = registerConfirmToken;
         _externalNetworkAccounts = new List<ExternalNetworkAccount>() { externalNetworkAccount };
     }
     
@@ -77,11 +72,11 @@ public class User : Entity<UserId>
         if(EmailConfirmed)
             return;
         
-        if(ConfirmationToken?.Verify(token, dateTimeNow) is null or false)
+        if(RegisterConfirmToken?.Verify(token, dateTimeNow) is null or false)
             throw new DomainException("Invalid token");
         
         EmailConfirmed = true;
-        ConfirmationToken = null;
+        RegisterConfirmToken = null;
         if(Status.Equals(UserStatus.Pending))
             Status = UserStatus.Active;
     }
@@ -102,10 +97,10 @@ public class User : Entity<UserId>
         
         dateTimeNow ??= DateTime.UtcNow;
         
-        if (ConfirmationToken != null && ConfirmationToken.Expiration > dateTimeNow)
+        if (ResetPasswordConfirmToken != null && ResetPasswordConfirmToken.Expiration > dateTimeNow)
             throw new DomainException("Password reset has been requested already");
         
-        ConfirmationToken = newToken;
+        ResetPasswordConfirmToken = newToken;
     }
 
     public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher, DateTime? dateTimeNow = null)
@@ -117,14 +112,14 @@ public class User : Entity<UserId>
         
         dateTimeNow ??= DateTime.UtcNow;
         
-        if (dateTimeNow > ConfirmationToken?.Expiration)
+        if (dateTimeNow > ResetPasswordConfirmToken?.Expiration)
             throw new DomainException("Confirmation token is expired");
 
-        if(ConfirmationToken?.Verify(token, dateTimeNow) is null or false)
+        if(ResetPasswordConfirmToken?.Verify(token, dateTimeNow) is null or false)
             throw new DomainException("Invalid token");
 
         PasswordHash = passwordHasher.Hash(newPassword);
-        ConfirmationToken = null;
+        ResetPasswordConfirmToken = null;
     }
 
     public void ChangePassword(string currentPassword, string newPassword, IPasswordHasher passwordHasher)

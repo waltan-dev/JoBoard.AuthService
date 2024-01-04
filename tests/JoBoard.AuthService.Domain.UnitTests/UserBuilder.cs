@@ -20,7 +20,7 @@ public class UserBuilder
                 email: UserTestsHelper.DefaultEmail,
                 role: userRole,
                 passwordHash: UserTestsHelper.DefaultPasswordHash,
-                confirmationToken: UserTestsHelper.DefaultConfirmationToken);
+                registerConfirmToken: UserTestsHelper.DefaultConfirmationToken);
         else
             user = new User(
                 userId: UserTestsHelper.DefaultUserId,
@@ -28,7 +28,7 @@ public class UserBuilder
                 email: UserTestsHelper.DefaultEmail,
                 role: userRole,
                 externalNetworkAccount: UserTestsHelper.DefaultExternalNetworkAccount,
-                confirmationToken: UserTestsHelper.DefaultConfirmationToken);
+                registerConfirmToken: UserTestsHelper.DefaultConfirmationToken);
         
         if(_withActiveStatusOption)
             user.ConfirmEmail(UserTestsHelper.DefaultConfirmationToken.Value);

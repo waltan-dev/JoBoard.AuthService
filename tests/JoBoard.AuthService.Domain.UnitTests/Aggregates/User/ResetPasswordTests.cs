@@ -16,8 +16,8 @@ public class ResetPasswordTests
         
         user.RequestPasswordReset(confirmationToken);
         
-        Assert.NotNull(user.ConfirmationToken);
-        Assert.Equal(confirmationToken, user.ConfirmationToken);
+        Assert.NotNull(user.ResetPasswordConfirmToken);
+        Assert.Equal(confirmationToken, user.ResetPasswordConfirmToken);
     }
     
     [Fact]
@@ -43,7 +43,7 @@ public class ResetPasswordTests
         var futureTime = DateTime.UtcNow.AddHours(UserTestsHelper.TokenExpiresInHours + 1);
         user.RequestPasswordReset(confirmationToken, dateTimeNow: futureTime);
         
-        Assert.Equal(confirmationToken, user.ConfirmationToken);
+        Assert.Equal(confirmationToken, user.ResetPasswordConfirmToken);
     }
     
     [Fact]
@@ -69,7 +69,7 @@ public class ResetPasswordTests
         user.ResetPassword(confirmationToken.Value, "someNewPassword", passwordHasherStub);
         
         Assert.Equal(NewPasswordHash, user.PasswordHash);
-        Assert.Null(user.ConfirmationToken);
+        Assert.Null(user.ResetPasswordConfirmToken);
     }
     
     [Fact]

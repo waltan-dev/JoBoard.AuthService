@@ -41,7 +41,7 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
             email: new Email(request.Email),
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
             externalNetworkAccount: externalAccount,
-            confirmationToken: _tokenizer.Generate());
+            registerConfirmToken: _tokenizer.Generate());
 
         await _userRepository.AddAsync(newUser, ct);
         await _unitOfWork.SaveChangesAsync(ct);

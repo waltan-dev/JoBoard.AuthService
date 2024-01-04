@@ -38,7 +38,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             email: new Email(request.Email),
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
             passwordHash: _passwordHasher.Hash(request.Password),
-            confirmationToken: _tokenizer.Generate());
+            registerConfirmToken: _tokenizer.Generate());
 
         await _userRepository.AddAsync(newUser, ct);
         await _unitOfWork.SaveChangesAsync(ct);

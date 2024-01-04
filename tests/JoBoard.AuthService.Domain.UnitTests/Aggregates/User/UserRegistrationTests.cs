@@ -15,7 +15,7 @@ public class UserRegistrationTests
         Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
         Assert.Equal(UserTestsHelper.DefaultUserRole, newUser.Role);
         Assert.Equal(UserTestsHelper.DefaultPasswordHash, newUser.PasswordHash);
-        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.ConfirmationToken);
+        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.RegisterConfirmToken);
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
@@ -39,7 +39,7 @@ public class UserRegistrationTests
         Assert.Equal(UserTestsHelper.DefaultFullName, newUser.FullName);
         Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
         Assert.Equal(UserTestsHelper.DefaultUserRole, newUser.Role);
-        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.ConfirmationToken);
+        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.RegisterConfirmToken);
         Assert.Equal(UserTestsHelper.DefaultExternalNetworkAccount, newUser.ExternalNetworkAccounts.First());
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
