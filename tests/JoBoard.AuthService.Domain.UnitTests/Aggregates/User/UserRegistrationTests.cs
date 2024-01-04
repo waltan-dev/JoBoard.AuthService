@@ -14,12 +14,21 @@ public class UserRegistrationTests
         Assert.Equal(UserTestsHelper.DefaultUserId, newUser.Id);
         Assert.Equal(UserTestsHelper.DefaultFullName, newUser.FullName);
         Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
-        Assert.Equal(UserTestsHelper.DefaultAccountType, newUser.AccountType);
+        Assert.Equal(UserTestsHelper.DefaultUserRole, newUser.Role);
         Assert.Equal(UserTestsHelper.DefaultPasswordHash, newUser.PasswordHash);
         Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.ConfirmationToken);
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
+    }
+    
+    [Fact]
+    public void CreateNewUserByEmailWithInvalidRole()
+    {
+        Assert.Throws<DomainException>(() =>
+        {
+            _ = new UserBuilder().WithAdminRole().Build();
+        });
     }
     
     [Fact]
@@ -30,13 +39,22 @@ public class UserRegistrationTests
         Assert.Equal(UserTestsHelper.DefaultUserId, newUser.Id);
         Assert.Equal(UserTestsHelper.DefaultFullName, newUser.FullName);
         Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
-        Assert.Equal(UserTestsHelper.DefaultAccountType, newUser.AccountType);
+        Assert.Equal(UserTestsHelper.DefaultUserRole, newUser.Role);
         Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.ConfirmationToken);
         Assert.Equal(UserTestsHelper.DefaultExternalNetworkAccount, newUser.ExternalNetworkAccounts.First());
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
         Assert.Null(newUser.PasswordHash);
+    }
+    
+    [Fact]
+    public void CreateNewUserByExternalNetworkAccountWithInvalidRole()
+    {
+        Assert.Throws<DomainException>(() =>
+        {
+            _ = new UserBuilder().WithExternalAccount().WithAdminRole().Build();
+        });
     }
 
     [Fact]

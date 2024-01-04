@@ -36,7 +36,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             userId: UserId.Generate(),
             fullName: new FullName(request.FirstName, request.LastName),
             email: new Email(request.Email),
-            accountType: request.AccountType,
+            role: Enumeration.FromDisplayName<UserRole>(request.Role),
             passwordHash: _passwordHasher.Hash(request.Password),
             confirmationToken: _tokenizer.Generate());
 

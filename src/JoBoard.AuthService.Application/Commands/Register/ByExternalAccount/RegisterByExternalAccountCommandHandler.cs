@@ -39,7 +39,7 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
             userId: UserId.Generate(),
             fullName: new FullName(request.FirstName, request.LastName),
             email: new Email(request.Email),
-            accountType: request.AccountType,
+            role: Enumeration.FromDisplayName<UserRole>(request.Role),
             externalNetworkAccount: externalAccount,
             confirmationToken: _tokenizer.Generate());
 

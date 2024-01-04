@@ -8,7 +8,7 @@ public class RegisterByExternalAccountCommand : IRequest
     public string FirstName { get; set; }
     public string LastName { get; set; }
     public string Email { get; set; }
-    public AccountType AccountType { get; set; }
+    public string Role { get; set; }
     
     public ExternalNetwork ExternalNetwork { get; set; }
     public string ExternalUserId { get; set; }

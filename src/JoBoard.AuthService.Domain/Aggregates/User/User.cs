@@ -11,7 +11,7 @@ public class User : Entity<UserId>
     public FullName FullName { get; }
     public Email Email { get; private set; }
     public bool EmailConfirmed { get; private set; }
-    public AccountType AccountType { get; }
+    public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
     public string? PasswordHash { get; private set; }
     
@@ -30,15 +30,18 @@ public class User : Entity<UserId>
     /// <summary>
     /// Register new user by email and password
     /// </summary>
-    public User(UserId userId, FullName fullName, Email email, AccountType accountType, 
+    public User(UserId userId, FullName fullName, Email email, UserRole role, 
         string passwordHash, ConfirmationToken confirmationToken)
     {
+        if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
+            throw new DomainException("Invalid role");
+        
         Id = userId;
         RegisteredAt = DateTime.UtcNow;
         FullName = fullName;
         Email = email;
         EmailConfirmed = false;
-        AccountType = accountType;
+        Role = role;
         Status = UserStatus.Pending;
         PasswordHash = passwordHash;
         ConfirmationToken = confirmationToken;
@@ -48,15 +51,18 @@ public class User : Entity<UserId>
     /// <summary>
     /// Register new user by external network account
     /// </summary>
-    public User(UserId userId, FullName fullName, Email email, AccountType accountType, 
+    public User(UserId userId, FullName fullName, Email email, UserRole role, 
         ExternalNetworkAccount externalNetworkAccount, ConfirmationToken confirmationToken)
     {
+        if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
+            throw new DomainException("Invalid role");
+        
         Id = userId;
         RegisteredAt = DateTime.UtcNow;
         FullName = fullName;
         Email = email;
         EmailConfirmed = false;
-        AccountType = accountType;
+        Role = role;
         Status = UserStatus.Pending;
         ConfirmationToken = confirmationToken;
         _externalNetworkAccounts = new List<ExternalNetworkAccount>() { externalNetworkAccount };
@@ -162,6 +168,14 @@ public class User : Entity<UserId>
         EmailConfirmed = true;
         NewEmail = null;
         NewEmailConfirmationToken = null;
+    }
+
+    public void ChangeRole(UserRole newRole)
+    {
+        if (newRole.Equals(UserRole.Hirer) == false && newRole.Equals(UserRole.Worker) == false)
+            throw new DomainException("Invalid role");
+
+        Role = newRole;
     }
     
     public void CheckStatus()

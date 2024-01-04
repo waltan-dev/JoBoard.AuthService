@@ -7,16 +7,18 @@ public class UserBuilder
 {
     private bool _withExternalAccountOption = false;
     private bool _withActiveStatusOption = false;
+    private bool _withAdminRoleOption = false;
     
     public User Build()
     {
         User user;
+        UserRole userRole = _withAdminRoleOption ? UserRole.Admin : UserTestsHelper.DefaultUserRole;
         if(_withExternalAccountOption == false)
             user = new User(
                 userId: UserTestsHelper.DefaultUserId,
                 fullName: UserTestsHelper.DefaultFullName,
                 email: UserTestsHelper.DefaultEmail,
-                accountType: UserTestsHelper.DefaultAccountType,
+                role: userRole,
                 passwordHash: UserTestsHelper.DefaultPasswordHash,
                 confirmationToken: UserTestsHelper.DefaultConfirmationToken);
         else
@@ -24,7 +26,7 @@ public class UserBuilder
                 userId: UserTestsHelper.DefaultUserId,
                 fullName: UserTestsHelper.DefaultFullName,
                 email: UserTestsHelper.DefaultEmail,
-                accountType: UserTestsHelper.DefaultAccountType,
+                role: userRole,
                 externalNetworkAccount: UserTestsHelper.DefaultExternalNetworkAccount,
                 confirmationToken: UserTestsHelper.DefaultConfirmationToken);
         
@@ -43,6 +45,12 @@ public class UserBuilder
     public UserBuilder WithExternalAccount()
     {
         _withExternalAccountOption = true;
+        return this;
+    }
+
+    public UserBuilder WithAdminRole()
+    {
+        _withAdminRoleOption = true;
         return this;
     }
 }
