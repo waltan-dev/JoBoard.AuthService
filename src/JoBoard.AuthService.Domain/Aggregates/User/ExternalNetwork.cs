@@ -2,5 +2,5 @@
 
 public enum ExternalNetwork
 {
-    Google
+    Google = 1
 }

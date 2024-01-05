@@ -8,3 +8,18 @@ services:
       dockerfile: src/JoBoard.AuthService/Dockerfile
     ports:
       - "8080:5000"
+  
+  auth-service-db:
+    image: postgres:latest
+    ports:
+      - "54321:5432" # only for local development and ability to connect from host
+    environment:
+      POSTGRES_USER: auth-service-user
+      POSTGRES_PASSWORD: auth-service-password
+      POSTGRES_DB: auth-service
+    command: "-c log_statement=all"
+    volumes:
+      - auth-service-db:/var/lib/postgresql/data
+
+volumes:
+  auth-service-db:

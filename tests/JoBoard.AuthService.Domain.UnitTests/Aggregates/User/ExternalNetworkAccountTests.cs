@@ -10,7 +10,7 @@ public class ExternalNetworkAccountTests
         var externalUserId = "externalUserId";
         var externalNetwork = ExternalNetwork.Google;
         
-        var newExternalNetworkAccount = new ExternalNetworkAccount(externalUserId, externalNetwork);
+        var newExternalNetworkAccount = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId, externalUserId, externalNetwork);
         
         Assert.Equal(externalUserId, newExternalNetworkAccount.ExternalUserId);
         Assert.Equal(externalNetwork, newExternalNetworkAccount.Network);
@@ -21,7 +21,7 @@ public class ExternalNetworkAccountTests
     {
         Assert.Throws<ArgumentException>(() =>
         {
-            _ = new ExternalNetworkAccount(" ", ExternalNetwork.Google);
+            _ = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId, " ", ExternalNetwork.Google);
         });
     }
 }

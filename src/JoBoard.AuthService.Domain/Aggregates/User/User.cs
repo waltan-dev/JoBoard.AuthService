@@ -22,6 +22,8 @@ public class User : Entity<UserId>, IAggregateRoot
     public Email? NewEmail { get; private set; }
     public ConfirmationToken? NewEmailConfirmationToken { get; private set; }
     
+    private User() {}
+    
     /// <summary>
     /// Register new user by email and password
     /// </summary>

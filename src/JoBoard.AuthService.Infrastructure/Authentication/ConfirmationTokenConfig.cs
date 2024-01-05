@@ -1,4 +1,4 @@
-﻿namespace JoBoard.AuthService.Application.Configs;
+﻿namespace JoBoard.AuthService.Infrastructure.Authentication;
 
 public class ConfirmationTokenConfig
 {

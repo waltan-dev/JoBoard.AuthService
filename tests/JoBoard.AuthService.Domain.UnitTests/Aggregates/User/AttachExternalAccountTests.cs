@@ -10,7 +10,7 @@ public class AttachExternalAccountTests
     {
         var user = new UserBuilder().WithActiveStatus().Build();
 
-        var externalAccount = new ExternalNetworkAccount("externalUserId", ExternalNetwork.Google);
+        var externalAccount = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalNetwork.Google);
         user.AttachNetwork(externalAccount);
         
         Assert.Equal(1, user.ExternalNetworkAccounts.Count);
@@ -22,7 +22,7 @@ public class AttachExternalAccountTests
     {
         var user = new UserBuilder().WithActiveStatus().Build();
 
-        var externalAccount = new ExternalNetworkAccount("externalUserId", ExternalNetwork.Google);
+        var externalAccount = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalNetwork.Google);
         user.AttachNetwork(externalAccount);
         user.AttachNetwork(externalAccount);
         
@@ -34,7 +34,7 @@ public class AttachExternalAccountTests
     public void AttachExternalAccountWithInactiveStatus()
     {
         var user = new UserBuilder().Build();
-        var externalAccount = new ExternalNetworkAccount("externalUserId", ExternalNetwork.Google);
+        var externalAccount = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalNetwork.Google);
 
         Assert.Throws<DomainException>(() =>
         {

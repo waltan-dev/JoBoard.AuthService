@@ -1,5 +1,4 @@
-﻿using JoBoard.AuthService.Application.Configs;
-using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Services;
 using Microsoft.Extensions.Options;
 
