@@ -5,16 +5,15 @@ namespace JoBoard.AuthService.Domain.Aggregates.User;
 
 public class ExternalAccount : Entity<UserId>
 {
-    public string ExternalUserId { get; }
-    public ExternalAccountProvider Provider { get; }
+    public string ExternalUserId { get; init; }
+    public ExternalAccountProvider Provider { get; init; }
 
     private ExternalAccount() { } // only for ef core 
     
-    public ExternalAccount(UserId userId, string externalUserId, ExternalAccountProvider provider)
+    public ExternalAccount(string externalUserId, ExternalAccountProvider provider)
     {
         Guard.IsNotNullOrWhiteSpace(externalUserId);
-
-        Id = userId;
+        
         ExternalUserId = externalUserId;
         Provider = provider;
     }

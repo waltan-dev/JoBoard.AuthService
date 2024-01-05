@@ -10,7 +10,7 @@ public class ExternalAccountTests
         var externalUserId = "externalUserId";
         var provider = ExternalAccountProvider.Google;
         
-        var newExternalAccount = new ExternalAccount(UserTestsHelper.DefaultUserId, externalUserId, provider);
+        var newExternalAccount = new ExternalAccount(externalUserId, provider);
         
         Assert.Equal(externalUserId, newExternalAccount.ExternalUserId);
         Assert.Equal(provider, newExternalAccount.Provider);
@@ -21,7 +21,7 @@ public class ExternalAccountTests
     {
         Assert.Throws<ArgumentException>(() =>
         {
-            _ = new ExternalAccount(UserTestsHelper.DefaultUserId, " ", ExternalAccountProvider.Google);
+            _ = new ExternalAccount(" ", ExternalAccountProvider.Google);
         });
     }
 }

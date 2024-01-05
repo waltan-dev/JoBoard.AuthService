@@ -9,6 +9,7 @@ public class AuthDbContext : DbContext
     public AuthDbContext(DbContextOptions options) : base(options) { }
     
     public DbSet<User> Users { get; set; } = null!;
+    public DbSet<ExternalAccount> ExternalAccounts { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

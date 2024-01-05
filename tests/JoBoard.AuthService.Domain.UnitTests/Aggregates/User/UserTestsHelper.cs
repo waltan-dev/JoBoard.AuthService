@@ -13,7 +13,7 @@ public static class UserTestsHelper
     public static readonly ConfirmationToken DefaultConfirmationToken = 
         new(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(TokenExpiresInHours));
     public static readonly ExternalAccount DefaultExternalAccount =
-        new(DefaultUserId,"externalUserId", ExternalAccountProvider.Google);
+        new("externalUserId", ExternalAccountProvider.Google);
 
     public const int TokenExpiresInHours = 24;
 

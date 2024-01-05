@@ -74,7 +74,29 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
             modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.User", b =>
                 {
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.FullName", "FullName", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.User.Email#JoBoard.AuthService.Domain.Aggregates.User.Email", "Email", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("Email");
+
+                            b1.HasKey("UserId");
+
+                            b1.HasIndex("Value")
+                                .IsUnique()
+                                .HasDatabaseName("IX_Users_Email");
+
+                            b1.ToTable("Users", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.User.FullName#JoBoard.AuthService.Domain.Aggregates.User.FullName", "FullName", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
@@ -91,35 +113,13 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("Users");
+                            b1.ToTable("Users", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.Email", "Email", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("Email");
-
-                            b1.HasKey("UserId");
-
-                            b1.HasIndex("Value")
-                                .IsUnique()
-                                .HasDatabaseName("IX_Users_Email");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.Email", "NewEmail", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.User.NewEmail#JoBoard.AuthService.Domain.Aggregates.User.Email", "NewEmail", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
@@ -131,13 +131,13 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("Users");
+                            b1.ToTable("Users", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "NewEmailConfirmationToken", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.User.NewEmailConfirmationToken#JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "NewEmailConfirmationToken", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
@@ -153,13 +153,13 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("Users");
+                            b1.ToTable("Users", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "RegisterConfirmToken", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.User.RegisterConfirmToken#JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "RegisterConfirmToken", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
@@ -175,13 +175,13 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("Users");
+                            b1.ToTable("Users", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "ResetPasswordConfirmToken", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.User.ResetPasswordConfirmToken#JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "ResetPasswordConfirmToken", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
@@ -197,7 +197,7 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
                             b1.HasKey("UserId");
 
-                            b1.ToTable("Users");
+                            b1.ToTable("Users", (string)null);
 
                             b1.WithOwner()
                                 .HasForeignKey("UserId");
