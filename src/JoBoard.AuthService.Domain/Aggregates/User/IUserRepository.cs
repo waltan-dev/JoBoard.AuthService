@@ -1,6 +1,8 @@
-﻿namespace JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Domain.SeedWork;
 
-public interface IUserRepository
+namespace JoBoard.AuthService.Domain.Aggregates.User;
+
+public interface IUserRepository : IRepository<User>
 {
     Task AddAsync(User user, CancellationToken ct);
     Task UpdateAsync(User user, CancellationToken ct);

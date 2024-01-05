@@ -1,8 +1,8 @@
 ﻿version: "3.8"
 
 services:
-  joboard.authservice:
-    image: joboard.authservice
+  auth-service:
+    image: auth-service
     build:
       context: .
       dockerfile: src/JoBoard.AuthService/Dockerfile

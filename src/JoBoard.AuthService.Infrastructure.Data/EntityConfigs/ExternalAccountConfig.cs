@@ -15,5 +15,7 @@ public class ExternalAccountConfig : IEntityTypeConfiguration<ExternalAccount>
         builder.Property(x => x.Id).HasConversion(
             userId => userId.Value, 
             value => new UserId(value));
+
+        builder.HasIndex(x => new { x.ExternalUserId, x.Provider });
     }
 }
