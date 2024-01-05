@@ -27,7 +27,7 @@ public class UserBuilder
                 fullName: UserTestsHelper.DefaultFullName,
                 email: UserTestsHelper.DefaultEmail,
                 role: userRole,
-                externalNetworkAccount: UserTestsHelper.DefaultExternalNetworkAccount,
+                externalAccount: UserTestsHelper.DefaultExternalAccount,
                 registerConfirmToken: UserTestsHelper.DefaultConfirmationToken);
         
         if(_withActiveStatusOption)

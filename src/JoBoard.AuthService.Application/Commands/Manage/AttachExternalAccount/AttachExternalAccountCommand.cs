@@ -6,5 +6,5 @@ namespace JoBoard.AuthService.Application.Commands.Manage.AttachExternalAccount;
 public class AttachExternalAccountCommand : IRequest
 {
     public string ExternalUserId { get; set; }
-    public ExternalNetwork ExternalNetwork { get; set; }
+    public ExternalAccountProvider ExternalAccountProvider { get; set; }
 }

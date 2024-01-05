@@ -31,7 +31,7 @@ public class UserRegistrationTests
     }
     
     [Fact]
-    public void CreateNewUserByExternalNetworkAccount()
+    public void CreateNewUserByExternalAccount()
     {
         var newUser = new UserBuilder().WithExternalAccount().Build();
 
@@ -40,7 +40,7 @@ public class UserRegistrationTests
         Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
         Assert.Equal(UserTestsHelper.DefaultUserRole, newUser.Role);
         Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.RegisterConfirmToken);
-        Assert.Equal(UserTestsHelper.DefaultExternalNetworkAccount, newUser.ExternalNetworkAccounts.First());
+        Assert.Equal(UserTestsHelper.DefaultExternalAccount, newUser.ExternalAccounts.First());
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
@@ -48,7 +48,7 @@ public class UserRegistrationTests
     }
     
     [Fact]
-    public void CreateNewUserByExternalNetworkAccountWithInvalidRole()
+    public void CreateNewUserByExternalAccountWithInvalidRole()
     {
         Assert.Throws<DomainException>(() =>
         {

@@ -1,16 +1,16 @@
 ### Anonymous Use Cases:
 1) Register new user by email and password
-2) Register new user by external network account
+2) Register new user by external account
 3) Confirm email
 4) Login by email and password
-5) Login by external network account
+5) Login by external account
 6) Reset password (request + confirmation)
 
 ### Authenticated Use Cases:
 1) Change email (request + confirmation)
 2) Change password
 3) Change role
-4) Attach external network account
+4) Attach external account
 5) Deactivate account
 
 ### Domain layer

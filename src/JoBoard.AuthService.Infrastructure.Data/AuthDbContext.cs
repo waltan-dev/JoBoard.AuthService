@@ -1,8 +1,8 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Infrastructure.EntityConfigs;
+using JoBoard.AuthService.Infrastructure.Data.EntityConfigs;
 using Microsoft.EntityFrameworkCore;
 
-namespace JoBoard.AuthService.Infrastructure;
+namespace JoBoard.AuthService.Infrastructure.Data;
 
 public class AuthDbContext : DbContext
 {

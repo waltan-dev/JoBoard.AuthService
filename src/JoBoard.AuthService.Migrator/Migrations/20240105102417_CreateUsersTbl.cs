@@ -14,6 +14,7 @@ namespace JoBoard.AuthService.Migrator.Migrations
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
+                    RegisteredAt = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
@@ -21,7 +22,13 @@ namespace JoBoard.AuthService.Migrator.Migrations
                     Role = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    NewEmail = table.Column<string>(type: "text", nullable: true)
+                    RegisterConfirmToken = table.Column<string>(type: "text", nullable: false),
+                    RegisterConfirmTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    ResetPasswordConfirmToken = table.Column<string>(type: "text", nullable: true),
+                    ResetPasswordConfirmTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    NewEmail = table.Column<string>(type: "text", nullable: true),
+                    NewEmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
+                    NewEmailConfirmationTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -29,18 +36,18 @@ namespace JoBoard.AuthService.Migrator.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "ExternalNetworkAccounts",
+                name: "ExternalAccounts",
                 columns: table => new
                 {
                     Id = table.Column<Guid>(type: "uuid", nullable: false),
                     ExternalUserId = table.Column<string>(type: "text", nullable: false),
-                    Network = table.Column<int>(type: "integer", nullable: false)
+                    Provider = table.Column<int>(type: "integer", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_ExternalNetworkAccounts", x => new { x.Id, x.ExternalUserId, x.Network });
+                    table.PrimaryKey("PK_ExternalAccounts", x => new { x.Id, x.ExternalUserId, x.Provider });
                     table.ForeignKey(
-                        name: "FK_ExternalNetworkAccounts_Users_Id",
+                        name: "FK_ExternalAccounts_Users_Id",
                         column: x => x.Id,
                         principalTable: "Users",
                         principalColumn: "Id",
@@ -57,7 +64,7 @@ namespace JoBoard.AuthService.Migrator.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "ExternalNetworkAccounts");
+                name: "ExternalAccounts");
 
             migrationBuilder.DropTable(
                 name: "Users");

@@ -24,7 +24,7 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
     
     public async Task Handle(RegisterByExternalAccountCommand request, CancellationToken ct)
     {
-        var existingUser = await _userRepository.FindByExternalAccountAsync(request.ExternalUserId, request.ExternalNetwork, ct);
+        var existingUser = await _userRepository.FindByExternalAccountAsync(request.ExternalUserId, request.ExternalAccountProvider, ct);
         if (existingUser != null) // user is already registered => return auth info 
             return;
         
@@ -35,13 +35,13 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
             throw new DomainException("This email is already in use");
 
         var newUserId = UserId.Generate();
-        var externalAccount = new ExternalNetworkAccount(newUserId, request.ExternalUserId, request.ExternalNetwork);
+        var externalAccount = new ExternalAccount(newUserId, request.ExternalUserId, request.ExternalAccountProvider);
         var newUser = new User(
             userId: newUserId,
             fullName: new FullName(request.FirstName, request.LastName),
             email: new Email(request.Email),
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
-            externalNetworkAccount: externalAccount,
+            externalAccount: externalAccount,
             registerConfirmToken: _tokenizer.Generate());
 
         await _userRepository.AddAsync(newUser, ct);

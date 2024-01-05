@@ -11,8 +11,6 @@ public class ConfirmationToken : ValueObject
     public string Value { get; }
     public DateTime Expiration { get; }
     
-    private ConfirmationToken() {}
-    
     public ConfirmationToken(string value, DateTime expiration)
     {
         Guard.IsNotNullOrWhiteSpace(value);

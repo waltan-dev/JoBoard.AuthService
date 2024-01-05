@@ -24,22 +24,22 @@ public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExterna
     
     public async Task Handle(AttachExternalAccountCommand request, CancellationToken ct)
     {
-        var externalAccount = new ExternalNetworkAccount(_identityService.GetUserId(), request.ExternalUserId, request.ExternalNetwork);
+        var externalAccount = new ExternalAccount(_identityService.GetUserId(), request.ExternalUserId, request.ExternalAccountProvider);
         await CheckIfAlreadyExistsAsync(externalAccount, ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
             throw new DomainException("User not found");
         
-        user.AttachNetwork(externalAccount);
+        user.AttachExternalAccount(externalAccount);
         
         await _userRepository.UpdateAsync(user, ct);
         await _unitOfWork.SaveChangesAsync(ct);
     }
 
-    private async Task CheckIfAlreadyExistsAsync(ExternalNetworkAccount externalAccount, CancellationToken ct)
+    private async Task CheckIfAlreadyExistsAsync(ExternalAccount externalAccount, CancellationToken ct)
     {
-        var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount.ExternalUserId, externalAccount.Network, ct);
+        var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount.ExternalUserId, externalAccount.Provider, ct);
         if (existingUser != null)
             throw new DomainException("This external account is already in use");
     }

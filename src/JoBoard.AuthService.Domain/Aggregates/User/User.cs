@@ -7,8 +7,8 @@ namespace JoBoard.AuthService.Domain.Aggregates.User;
 
 public class User : Entity<UserId>, IAggregateRoot
 {
-    public DateTime RegisteredAt { get; }
-    public FullName FullName { get; }
+    public DateTime RegisteredAt { get; init; }
+    public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public bool EmailConfirmed { get; private set; }
     public UserRole Role { get; private set; }
@@ -16,13 +16,13 @@ public class User : Entity<UserId>, IAggregateRoot
     public string? PasswordHash { get; private set; }
     public ConfirmationToken RegisterConfirmToken { get; private set; }
     public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
-    private ICollection<ExternalNetworkAccount> _externalNetworkAccounts { get; }
-    public IReadOnlyCollection<ExternalNetworkAccount> ExternalNetworkAccounts 
-        => (IReadOnlyCollection<ExternalNetworkAccount>)_externalNetworkAccounts;
+    private ICollection<ExternalAccount> _externalAccounts { get; }
+    public IReadOnlyCollection<ExternalAccount> ExternalAccounts 
+        => (IReadOnlyCollection<ExternalAccount>)_externalAccounts;
     public Email? NewEmail { get; private set; }
     public ConfirmationToken? NewEmailConfirmationToken { get; private set; }
     
-    private User() {}
+    private User() {} // only for ef core 
     
     /// <summary>
     /// Register new user by email and password
@@ -42,14 +42,14 @@ public class User : Entity<UserId>, IAggregateRoot
         Status = UserStatus.Pending;
         PasswordHash = passwordHash;
         RegisterConfirmToken = registerConfirmToken;
-        _externalNetworkAccounts = new List<ExternalNetworkAccount>();
+        _externalAccounts = new List<ExternalAccount>();
     }
     
     /// <summary>
-    /// Register new user by external network account
+    /// Register new user by external account
     /// </summary>
     public User(UserId userId, FullName fullName, Email email, UserRole role, 
-        ExternalNetworkAccount externalNetworkAccount, ConfirmationToken registerConfirmToken)
+        ExternalAccount externalAccount, ConfirmationToken registerConfirmToken)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -62,7 +62,7 @@ public class User : Entity<UserId>, IAggregateRoot
         Role = role;
         Status = UserStatus.Pending;
         RegisterConfirmToken = registerConfirmToken;
-        _externalNetworkAccounts = new List<ExternalNetworkAccount>() { externalNetworkAccount };
+        _externalAccounts = new List<ExternalAccount>() { externalAccount };
     }
     
     public void ConfirmEmail(string token, DateTime? dateTimeNow = null)
@@ -83,14 +83,19 @@ public class User : Entity<UserId>, IAggregateRoot
             Status = UserStatus.Active;
     }
 
-    public void AttachNetwork(ExternalNetworkAccount externalAccount)
+    public void SetFullName(FullName fullName)
+    {
+        FullName = fullName;
+    }
+
+    public void AttachExternalAccount(ExternalAccount externalAccount)
     {
         CheckStatus();
         
-        if (_externalNetworkAccounts.Contains(externalAccount))
+        if (_externalAccounts.Contains(externalAccount))
             return;
         
-        _externalNetworkAccounts.Add(externalAccount);
+        _externalAccounts.Add(externalAccount);
     }
 
     public void RequestPasswordReset(ConfirmationToken newToken, DateTime? dateTimeNow = null)

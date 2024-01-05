@@ -10,11 +10,11 @@ public class AttachExternalAccountTests
     {
         var user = new UserBuilder().WithActiveStatus().Build();
 
-        var externalAccount = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalNetwork.Google);
-        user.AttachNetwork(externalAccount);
+        var externalAccount = new ExternalAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalAccountProvider.Google);
+        user.AttachExternalAccount(externalAccount);
         
-        Assert.Equal(1, user.ExternalNetworkAccounts.Count);
-        Assert.Equal(externalAccount, user.ExternalNetworkAccounts.First());
+        Assert.Equal(1, user.ExternalAccounts.Count);
+        Assert.Equal(externalAccount, user.ExternalAccounts.First());
     }
     
     [Fact]
@@ -22,23 +22,23 @@ public class AttachExternalAccountTests
     {
         var user = new UserBuilder().WithActiveStatus().Build();
 
-        var externalAccount = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalNetwork.Google);
-        user.AttachNetwork(externalAccount);
-        user.AttachNetwork(externalAccount);
+        var externalAccount = new ExternalAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalAccountProvider.Google);
+        user.AttachExternalAccount(externalAccount);
+        user.AttachExternalAccount(externalAccount);
         
-        Assert.Equal(1, user.ExternalNetworkAccounts.Count);
-        Assert.Equal(externalAccount, user.ExternalNetworkAccounts.First());
+        Assert.Equal(1, user.ExternalAccounts.Count);
+        Assert.Equal(externalAccount, user.ExternalAccounts.First());
     }
     
     [Fact]
     public void AttachExternalAccountWithInactiveStatus()
     {
         var user = new UserBuilder().Build();
-        var externalAccount = new ExternalNetworkAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalNetwork.Google);
+        var externalAccount = new ExternalAccount(UserTestsHelper.DefaultUserId,"externalUserId", ExternalAccountProvider.Google);
 
         Assert.Throws<DomainException>(() =>
         {
-            user.AttachNetwork(externalAccount);
+            user.AttachExternalAccount(externalAccount);
         });
     }
 }

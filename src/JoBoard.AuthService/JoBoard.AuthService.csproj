@@ -17,11 +17,4 @@
       <ProjectReference Include="..\JoBoard.AuthService.Infrastructure\JoBoard.AuthService.Infrastructure.csproj" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Content Include="..\..\appsettings.json">
-        <Link>appsettings.json</Link>
-        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-      </Content>
-    </ItemGroup>
-
 </Project>

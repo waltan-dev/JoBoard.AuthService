@@ -21,7 +21,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\JoBoard.AuthService.Infrastructure\JoBoard.AuthService.Infrastructure.csproj" />
+      <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj" />
     </ItemGroup>
 
 </Project>

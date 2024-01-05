@@ -8,11 +8,13 @@ services:
       dockerfile: src/JoBoard.AuthService/Dockerfile
     ports:
       - "8080:5000"
+    environment:
+      ConnectionStrings__DefaultConnection: "Host=localhost;Port=5432;Database=auth-service;Username=auth-service-user;Password=auth-service-password"
   
   auth-service-db:
     image: postgres:latest
     ports:
-      - "54321:5432" # only for local development and ability to connect from host
+      - "54321:5432" # 54321 port is only for local development and ability to connect from host, e.g. pgAdmin
     environment:
       POSTGRES_USER: auth-service-user
       POSTGRES_PASSWORD: auth-service-password
