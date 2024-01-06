@@ -1,4 +1,5 @@
 
+Для интеграционных тестов используется отдельная тестовая БД, запускаемая через docker.
 
 ### Anonymous Use Cases:
 1) Register new user by email and password

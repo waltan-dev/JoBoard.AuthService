@@ -1,5 +1,5 @@
-﻿using System.Net;
-using JoBoard.AuthService.Application.Commands.Register.ByEmail;
+﻿using JoBoard.AuthService.Application.Commands.Register.ByEmail;
+using JoBoard.AuthService.Domain.Exceptions;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 
@@ -19,7 +19,14 @@ public class AccountV1Controller : ControllerBase
     [HttpPost("register")]
     public async Task<IActionResult> Register(RegisterByEmailCommand command, CancellationToken ct)
     {
-        await _mediator.Send(command, ct);
-        return StatusCode(StatusCodes.Status201Created);
+        try
+        {
+            await _mediator.Send(command, ct);
+            return StatusCode(StatusCodes.Status201Created);
+        }
+        catch (DomainException ex)
+        {
+            return new ConflictObjectResult(new { message = ex.Message });
+        }
     }
 }

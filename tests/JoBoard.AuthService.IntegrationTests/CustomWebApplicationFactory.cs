@@ -33,12 +33,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
         builder.UseEnvironment("Development");
         var host = base.CreateHost(builder);
 
-        InitDatabase(host.Services);
+        ResetDatabase(host.Services);
 
         return host;
     }
     
-    private static void InitDatabase(IServiceProvider serviceProvider)
+    private static void ResetDatabase(IServiceProvider serviceProvider)
     {
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();

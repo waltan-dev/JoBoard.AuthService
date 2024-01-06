@@ -3,22 +3,20 @@ using System.Net.Mime;
 using JoBoard.AuthService.Application.Commands.Register.ByEmail;
 using Microsoft.AspNetCore.Http;
 
-namespace JoBoard.AuthService.IntegrationTests.API.Controllers;
+namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
 
-public class AccountV1ControllerTests : IClassFixture<CustomWebApplicationFactory>
+public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
 {
-    private readonly CustomWebApplicationFactory _factory;
-
-    public AccountV1ControllerTests(CustomWebApplicationFactory factory)
+    private readonly HttpClient _httpClient; // one per fact
+    
+    public RegisterByEmailTests(CustomWebApplicationFactory factory) // SetUp
     {
-        _factory = factory;
+        _httpClient = factory.CreateClient();
     }
     
     [Fact]
     public async Task Register()
     {
-        var client = _factory.CreateClient();
-
         var request = new RegisterByEmailCommand
         {
             FirstName = "Test",
@@ -27,7 +25,7 @@ public class AccountV1ControllerTests : IClassFixture<CustomWebApplicationFactor
             Password = "password",
             Role = "Hirer"
         };
-        var response = await client.PostAsJsonAsync("api/v1/account/register", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         var responseBody = await response.Content.ReadAsStringAsync();
         var responseContentType = response.Content.Headers.ContentType?.MediaType;
         
@@ -39,8 +37,6 @@ public class AccountV1ControllerTests : IClassFixture<CustomWebApplicationFactor
     [Fact]
     public async Task RegisterWithExistingEmail()
     {
-        var client = _factory.CreateClient();
-
         var request = new RegisterByEmailCommand
         {
             FirstName = "Test",
@@ -49,7 +45,7 @@ public class AccountV1ControllerTests : IClassFixture<CustomWebApplicationFactor
             Password = "password",
             Role = "Hirer"
         };
-        var response = await client.PostAsJsonAsync("api/v1/account/register", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         var responseBody = await response.Content.ReadAsStringAsync();
         var responseContentType = response.Content.Headers.ContentType?.MediaType;
         
@@ -63,13 +59,29 @@ public class AccountV1ControllerTests : IClassFixture<CustomWebApplicationFactor
     {
         // TODO implement request validation and response
         
-        var client = _factory.CreateClient();
-
         var request = new RegisterByEmailCommand
         {
             FirstName = "", LastName = "", Email = "", Password = "", Role = ""
         };
-        var response = await client.PostAsJsonAsync("api/v1/account/register", request);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
+        var responseBody = await response.Content.ReadAsStringAsync();
+        var responseContentType = response.Content.Headers.ContentType?.MediaType;
+        
+        Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
+        Assert.NotEmpty(responseBody);
+        Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
+    }
+    
+    [Fact]
+    public async Task RegisterWithInvalidFields()
+    {
+        // TODO implement request validation and response
+        
+        var request = new RegisterByEmailCommand
+        {
+            FirstName = "Test", LastName = "Test", Email = "invalid-email", Password = "1", Role = "invalid-role"
+        };
+        var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         var responseBody = await response.Content.ReadAsStringAsync();
         var responseContentType = response.Content.Headers.ContentType?.MediaType;
         
