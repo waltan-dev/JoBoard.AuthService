@@ -1,8 +1,21 @@
+using JoBoard.AuthService.Application;
+using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Infrastructure;
+using JoBoard.AuthService.Infrastructure.Data;
+using JoBoard.AuthService.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+
+// add services
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<IIdentityService, IdentityService>();
+builder.Services.AddDatabase(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddApplication();
 
 var app = builder.Build();
 
@@ -18,3 +31,5 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+
+public partial class Program {}

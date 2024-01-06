@@ -24,4 +24,11 @@
       <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <None Remove="appsettings.json" />
+      <Content Include="appsettings.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
+    </ItemGroup>
+
 </Project>

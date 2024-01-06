@@ -1,0 +1,30 @@
+﻿version: "3.8"
+
+services:
+  auth-service:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:5000"
+    environment:
+      # localhost:5432 - address is in the internal docker network
+      ConnectionStrings__DefaultConnection: "Host=auth-service-db;Port=5432;Database=auth-service;Username=auth-service-user;Password=auth-service-password"
+    depends_on: 
+      - auth-service-db
+  
+  auth-service-db:
+    image: postgres:latest
+    ports:
+      - "54321:5432" # 54321 port is only for local development and ability to connect from host, e.g. pgAdmin
+                     # 5432 port is in the internal docker network
+    environment:
+      POSTGRES_USER: auth-service-user
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: auth-service
+    command: "-c log_statement=all"
+    volumes:
+      - auth-service-db:/var/lib/postgresql/data
+    
+volumes:
+  auth-service-db:

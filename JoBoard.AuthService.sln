@@ -18,15 +18,20 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{506007
 	ProjectSection(SolutionItems) = preProject
 		README.md = README.md
 		.gitignore = .gitignore
-		docker-compose.yml = docker-compose.yml
+		docker-compose.Development.yml = docker-compose.Development.yml
 		.dockerignore = .dockerignore
+		docker-compose.Testing.yml = docker-compose.Testing.yml
+		docker-entrypoint.RunMigrator.sh = docker-entrypoint.RunMigrator.sh
+		Dockerfile = Dockerfile
+		Makefile = Makefile
+		wait-for-it.sh = wait-for-it.sh
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Domain.UnitTests", "tests\JoBoard.AuthService.Domain.UnitTests\JoBoard.AuthService.Domain.UnitTests.csproj", "{B40FBE57-83D3-4A0D-A6F5-286271875EA1}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.UnitTests", "tests\JoBoard.AuthService.Infrastructure.UnitTests\JoBoard.AuthService.Infrastructure.UnitTests.csproj", "{ACA48C23-D481-45E1-843E-278EF511BF69}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.UnitTests", "tests\JoBoard.AuthService.UnitTests\JoBoard.AuthService.UnitTests.csproj", "{B40FBE57-83D3-4A0D-A6F5-286271875EA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Data", "src\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj", "{4D8FF32E-62DD-41C1-BBBB-E7A867971913}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.IntegrationTests", "tests\JoBoard.AuthService.IntegrationTests\JoBoard.AuthService.IntegrationTests.csproj", "{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -58,14 +63,14 @@ Global
 		{B40FBE57-83D3-4A0D-A6F5-286271875EA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B40FBE57-83D3-4A0D-A6F5-286271875EA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B40FBE57-83D3-4A0D-A6F5-286271875EA1}.Release|Any CPU.Build.0 = Release|Any CPU
-		{ACA48C23-D481-45E1-843E-278EF511BF69}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{ACA48C23-D481-45E1-843E-278EF511BF69}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{ACA48C23-D481-45E1-843E-278EF511BF69}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{ACA48C23-D481-45E1-843E-278EF511BF69}.Release|Any CPU.Build.0 = Release|Any CPU
 		{4D8FF32E-62DD-41C1-BBBB-E7A867971913}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4D8FF32E-62DD-41C1-BBBB-E7A867971913}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4D8FF32E-62DD-41C1-BBBB-E7A867971913}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{4D8FF32E-62DD-41C1-BBBB-E7A867971913}.Release|Any CPU.Build.0 = Release|Any CPU
+		{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{937C18AB-3858-48CD-88B5-235AAB1B78B9} = {5B78A882-52A1-42BA-B5D0-EB9688D70F27}
@@ -74,7 +79,7 @@ Global
 		{F85A174E-03CD-41ED-A26F-0C1DB7743514} = {5B78A882-52A1-42BA-B5D0-EB9688D70F27}
 		{5F3F3FA3-59D9-448A-9830-E2647A6EFDB1} = {5B78A882-52A1-42BA-B5D0-EB9688D70F27}
 		{B40FBE57-83D3-4A0D-A6F5-286271875EA1} = {A8B9121C-E3A7-4AD3-93A9-3D5D98DF6F01}
-		{ACA48C23-D481-45E1-843E-278EF511BF69} = {A8B9121C-E3A7-4AD3-93A9-3D5D98DF6F01}
 		{4D8FF32E-62DD-41C1-BBBB-E7A867971913} = {5B78A882-52A1-42BA-B5D0-EB9688D70F27}
+		{39EABE58-F5E4-4547-B6B9-1994E9C7AE14} = {A8B9121C-E3A7-4AD3-93A9-3D5D98DF6F01}
 	EndGlobalSection
 EndGlobal
