@@ -6,10 +6,11 @@ using JoBoard.AuthService.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddControllers(options =>
-{
-    options.ModelBinderProviders.Insert(0, new TrimStringModelBinderProvider());
-});
+builder.Services.AddControllers()
+    .AddJsonOptions(options =>
+    {
+        options.JsonSerializerOptions.Converters.Insert(0, new TrimStringJsonConverter());
+    });
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();

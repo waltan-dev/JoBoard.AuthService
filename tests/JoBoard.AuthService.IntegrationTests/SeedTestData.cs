@@ -6,6 +6,7 @@ namespace JoBoard.AuthService.IntegrationTests;
 
 public static class SeedTestData
 {
+    // registered by email and password
     public static readonly User User1Hirer = new(
         userId: UserId.Generate(),
         fullName: new FullName("Test", "Hirer"),
@@ -14,6 +15,7 @@ public static class SeedTestData
         passwordHash: "10000.uccK9GykTGkF/hCHyd9KNA==.BbMWJJzz6GlfpcKdmPVJaryNiNiev8kD66fpc2NrzPg=", // passwordHasher.Hash("password"),
         registerConfirmToken: new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(24))); 
     
+    // registered by external account
     public static readonly User User2Worker = new(
         userId: UserId.Generate(),
         fullName: new FullName("Test", "Worker"),

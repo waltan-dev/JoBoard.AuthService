@@ -21,9 +21,9 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
         {
             FirstName = "Test",
             LastName = "Test",
-            Email = "test@gmail.com",
+            Email = " test@gmail.com ",
             Password = "password",
-            Role = "Hirer"
+            Role = " Hirer "
         };
         var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         var responseBody = await response.Content.ReadAsStringAsync();
