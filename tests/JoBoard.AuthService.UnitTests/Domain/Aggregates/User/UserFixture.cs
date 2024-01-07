@@ -2,7 +2,7 @@
 
 namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
 
-public static class UserTestsHelper
+public static class UserFixture
 {
     public static readonly UserId DefaultUserId = UserId.Generate();
     public static readonly FullName DefaultFullName = new("Ivan", "Ivanov");
@@ -20,5 +20,10 @@ public static class UserTestsHelper
     public static ConfirmationToken CreateNewConfirmationToken()
     {
         return new ConfirmationToken("new-token", DateTime.UtcNow.AddHours(TokenExpiresInHours));
+    }
+    
+    public static ConfirmationToken CreateExpiredConfirmationToken()
+    {
+        return new ConfirmationToken("expired-token", DateTime.UtcNow.AddHours(-1));
     }
 }

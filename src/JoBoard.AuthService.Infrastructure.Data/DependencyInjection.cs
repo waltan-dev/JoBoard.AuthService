@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
@@ -9,9 +10,10 @@ namespace JoBoard.AuthService.Infrastructure.Data;
 
 public static class DependencyInjection
 {
-    public static IServiceCollection AddDatabase(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection AddDatabase(this IServiceCollection services, string connectionString)
     {
-        var connectionString = configuration.GetConnectionString("DefaultConnection");
+        Guard.IsNotNullOrWhiteSpace(connectionString);
+        
         services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connectionString));
 
         services.AddScoped<IUserRepository, UserRepository>();

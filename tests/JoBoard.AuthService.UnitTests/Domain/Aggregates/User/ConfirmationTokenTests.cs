@@ -49,10 +49,9 @@ public class ConfirmationTokenTests
     public void VerifyExpired()
     {
         var value = Guid.NewGuid().ToString();
-        var newToken = new ConfirmationToken(value, DateTime.UtcNow.AddHours(1));
-
-        var futureTime = DateTime.UtcNow.AddHours(2);
-        var isValid = newToken.Verify(value, dateTimeNow: futureTime);
+        var expiredConfirmationToken = UserFixture.CreateExpiredConfirmationToken();
+        
+        var isValid = expiredConfirmationToken.Verify(value);
         
         Assert.False(isValid);
     }

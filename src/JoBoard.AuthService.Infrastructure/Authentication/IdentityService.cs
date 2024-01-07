@@ -1,8 +1,9 @@
 ﻿using System.Security.Claims;
 using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
+using Microsoft.AspNetCore.Http;
 
-namespace JoBoard.AuthService.Services;
+namespace JoBoard.AuthService.Infrastructure.Authentication;
 
 public class IdentityService : IIdentityService
 {
@@ -15,7 +16,8 @@ public class IdentityService : IIdentityService
     
     public UserId GetUserId()
     {
-        string userId = _httpContextAccessor.HttpContext!.User.FindFirstValue(ClaimTypes.NameIdentifier);
-        return new UserId(Guid.Parse(userId));
+        string? userIdStr = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+        _ = Guid.TryParse(userIdStr, out Guid userIdGuid);
+        return new UserId(userIdGuid);
     }
 }

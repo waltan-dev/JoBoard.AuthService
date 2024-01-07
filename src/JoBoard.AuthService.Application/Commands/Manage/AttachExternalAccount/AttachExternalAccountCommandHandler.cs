@@ -25,6 +25,8 @@ public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExterna
     
     public async Task Handle(AttachExternalAccountCommand request, CancellationToken ct)
     {
+        await _unitOfWork.StartTransactionAsync(ct);
+        
         var externalAccount = new ExternalAccount(request.ExternalUserId, request.ExternalAccountProvider);
         await CheckIfAlreadyExistsAsync(externalAccount, ct);
         
@@ -35,7 +37,7 @@ public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExterna
         user.AttachExternalAccount(externalAccount);
         
         await _userRepository.UpdateAsync(user, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.CommitAsync(ct);
     }
 
     private async Task CheckIfAlreadyExistsAsync(ExternalAccount externalAccount, CancellationToken ct)

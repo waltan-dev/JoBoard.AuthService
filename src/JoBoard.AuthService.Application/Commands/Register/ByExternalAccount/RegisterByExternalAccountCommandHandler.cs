@@ -24,6 +24,8 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
     
     public async Task Handle(RegisterByExternalAccountCommand request, CancellationToken ct)
     {
+        await _unitOfWork.StartTransactionAsync(ct);
+        
         var externalAccount = new ExternalAccount(request.ExternalUserId, request.ExternalAccountProvider);
         var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount, ct);
         if (existingUser != null) // user is already registered => return auth info 
@@ -44,7 +46,7 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
             registerConfirmToken: _tokenizer.Generate());
 
         await _userRepository.AddAsync(newUser, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.CommitAsync(ct);
         
         // TODO send confirmation email
     }

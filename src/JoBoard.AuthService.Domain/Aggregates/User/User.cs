@@ -14,7 +14,7 @@ public class User : Entity<UserId>, IAggregateRoot
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
     public string? PasswordHash { get; private set; }
-    public ConfirmationToken RegisterConfirmToken { get; private set; }
+    public ConfirmationToken? RegisterConfirmToken { get; private set; }
     public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
     private ICollection<ExternalAccount> _externalAccounts { get; }
     public IReadOnlyCollection<ExternalAccount> ExternalAccounts 
@@ -65,16 +65,14 @@ public class User : Entity<UserId>, IAggregateRoot
         _externalAccounts = new List<ExternalAccount>() { externalAccount };
     }
     
-    public void ConfirmEmail(string token, DateTime? dateTimeNow = null)
+    public void ConfirmEmail(string token)
     {
         Guard.IsNotNullOrWhiteSpace(token);
-        
-        dateTimeNow ??= DateTime.UtcNow;
         
         if(EmailConfirmed)
             return;
         
-        if(RegisterConfirmToken?.Verify(token, dateTimeNow) is null or false)
+        if(RegisterConfirmToken?.Verify(token) is null or false)
             throw new DomainException("Invalid token");
         
         EmailConfirmed = true;
@@ -98,31 +96,27 @@ public class User : Entity<UserId>, IAggregateRoot
         _externalAccounts.Add(externalAccount);
     }
 
-    public void RequestPasswordReset(ConfirmationToken newToken, DateTime? dateTimeNow = null)
+    public void RequestPasswordReset(ConfirmationToken newToken)
     {
         CheckStatus();
         
-        dateTimeNow ??= DateTime.UtcNow;
-        
-        if (ResetPasswordConfirmToken != null && ResetPasswordConfirmToken.Expiration > dateTimeNow)
+        if (ResetPasswordConfirmToken != null && ResetPasswordConfirmToken.Expiration > DateTime.UtcNow)
             throw new DomainException("Password reset has been requested already");
         
         ResetPasswordConfirmToken = newToken;
     }
 
-    public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher, DateTime? dateTimeNow = null)
+    public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher)
     {
         CheckStatus();
         
         Guard.IsNotNullOrWhiteSpace(token);
         Guard.IsNotNullOrWhiteSpace(newPassword);
         
-        dateTimeNow ??= DateTime.UtcNow;
-        
-        if (dateTimeNow > ResetPasswordConfirmToken?.Expiration)
+        if (DateTime.UtcNow > ResetPasswordConfirmToken?.Expiration)
             throw new DomainException("Confirmation token is expired");
 
-        if(ResetPasswordConfirmToken?.Verify(token, dateTimeNow) is null or false)
+        if(ResetPasswordConfirmToken?.Verify(token) is null or false)
             throw new DomainException("Invalid token");
 
         PasswordHash = passwordHasher.Hash(newPassword);
@@ -160,17 +154,16 @@ public class User : Entity<UserId>, IAggregateRoot
         NewEmailConfirmationToken = confirmationToken;
     }
 
-    public void ChangeEmail(string token, DateTime? dateTimeNow = null)
+    public void ChangeEmail(string token)
     {
         CheckStatus();
         
         Guard.IsNotNullOrWhiteSpace(token);
-        dateTimeNow ??= DateTime.UtcNow;
 
         if (NewEmailConfirmationToken == null || NewEmail == null)
             throw new DomainException("Email change has not been requested");
 
-        if (NewEmailConfirmationToken.Verify(token, dateTimeNow) == false)
+        if (NewEmailConfirmationToken.Verify(token) == false)
             throw new DomainException("Invalid confirmation token");
 
         Email = NewEmail;

@@ -25,6 +25,8 @@ public class DeactivateAccountCommandHandler : IRequestHandler<DeactivateAccount
     
     public async Task Handle(DeactivateAccountCommand request, CancellationToken ct)
     {
+        await _unitOfWork.StartTransactionAsync(ct);
+        
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
             throw new DomainException("User not found");
@@ -32,6 +34,6 @@ public class DeactivateAccountCommandHandler : IRequestHandler<DeactivateAccount
         user.Deactivate();
 
         await _userRepository.UpdateAsync(user, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.CommitAsync(ct);
     }
 }

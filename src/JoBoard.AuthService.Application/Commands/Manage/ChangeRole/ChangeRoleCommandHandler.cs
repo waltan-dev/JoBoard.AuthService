@@ -20,6 +20,8 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand>
     
     public async Task Handle(ChangeRoleCommand request, CancellationToken ct)
     {
+        await _unitOfWork.StartTransactionAsync(ct);
+        
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
             throw new DomainException("User not found");
@@ -27,6 +29,6 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand>
         user.ChangeRole(Enumeration.FromDisplayName<UserRole>(request.NewRole));
 
         await _userRepository.UpdateAsync(user, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.CommitAsync(ct);
     }
 }

@@ -1,6 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Services;
-using Microsoft.Extensions.Options;
 
 namespace JoBoard.AuthService.Infrastructure.Authentication;
 
@@ -8,9 +7,9 @@ public class Tokenizer : ITokenizer
 {
     private readonly ConfirmationTokenConfig _config;
 
-    public Tokenizer(IOptions<ConfirmationTokenConfig> options)
+    public Tokenizer(ConfirmationTokenConfig config)
     {
-        _config = options.Value;
+        _config = config;
     }
     
     public ConfirmationToken Generate(int? expiresInHours = null)

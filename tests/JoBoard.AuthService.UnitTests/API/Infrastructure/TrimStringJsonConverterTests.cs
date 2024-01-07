@@ -1,8 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
-using System.Text.Unicode;
-using JoBoard.AuthService.Infrastructure;
+using JoBoard.AuthService.Infrastructure.Json;
 
 namespace JoBoard.AuthService.UnitTests.API.Infrastructure;
 

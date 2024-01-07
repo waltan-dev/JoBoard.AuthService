@@ -10,12 +10,12 @@ public class UserRegistrationTests
     {
         var newUser = new UserBuilder().Build();
 
-        Assert.Equal(UserTestsHelper.DefaultUserId, newUser.Id);
-        Assert.Equal(UserTestsHelper.DefaultFullName, newUser.FullName);
-        Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
-        Assert.Equal(UserTestsHelper.DefaultUserRole, newUser.Role);
-        Assert.Equal(UserTestsHelper.DefaultPasswordHash, newUser.PasswordHash);
-        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.RegisterConfirmToken);
+        Assert.Equal(UserFixture.DefaultUserId, newUser.Id);
+        Assert.Equal(UserFixture.DefaultFullName, newUser.FullName);
+        Assert.Equal(UserFixture.DefaultEmail, newUser.Email);
+        Assert.Equal(UserFixture.DefaultUserRole, newUser.Role);
+        Assert.Equal(UserFixture.DefaultPasswordHash, newUser.PasswordHash);
+        Assert.Equal(UserFixture.DefaultConfirmationToken, newUser.RegisterConfirmToken);
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
@@ -35,12 +35,12 @@ public class UserRegistrationTests
     {
         var newUser = new UserBuilder().WithExternalAccount().Build();
 
-        Assert.Equal(UserTestsHelper.DefaultUserId, newUser.Id);
-        Assert.Equal(UserTestsHelper.DefaultFullName, newUser.FullName);
-        Assert.Equal(UserTestsHelper.DefaultEmail, newUser.Email);
-        Assert.Equal(UserTestsHelper.DefaultUserRole, newUser.Role);
-        Assert.Equal(UserTestsHelper.DefaultConfirmationToken, newUser.RegisterConfirmToken);
-        Assert.Equal(UserTestsHelper.DefaultExternalAccount, newUser.ExternalAccounts.First());
+        Assert.Equal(UserFixture.DefaultUserId, newUser.Id);
+        Assert.Equal(UserFixture.DefaultFullName, newUser.FullName);
+        Assert.Equal(UserFixture.DefaultEmail, newUser.Email);
+        Assert.Equal(UserFixture.DefaultUserRole, newUser.Role);
+        Assert.Equal(UserFixture.DefaultConfirmationToken, newUser.RegisterConfirmToken);
+        Assert.Equal(UserFixture.DefaultExternalAccount, newUser.ExternalAccounts.First());
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
@@ -62,7 +62,7 @@ public class UserRegistrationTests
         var userBuilder = new UserBuilder();
         var user = userBuilder.Build();
 
-        user.ConfirmEmail(UserTestsHelper.DefaultConfirmationToken.Value);
+        user.ConfirmEmail(UserFixture.DefaultConfirmationToken.Value);
 
         Assert.Equal(UserStatus.Active, user.Status);
         Assert.True(user.EmailConfirmed);
@@ -82,13 +82,11 @@ public class UserRegistrationTests
     [Fact]
     public void ConfirmEmailWithExpiredToken()
     {
-        var userBuilder = new UserBuilder();
-        var user = userBuilder.Build();
+        var user = new UserBuilder().WithExpiredRegisterToken().Build();
 
         Assert.Throws<DomainException>(() =>
         {
-            var futureTime = DateTime.UtcNow.AddDays(2);
-            user.ConfirmEmail(UserTestsHelper.DefaultConfirmationToken.Value, dateTimeNow: futureTime);
+            user.ConfirmEmail(user.RegisterConfirmToken!.Value);
         });
     }
 }

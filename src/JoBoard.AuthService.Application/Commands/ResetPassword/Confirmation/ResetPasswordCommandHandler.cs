@@ -24,6 +24,8 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand>
     
     public async Task Handle(ResetPasswordCommand request, CancellationToken ct)
     {
+        await _unitOfWork.StartTransactionAsync(ct);
+        
         var user = await _userRepository.FindByEmailAsync(new Email(request.Email), ct);
         if (user == null)
             throw new DomainException("User not found");
@@ -31,6 +33,6 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand>
         user.ResetPassword(request.ConfirmationToken, request.NewPassword, _passwordHasher);
 
         await _userRepository.UpdateAsync(user, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.CommitAsync(ct);
     }
 }

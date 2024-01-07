@@ -15,18 +15,16 @@ public class ConfirmationToken : ValueObject
     {
         Guard.IsNotNullOrWhiteSpace(value);
         Guard.IsNotDefault(expiration);
-        Guard.IsGreaterThan(expiration, DateTime.UtcNow);
         
         Value = value;
         Expiration = expiration;
     }
     
-    public bool Verify(string token, DateTime? dateTimeNow = null)
+    public bool Verify(string token)
     {
         Guard.IsNotNullOrWhiteSpace(token);
         
-        dateTimeNow ??= DateTime.UtcNow;
-        return Value == token && dateTimeNow <= Expiration;
+        return Value == token && DateTime.UtcNow <= Expiration;
     }
     
     protected override IEnumerable<object> GetEqualityComponents()

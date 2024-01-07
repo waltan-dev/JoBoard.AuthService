@@ -27,6 +27,8 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
     
     public async Task Handle(RegisterByEmailCommand request, CancellationToken ct)
     {
+        await _unitOfWork.StartTransactionAsync(ct);
+        
         var email = new Email(request.Email);
         var emailIsUnique = await _userRepository.CheckEmailUniquenessAsync(email, ct);
         if (emailIsUnique == false)
@@ -41,7 +43,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             registerConfirmToken: _tokenizer.Generate());
 
         await _userRepository.AddAsync(newUser, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.CommitAsync(ct);
         
         // TODO send confirmation email
     }

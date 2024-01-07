@@ -42,6 +42,6 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>
     {
         using var scope = serviceProvider.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-        SeedTestData.Reinitialize(dbContext);
+        SeedData.Reinitialize(dbContext);
     }
 }

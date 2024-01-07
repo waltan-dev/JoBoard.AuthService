@@ -15,7 +15,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
     }
     
     [Fact]
-    public async Task Register()
+    public async Task RegisterByEmail()
     {
         var request = new RegisterByEmailCommand
         {
@@ -41,7 +41,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
         {
             FirstName = "Test",
             LastName = "Test",
-            Email = SeedTestData.User1Hirer.Email.Value,
+            Email = RegisterFixtures.ExistingUserRegisteredByEmail.Email.Value,
             Password = "password",
             Role = "Hirer"
         };
@@ -67,7 +67,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
         var responseBody = await response.Content.ReadAsStringAsync();
         var responseContentType = response.Content.Headers.ContentType?.MediaType;
         
-        Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
+        Assert.Equal(StatusCodes.Status409Conflict, (int)response.StatusCode);
         Assert.NotEmpty(responseBody);
         Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
     }
@@ -85,7 +85,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
         var responseBody = await response.Content.ReadAsStringAsync();
         var responseContentType = response.Content.Headers.ContentType?.MediaType;
         
-        Assert.Equal(StatusCodes.Status400BadRequest, (int)response.StatusCode);
+        Assert.Equal(StatusCodes.Status409Conflict, (int)response.StatusCode);
         Assert.NotEmpty(responseBody);
         Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
     }

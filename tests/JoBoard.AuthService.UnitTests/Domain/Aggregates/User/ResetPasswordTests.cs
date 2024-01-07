@@ -12,7 +12,7 @@ public class ResetPasswordTests
     public void RequestResetPassword()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var confirmationToken = UserFixture.CreateNewConfirmationToken();
         
         user.RequestPasswordReset(confirmationToken);
         
@@ -24,7 +24,7 @@ public class ResetPasswordTests
     public void RequestResetPasswordTwice()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var confirmationToken = UserFixture.CreateNewConfirmationToken();
         user.RequestPasswordReset(confirmationToken);
 
         Assert.Throws<DomainException>(() =>
@@ -37,11 +37,11 @@ public class ResetPasswordTests
     public void RequestResetPasswordTwiceAfterExpiration()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var expiredConfirmationToken = UserFixture.CreateExpiredConfirmationToken();
+        user.RequestPasswordReset(expiredConfirmationToken);
+
+        var confirmationToken = UserFixture.CreateNewConfirmationToken();
         user.RequestPasswordReset(confirmationToken);
-        
-        var futureTime = DateTime.UtcNow.AddHours(UserTestsHelper.TokenExpiresInHours + 1);
-        user.RequestPasswordReset(confirmationToken, dateTimeNow: futureTime);
         
         Assert.Equal(confirmationToken, user.ResetPasswordConfirmToken);
     }
@@ -50,7 +50,7 @@ public class ResetPasswordTests
     public void RequestResetPasswordWithInactiveStatus()
     {
         var user = new UserBuilder().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var confirmationToken = UserFixture.CreateNewConfirmationToken();
 
         Assert.Throws<DomainException>(() =>
         {
@@ -63,7 +63,7 @@ public class ResetPasswordTests
     {
         var passwordHasherStub = GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var confirmationToken = UserFixture.CreateNewConfirmationToken();
         user.RequestPasswordReset(confirmationToken);
         
         user.ResetPassword(confirmationToken.Value, "someNewPassword", passwordHasherStub);
@@ -77,7 +77,7 @@ public class ResetPasswordTests
     {
         var passwordHasherStub = GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var confirmationToken = UserFixture.CreateNewConfirmationToken();
         user.RequestPasswordReset(confirmationToken);
         
         Assert.Throws<DomainException>(() =>
@@ -91,13 +91,12 @@ public class ResetPasswordTests
     {
         var passwordHasherStub = GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
-        user.RequestPasswordReset(confirmationToken);
+        var expiredConfirmationToken = UserFixture.CreateExpiredConfirmationToken();
+        user.RequestPasswordReset(expiredConfirmationToken);
         
         Assert.Throws<DomainException>(() =>
         {
-            var futureTime = DateTime.UtcNow.AddHours(UserTestsHelper.TokenExpiresInHours + 1);
-            user.ResetPassword(confirmationToken.Value, "newPasswordHash", passwordHasherStub, futureTime);
+            user.ResetPassword(expiredConfirmationToken.Value, "newPasswordHash", passwordHasherStub);
         });
     }
     
@@ -118,7 +117,7 @@ public class ResetPasswordTests
     {
         var passwordHasherStub = GetPasswordHasherStub();
         var user = new UserBuilder().Build();
-        var confirmationToken = UserTestsHelper.CreateNewConfirmationToken();
+        var confirmationToken = UserFixture.CreateNewConfirmationToken();
         
         Assert.Throws<DomainException>(() =>
         {

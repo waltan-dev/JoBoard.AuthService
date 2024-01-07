@@ -8,31 +8,37 @@ public class UserBuilder
     private bool _withExternalAccountOption = false;
     private bool _withActiveStatusOption = false;
     private bool _withAdminRoleOption = false;
+    private bool _withExpiredRegisterTokenOption = false;
     
     public User Build()
     {
         User user;
-        UserRole userRole = _withAdminRoleOption ? UserRole.Admin : UserTestsHelper.DefaultUserRole;
-        if(_withExternalAccountOption == false)
+        UserRole userRole = _withAdminRoleOption 
+            ? UserRole.Admin 
+            : UserFixture.DefaultUserRole;
+        var registerConfirmToken = _withExpiredRegisterTokenOption
+            ? UserFixture.CreateExpiredConfirmationToken()
+            : UserFixture.DefaultConfirmationToken;
+        if (_withExternalAccountOption == false)
             user = new User(
-                userId: UserTestsHelper.DefaultUserId,
-                fullName: UserTestsHelper.DefaultFullName,
-                email: UserTestsHelper.DefaultEmail,
+                userId: UserFixture.DefaultUserId,
+                fullName: UserFixture.DefaultFullName,
+                email: UserFixture.DefaultEmail,
                 role: userRole,
-                passwordHash: UserTestsHelper.DefaultPasswordHash,
-                registerConfirmToken: UserTestsHelper.DefaultConfirmationToken);
+                passwordHash: UserFixture.DefaultPasswordHash,
+                registerConfirmToken: registerConfirmToken);
         else
             user = new User(
-                userId: UserTestsHelper.DefaultUserId,
-                fullName: UserTestsHelper.DefaultFullName,
-                email: UserTestsHelper.DefaultEmail,
+                userId: UserFixture.DefaultUserId,
+                fullName: UserFixture.DefaultFullName,
+                email: UserFixture.DefaultEmail,
                 role: userRole,
-                externalAccount: UserTestsHelper.DefaultExternalAccount,
-                registerConfirmToken: UserTestsHelper.DefaultConfirmationToken);
+                externalAccount: UserFixture.DefaultExternalAccount,
+                registerConfirmToken: registerConfirmToken);
         
         if(_withActiveStatusOption)
-            user.ConfirmEmail(UserTestsHelper.DefaultConfirmationToken.Value);
-
+            user.ConfirmEmail(registerConfirmToken.Value);
+        
         return user;
     }
     
@@ -51,6 +57,12 @@ public class UserBuilder
     public UserBuilder WithAdminRole()
     {
         _withAdminRoleOption = true;
+        return this;
+    }
+    
+    public UserBuilder WithExpiredRegisterToken()
+    {
+        _withExpiredRegisterTokenOption = true;
         return this;
     }
 }

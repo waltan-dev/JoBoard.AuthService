@@ -24,6 +24,8 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
     
     public async Task Handle(RequestPasswordResetCommand request, CancellationToken ct)
     {
+        await _unitOfWork.StartTransactionAsync(ct);
+        
         var email = new Email(request.Email);
 
         var user = await _userRepository.FindByEmailAsync(email, ct);
@@ -34,7 +36,7 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         user.RequestPasswordReset(confirmationToken);
 
         await _userRepository.UpdateAsync(user, ct);
-        await _unitOfWork.SaveChangesAsync(ct);
+        await _unitOfWork.CommitAsync(ct);
         
         // TODO send email
     }
