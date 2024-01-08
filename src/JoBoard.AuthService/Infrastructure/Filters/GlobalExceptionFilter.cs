@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 
@@ -19,7 +20,7 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
         {
             _logger.LogWarning(context.Exception, context.Exception.Message);
             
-            var resultObject = new
+            var resultObject = new ConflictResponse
             {
                 Message = context.Exception.Message
             };
@@ -32,7 +33,7 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
         {
             _logger.LogError(context.Exception, context.Exception.Message);
             
-            var resultObject = new
+            var resultObject = new ErrorResponse
             {
                 ExceptionType = context.Exception.GetType().FullName,
                 Message = context.Exception.Message,

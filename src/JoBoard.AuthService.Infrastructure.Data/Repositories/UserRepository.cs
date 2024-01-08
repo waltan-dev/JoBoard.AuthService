@@ -60,7 +60,8 @@ public class UserRepository : IUserRepository
     public async Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct)
     {
         var emailExists = await _dbContext.Users
-            .AnyAsync(x => x.Email.Value == email.Value, ct);
+            .Where(x => x.Email.Value == email.Value)
+            .AnyAsync(ct);
         return emailExists == false;
     }
 }

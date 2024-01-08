@@ -1,10 +1,9 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.Commands.ConfirmEmail;
-using Microsoft.AspNetCore.Http;
 
 namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
 
-public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
+public class ConfirmEmailTests : BaseApiTest, IClassFixture<CustomWebApplicationFactory>
 {
     private readonly HttpClient _httpClient; // one per fact
     
@@ -21,12 +20,37 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
             UserId = RegisterFixtures.ExistingUserRegisteredByEmail.Id.Value,
             Token = RegisterFixtures.ExistingUserRegisteredByEmail.RegisterConfirmToken!.Value,
         };
-        var response = await _httpClient.PostAsJsonAsync("api/v1/account/confirm-email", request);
-        var responseBody = await response.Content.ReadAsStringAsync();
-        var responseContentType = response.Content.Headers.ContentType?.MediaType;
         
-        Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);
-        Assert.Equal(string.Empty, responseBody);
-        Assert.Null(responseContentType);
+        var response = await _httpClient.PostAsJsonAsync("api/v1/account/confirm-email", request);
+
+        await AssertSuccessEmptyResponseAsync(response);
+    }
+    
+    [Fact]
+    public async Task ConfirmEmailAfterExpiration()
+    {
+        var request = new ConfirmEmailCommand
+        {
+            UserId = RegisterFixtures.ExistingUserWithExpiredToken.Id.Value,
+            Token = RegisterFixtures.ExistingUserWithExpiredToken.RegisterConfirmToken!.Value,
+        };
+        
+        var response = await _httpClient.PostAsJsonAsync("api/v1/account/confirm-email", request);
+
+        await AssertConflictResponseAsync(response);
+    }
+    
+    [Fact]
+    public async Task ConfirmEmailWithInvalidToken()
+    {
+        var request = new ConfirmEmailCommand
+        {
+            UserId = RegisterFixtures.ExistingUserWithExpiredToken.Id.Value,
+            Token = "invalid-token",
+        };
+        
+        var response = await _httpClient.PostAsJsonAsync("api/v1/account/confirm-email", request);
+        
+        await AssertConflictResponseAsync(response);
     }
 }
