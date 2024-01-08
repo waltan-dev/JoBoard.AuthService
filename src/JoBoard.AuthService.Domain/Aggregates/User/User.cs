@@ -139,15 +139,14 @@ public class User : Entity<UserId>, IAggregateRoot
         PasswordHash = passwordHasher.Hash(newPassword);
     }
 
-    public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken, DateTime? dateTimeNow = null)
+    public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken)
     {
         CheckStatus();
         
         if(Email.Equals(newEmail))
             throw new DomainException("New email is the same as current");
-
-        dateTimeNow ??= DateTime.UtcNow;
-        if (NewEmailConfirmationToken != null && NewEmailConfirmationToken.Expiration > dateTimeNow)
+        
+        if (NewEmailConfirmationToken != null && NewEmailConfirmationToken.Expiration > DateTime.UtcNow)
             throw new DomainException("Email change has been requested already");
 
         NewEmail = newEmail;

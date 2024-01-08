@@ -19,8 +19,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Auth\" />
-      <Folder Include="Core\" />
+      <Folder Include="UseCases\" />
     </ItemGroup>
 
 </Project>

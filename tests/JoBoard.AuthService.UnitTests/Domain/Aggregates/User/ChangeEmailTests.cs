@@ -69,10 +69,9 @@ public class ChangeEmailTests
         var oldEmail = UserFixture.DefaultEmail;
         var user = new UserBuilder().WithActiveStatus().Build();
         var newEmail = CreateNewEmail();
-        user.RequestEmailChange(newEmail, confirmationToken);
+        user.RequestEmailChange(newEmail, UserFixture.CreateExpiredConfirmationToken());
         
-        var futureTime = DateTime.UtcNow.AddHours(UserFixture.TokenExpiresInHours + 1);
-        user.RequestEmailChange(newEmail, confirmationToken, futureTime);
+        user.RequestEmailChange(newEmail, confirmationToken);
         
         Assert.Equal(oldEmail, user.Email);
         Assert.Equal(newEmail, user.NewEmail);

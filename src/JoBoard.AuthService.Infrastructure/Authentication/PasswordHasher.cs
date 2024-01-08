@@ -1,5 +1,6 @@
 ﻿using System.Security.Cryptography;
 using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Infrastructure.Authentication;

@@ -12,7 +12,7 @@ public static class RegisterFixtures
         email: new Email("ExistingUserRegisteredByEmail@gmail.com"),
         role: UserRole.Hirer, 
         passwordHash: "10000.uccK9GykTGkF/hCHyd9KNA==.BbMWJJzz6GlfpcKdmPVJaryNiNiev8kD66fpc2NrzPg=", // passwordHasher.Hash("password"),
-        registerConfirmToken: new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(24))); 
+        registerConfirmToken: ConfirmationToken.Generate()); 
     
     public static readonly User ExistingUserRegisteredByExternalAccount = new(
         userId: UserId.Generate(),
@@ -20,7 +20,7 @@ public static class RegisterFixtures
         email: new Email("ExistingUserRegisteredByExternalAccount@gmail.com"),
         role: UserRole.Worker, 
         externalAccount: new ExternalAccount("1", ExternalAccountProvider.Google),
-        registerConfirmToken: new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(24))); 
+        registerConfirmToken: ConfirmationToken.Generate()); 
     
     public static readonly User ExistingUserWithExpiredToken = new(
         userId: UserId.Generate(),
@@ -28,5 +28,5 @@ public static class RegisterFixtures
         email: new Email("ExistingUserWithExpiredToken@gmail.com"),
         role: UserRole.Hirer, 
         passwordHash: "password-hash",
-        registerConfirmToken: new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(-1)));
+        registerConfirmToken: ConfirmationToken.Generate(-1));
 }

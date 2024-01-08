@@ -1,6 +1,6 @@
 using JoBoard.AuthService.Application;
+using JoBoard.AuthService.Application.Configs;
 using JoBoard.AuthService.Infrastructure;
-using JoBoard.AuthService.Infrastructure.Authentication;
 using JoBoard.AuthService.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,16 +16,11 @@ services.AddHttpContextAccessor();
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 services.AddDatabase(connectionString);
 
+services.AddInfrastructure();
+
 var confirmTokenConfig = configuration.GetRequiredSection(nameof(ConfirmationTokenConfig)).Get<ConfirmationTokenConfig>();
-services.AddInfrastructure(confirmTokenConfig);
+services.AddApplication(confirmTokenConfig);
 
-services.AddApplication();
+builder.Build().Run();
 
-var app = builder.Build();
-app.UseAuthorization();
-app.Run();
-
-namespace JoBoard.AuthService
-{
-    public partial class Program {}
-} // only for tests
+public partial class Program {} // only for tests

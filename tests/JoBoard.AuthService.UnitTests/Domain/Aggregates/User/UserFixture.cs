@@ -10,20 +10,17 @@ public static class UserFixture
     public static readonly UserRole DefaultUserRole = UserRole.Hirer;
     public static readonly string DefaultPasswordHash = "DefaultPasswordHash";
     public static readonly string DefaultPassword = "DefaultPassword";
-    public static readonly ConfirmationToken DefaultConfirmationToken = 
-        new(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(TokenExpiresInHours));
+    public static readonly ConfirmationToken DefaultConfirmationToken = ConfirmationToken.Generate();
     public static readonly ExternalAccount DefaultExternalAccount =
         new("externalUserId", ExternalAccountProvider.Google);
-
-    public const int TokenExpiresInHours = 24;
-
+    
     public static ConfirmationToken CreateNewConfirmationToken()
     {
-        return new ConfirmationToken("new-token", DateTime.UtcNow.AddHours(TokenExpiresInHours));
+        return ConfirmationToken.Generate();
     }
     
     public static ConfirmationToken CreateExpiredConfirmationToken()
     {
-        return new ConfirmationToken("expired-token", DateTime.UtcNow.AddHours(-1));
+        return ConfirmationToken.Generate(-1);
     }
 }

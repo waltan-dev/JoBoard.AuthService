@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.Auth.Register.ByEmail;
+using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 using Microsoft.AspNetCore.Http;
 
 namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
@@ -21,7 +21,7 @@ public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicat
             FirstName = "Test",
             LastName = "Test",
             Email = " test@gmail.com ",
-            Password = "password",
+            Password = "ValidPassword123$",
             Role = " Hirer "
         };
         
@@ -38,7 +38,7 @@ public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicat
             FirstName = "Test",
             LastName = "Test",
             Email = RegisterFixtures.ExistingUserRegisteredByEmail.Email.Value,
-            Password = "password",
+            Password = "ValidPassword123$",
             Role = "Hirer"
         };
         
@@ -57,7 +57,7 @@ public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicat
         
         var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         
-        await AssertValidationResponseAsync(response);
+        await AssertValidationResponseAsync(response, expectedErrors: 5);
     }
     
     [Fact]
@@ -66,11 +66,11 @@ public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicat
         // TODO implement request validation and response
         var request = new RegisterByEmailCommand
         {
-            FirstName = "Test", LastName = "Test", Email = "invalid-email", Password = "1", Role = "invalid-role"
+            FirstName = "  ", LastName = "  ", Email = "invalid-email", Password = "1", Role = "invalid-role"
         };
         
         var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         
-        await AssertValidationResponseAsync(response);
+        await AssertValidationResponseAsync(response, expectedErrors: 5);
     }
 }

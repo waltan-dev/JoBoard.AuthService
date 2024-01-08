@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Application.Core.Exceptions;
+﻿using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Mvc;

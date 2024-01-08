@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.Auth.ConfirmEmail;
+using JoBoard.AuthService.Application.UseCases.Auth.ConfirmEmail;
 
 namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
 
@@ -65,6 +65,6 @@ public class ConfirmEmailTests : BaseApiTest, IClassFixture<CustomWebApplication
         
         var response = await _httpClient.PostAsJsonAsync("api/v1/account/confirm-email", request);
         
-        await AssertValidationResponseAsync(response);
+        await AssertValidationResponseAsync(response, expectedErrors: 2);
     }
 }
