@@ -1,18 +1,17 @@
 ﻿using JoBoard.AuthService.Application.Configs;
 using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.SeedWork;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByExternalAccount;
+namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogleAccount;
 
-public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterByExternalAccountCommand, Unit>
+public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByGoogleAccountCommand, Unit>
 {
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RegisterByExternalAccountCommandHandler(
+    public RegisterByGoogleAccountCommandHandler(
         ConfirmationTokenConfig confirmationTokenConfig,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
@@ -22,11 +21,20 @@ public class RegisterByExternalAccountCommandHandler : IRequestHandler<RegisterB
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<Unit> Handle(RegisterByExternalAccountCommand request, CancellationToken ct)
+    public async Task<Unit> Handle(RegisterByGoogleAccountCommand request, CancellationToken ct)
     {
         await _unitOfWork.StartTransactionAsync(ct);
         
+        // https://developers.google.com/identity/sign-in/web/backend-auth
+        
+        // 1) TODO verify google id token
+        //request.GoogleIdToken
+        
         // TODO get external user id from google by auth code
+        
+        // 2) TODO check if the user is already in database - If so, establish an authenticated session for the user
+        // 3) TODO create new user with information in the ID token payload, and establish a session for the user. 
+        
         throw new Exception();
         
         // var externalAccount = new ExternalAccount(request.ExternalUserId, request.ExternalAccountProvider);
