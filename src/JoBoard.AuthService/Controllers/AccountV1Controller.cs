@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Application.Commands.ConfirmEmail;
-using JoBoard.AuthService.Application.Commands.Register.ByEmail;
+﻿using JoBoard.AuthService.Application.Auth.ConfirmEmail;
+using JoBoard.AuthService.Application.Auth.Register.ByEmail;
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 

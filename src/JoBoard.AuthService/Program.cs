@@ -25,4 +25,7 @@ var app = builder.Build();
 app.UseAuthorization();
 app.Run();
 
-public partial class Program {} // only for tests
+namespace JoBoard.AuthService
+{
+    public partial class Program {}
+} // only for tests

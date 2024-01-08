@@ -27,4 +27,15 @@ public class BaseApiTest
         Assert.NotEmpty(responseBody!.Message);
         Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
     }
+    
+    public async Task AssertValidationResponseAsync(HttpResponseMessage response)
+    {
+        var responseBody = await response.Content.ReadFromJsonAsync<ValidationResponse>();
+        var responseContentType = response.Content.Headers.ContentType?.MediaType;
+        
+        Assert.Equal(StatusCodes.Status422UnprocessableEntity, (int)response.StatusCode);
+        Assert.NotNull(responseBody?.Errors);
+        Assert.True(responseBody?.Errors.Any());
+        Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
+    }
 }

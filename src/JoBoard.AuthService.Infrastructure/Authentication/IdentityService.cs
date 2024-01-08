@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Core.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using Microsoft.AspNetCore.Http;
 

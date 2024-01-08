@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Core.Services;
 using JoBoard.AuthService.Domain.Services;
 using JoBoard.AuthService.Infrastructure.Authentication;
 using Microsoft.Extensions.DependencyInjection;

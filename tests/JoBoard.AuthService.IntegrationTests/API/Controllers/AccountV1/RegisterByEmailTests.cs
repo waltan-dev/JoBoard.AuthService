@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.Commands.Register.ByEmail;
+using JoBoard.AuthService.Application.Auth.Register.ByEmail;
 using Microsoft.AspNetCore.Http;
 
 namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
@@ -50,7 +50,6 @@ public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicat
     [Fact]
     public async Task RegisterWithEmpty()
     {
-        // TODO implement request validation and response
         var request = new RegisterByEmailCommand
         {
             FirstName = "", LastName = "", Email = "", Password = "", Role = ""
@@ -58,7 +57,7 @@ public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicat
         
         var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         
-        await AssertConflictResponseAsync(response);
+        await AssertValidationResponseAsync(response);
     }
     
     [Fact]
@@ -72,6 +71,6 @@ public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicat
         
         var response = await _httpClient.PostAsJsonAsync("api/v1/account/register", request);
         
-        await AssertConflictResponseAsync(response);
+        await AssertValidationResponseAsync(response);
     }
 }

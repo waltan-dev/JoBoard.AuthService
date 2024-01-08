@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Exceptions;
+﻿using JoBoard.AuthService.Application.Core.Exceptions;
+using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
@@ -16,14 +17,22 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
     
     public override void OnException(ExceptionContext context)
     {
-        if (context.Exception is DomainException or ArgumentException)
+        if (context.Exception is ValidationException ex)
         {
             _logger.LogWarning(context.Exception, context.Exception.Message);
             
-            var resultObject = new ConflictResponse
+            var resultObject = new ValidationResponse { Errors = ex.Errors };
+            context.Result = new JsonResult(resultObject)
             {
-                Message = context.Exception.Message
+                StatusCode = StatusCodes.Status422UnprocessableEntity
             };
+        }
+        else if (context.Exception is DomainException or ArgumentException)
+        {
+            // TODO implement Guards with DomainException and remove ArgumentException from here
+            _logger.LogWarning(context.Exception, context.Exception.Message);
+            
+            var resultObject = new ConflictResponse { Message = context.Exception.Message };
             context.Result = new JsonResult(resultObject)
             {
                 StatusCode = StatusCodes.Status409Conflict
