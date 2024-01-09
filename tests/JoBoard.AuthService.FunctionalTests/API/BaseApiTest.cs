@@ -3,7 +3,7 @@ using System.Net.Mime;
 using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Http;
 
-namespace JoBoard.AuthService.IntegrationTests.API;
+namespace JoBoard.AuthService.FunctionalTests.API;
 
 public class BaseApiTest
 {

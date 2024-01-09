@@ -31,7 +31,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.UnitTes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Data", "src\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj", "{4D8FF32E-62DD-41C1-BBBB-E7A867971913}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.IntegrationTests", "tests\JoBoard.AuthService.IntegrationTests\JoBoard.AuthService.IntegrationTests.csproj", "{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.FunctionalTests", "tests\JoBoard.AuthService.FunctionalTests\JoBoard.AuthService.FunctionalTests.csproj", "{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

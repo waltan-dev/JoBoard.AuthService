@@ -2,7 +2,7 @@
 using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Infrastructure.Data;
 
-namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
+namespace JoBoard.AuthService.FunctionalTests.API.Controllers.AccountV1;
 
 public static class RegisterFixtures
 {

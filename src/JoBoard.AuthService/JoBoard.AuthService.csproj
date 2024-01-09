@@ -30,8 +30,4 @@
       </Content>
     </ItemGroup>
     
-    <ItemGroup>
-        <InternalsVisibleTo Include="JoBoard.AuthService.IntegrationTests" />
-    </ItemGroup>
-    
 </Project>

@@ -1,7 +1,7 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Auth.ConfirmEmail;
 
-namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
+namespace JoBoard.AuthService.FunctionalTests.API.Controllers.AccountV1;
 
 public class ConfirmEmailTests : BaseApiTest, IClassFixture<CustomWebApplicationFactory>
 {

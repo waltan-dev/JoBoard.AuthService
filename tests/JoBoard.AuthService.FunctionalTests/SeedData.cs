@@ -1,8 +1,8 @@
-﻿using JoBoard.AuthService.Infrastructure.Data;
-using JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
+﻿using JoBoard.AuthService.FunctionalTests.API.Controllers.AccountV1;
+using JoBoard.AuthService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 
-namespace JoBoard.AuthService.IntegrationTests;
+namespace JoBoard.AuthService.FunctionalTests;
 
 public static class SeedData
 {

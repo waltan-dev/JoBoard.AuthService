@@ -8,7 +8,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Hosting;
 
-namespace JoBoard.AuthService.IntegrationTests;
+namespace JoBoard.AuthService.FunctionalTests;
 
 // https://learn.microsoft.com/en-us/aspnet/core/test/integration-tests
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>

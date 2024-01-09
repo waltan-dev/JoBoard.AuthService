@@ -2,7 +2,7 @@
 using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 using Microsoft.AspNetCore.Http;
 
-namespace JoBoard.AuthService.IntegrationTests.API.Controllers.AccountV1;
+namespace JoBoard.AuthService.FunctionalTests.API.Controllers.AccountV1;
 
 public class RegisterByEmailTests : BaseApiTest, IClassFixture<CustomWebApplicationFactory>
 {
