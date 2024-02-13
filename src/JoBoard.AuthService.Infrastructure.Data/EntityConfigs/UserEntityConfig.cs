@@ -52,7 +52,7 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
             navBuilder.Property(y => y.Value)
                 .HasColumnName(nameof(User.RegisterConfirmToken));
             navBuilder.Property(y => y.Expiration)
-                .HasColumnName(nameof(User.RegisterConfirmToken)+nameof(User.RegisterConfirmToken.Expiration));
+                .HasColumnName(nameof(User.RegisterConfirmToken)+"Expiration");
         });
         
         // map ResetPasswordConfirmToken
@@ -61,16 +61,25 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
             navBuilder.Property(y => y.Value)
                 .HasColumnName(nameof(User.ResetPasswordConfirmToken));
             navBuilder.Property(y => y.Expiration)
-                .HasColumnName(nameof(User.ResetPasswordConfirmToken)+nameof(User.ResetPasswordConfirmToken.Expiration));
+                .HasColumnName(nameof(User.ResetPasswordConfirmToken)+"Expiration");
         });
         
-        // map NewEmailConfirmationToken
-        builder.OwnsOne(x => x.NewEmailConfirmationToken, navBuilder =>
+        // map ChangeEmailConfirmToken
+        builder.OwnsOne(x => x.ChangeEmailConfirmToken, navBuilder =>
         {
             navBuilder.Property(y => y.Value)
-                .HasColumnName(nameof(User.NewEmailConfirmationToken));
+                .HasColumnName(nameof(User.ChangeEmailConfirmToken));
             navBuilder.Property(y => y.Expiration)
-                .HasColumnName(nameof(User.NewEmailConfirmationToken)+nameof(User.NewEmailConfirmationToken.Expiration));
+                .HasColumnName(nameof(User.ChangeEmailConfirmToken)+"Expiration");
+        });
+        
+        // map AccountDeactivationConfirmToken
+        builder.OwnsOne(x => x.AccountDeactivationConfirmToken, navBuilder =>
+        {
+            navBuilder.Property(y => y.Value)
+                .HasColumnName(nameof(User.AccountDeactivationConfirmToken));
+            navBuilder.Property(y => y.Expiration)
+                .HasColumnName(nameof(User.AccountDeactivationConfirmToken)+"Expiration");
         });
         
         // map NewEmail

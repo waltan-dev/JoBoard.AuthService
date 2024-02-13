@@ -23,4 +23,22 @@ public static class ManageV1Routes
     public const string Base = "/api/v1/account/manage";
     
     public const string ChangePassword = $"{Base}/change-password";
+    
+    public const string RequestEmailChange = $"{Base}/request-email-change";
+    public const string ConfirmEmailChange = $"{Base}/confirm-email-change";
+    
+    public const string ChangeRole = $"{Base}/change-role";
+    
+    public const string RequestAccountDeactivation = $"{Base}/request-account-deactivation";
+    public const string ConfirmAccountDeactivation = $"{Base}/confirm-account-deactivation";
+}
+
+// DO NOT CHANGE PUBLIC CONTRACT
+public static class ManageExternalAccountV1Routes
+{
+    public const string Base = "/api/v1/account/manage/external";
+    
+    public const string AttachGoogleAccount = $"{Base}/attach-google";
+    
+    public const string DetachExternalAccount = $"{Base}/detach";
 }

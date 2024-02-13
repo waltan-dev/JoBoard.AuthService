@@ -52,20 +52,21 @@ public class UserRegistrationTests
         var fullName = new FullName("Ivan", "Ivanov");
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Worker;
-        var externalAcc = new ExternalAccount(GoogleFixtures.UserProfileForNewUser.Id, ExternalAccountProvider.Google);
+        var googleUserId = GoogleFixtures.UserProfileForNewUser.Id;
         
         var newUser = new AuthService.Domain.Aggregates.User.User(
             userId: userId,
             fullName: fullName,
             email: email,
             role: role, 
-            externalAccount: externalAcc);
+            googleUserId: googleUserId);
 
         Assert.Equal(userId, newUser.Id);
         Assert.Equal(fullName, newUser.FullName);
         Assert.Equal(email, newUser.Email);
         Assert.Equal(role, newUser.Role);
-        Assert.Equal(externalAcc, newUser.ExternalAccounts.First());
+        Assert.Equal(googleUserId, newUser.ExternalAccounts.First().ExternalUserId);
+        Assert.Equal(ExternalAccountProvider.Google, newUser.ExternalAccounts.First().Provider);
         
         Assert.Single(newUser.ExternalAccounts);
         Assert.Null(newUser.RegisterConfirmToken);

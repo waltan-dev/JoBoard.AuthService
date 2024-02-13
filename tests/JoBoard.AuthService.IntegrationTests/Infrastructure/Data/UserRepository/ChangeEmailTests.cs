@@ -25,7 +25,7 @@ public class ChangeEmailTests : BaseRepositoryTest
         var savedUser = await UserRepository.FindByIdAsync(DatabaseUserFixtures.ExistingActiveUser.Id);
         Assert.Equal(oldEmail, savedUser!.Email);
         Assert.Equal(newEmail, savedUser.NewEmail);
-        Assert.Equal(token, savedUser.NewEmailConfirmationToken);
+        Assert.Equal(token, savedUser.ChangeEmailConfirmToken);
     }
     
     [Fact]
@@ -39,7 +39,7 @@ public class ChangeEmailTests : BaseRepositoryTest
         user!.RequestEmailChange(newEmail, token);
         
         // Act
-        user.ChangeEmail(token.Value);
+        user.ConfirmEmailChange(token.Value);
         await UserRepository.UpdateAsync(user);
         await UnitOfWork.CommitAsync();
 
@@ -47,6 +47,6 @@ public class ChangeEmailTests : BaseRepositoryTest
         var savedUser = await UserRepository.FindByIdAsync(DatabaseUserFixtures.ExistingActiveUser.Id);
         Assert.Equal(newEmail, savedUser!.Email);
         Assert.Null(savedUser!.NewEmail);
-        Assert.Null(savedUser!.NewEmailConfirmationToken);
+        Assert.Null(savedUser!.ChangeEmailConfirmToken);
     }
 }

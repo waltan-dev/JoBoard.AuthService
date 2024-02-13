@@ -26,7 +26,7 @@ public class UserBuilder
                 fullName: new FullName("Ivan", "Ivanov"),
                 email: new Email("ivan@gmail.com"),
                 role: userRole,
-                externalAccount: new ExternalAccount(GoogleFixtures.UserProfileForNewUser.Id, ExternalAccountProvider.Google));
+                googleUserId: GoogleFixtures.UserProfileForNewUser.Id);
         else
             user = new User(
                 userId: UserId.Generate(),

@@ -1,31 +1,35 @@
-﻿using JoBoard.AuthService.Application.Common.Exceptions;
+﻿using JoBoard.AuthService.Application.Common.Configs;
+using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.UseCases.Manage.ChangeEmail.Confirmation;
+namespace JoBoard.AuthService.Application.UseCases.Manage.DeactivateAccount.Request;
 
-public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Unit>
+public class RequestAccountDeactivationCommandHandler : IRequestHandler<RequestAccountDeactivationCommand, Unit>
 {
+    private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public ChangeEmailCommandHandler(
+    public RequestAccountDeactivationCommandHandler(
+        ConfirmationTokenConfig confirmationTokenConfig,
         IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
-        IUserRepository userRepository,
+        IUserRepository userRepository, 
         IUnitOfWork unitOfWork)
     {
+        _confirmationTokenConfig = confirmationTokenConfig;
         _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<Unit> Handle(ChangeEmailCommand request, CancellationToken ct)
+    public async Task<Unit> Handle(RequestAccountDeactivationCommand request, CancellationToken ct)
     {
         await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
@@ -33,7 +37,8 @@ public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Uni
         if (user == null)
             throw new NotFoundException("User not found");
 
-        user.ChangeEmail(request.ConfirmationToken);
+        var token = ConfirmationToken.Generate(_confirmationTokenConfig.ExpiresInHours);
+        user.RequestAccountDeactivation(token);
 
         await _userRepository.UpdateAsync(user, ct);
         

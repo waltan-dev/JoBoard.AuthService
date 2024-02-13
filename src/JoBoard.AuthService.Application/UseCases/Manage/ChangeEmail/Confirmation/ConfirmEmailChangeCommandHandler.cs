@@ -1,20 +1,19 @@
 ﻿using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.UseCases.Manage.AttachExternalAccount;
+namespace JoBoard.AuthService.Application.UseCases.Manage.ChangeEmail.Confirmation;
 
-public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExternalAccountCommand, Unit>
+public class ConfirmEmailChangeCommandHandler : IRequestHandler<ConfirmEmailChangeCommand, Unit>
 {
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
-    public AttachExternalAccountCommandHandler(
+    public ConfirmEmailChangeCommandHandler(
         IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         IUserRepository userRepository,
@@ -26,31 +25,21 @@ public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExterna
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<Unit> Handle(AttachExternalAccountCommand request, CancellationToken ct)
+    public async Task<Unit> Handle(ConfirmEmailChangeCommand request, CancellationToken ct)
     {
         await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
-        
-        var externalAccount = new ExternalAccount(request.ExternalUserId, request.ExternalAccountProvider);
-        await CheckIfAlreadyExistsAsync(externalAccount, ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
             throw new NotFoundException("User not found");
-        
-        user.AttachExternalAccount(externalAccount);
-        
+
+        user.ConfirmEmailChange(request.ConfirmationToken);
+
         await _userRepository.UpdateAsync(user, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         return Unit.Value;
-    }
-
-    private async Task CheckIfAlreadyExistsAsync(ExternalAccount externalAccount, CancellationToken ct)
-    {
-        var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount, ct);
-        if (existingUser != null)
-            throw new DomainException("This external account is already in use");
     }
 }

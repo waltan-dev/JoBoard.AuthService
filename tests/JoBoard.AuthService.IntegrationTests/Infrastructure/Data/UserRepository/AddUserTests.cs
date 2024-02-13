@@ -27,7 +27,7 @@ public class AddUserTests : BaseRepositoryTest
         Assert.Equal(newUser.Status, savedUser.Status);
         Assert.Equal(newUser.FullName, savedUser.FullName);
         Assert.Equal(newUser.RegisterConfirmToken, savedUser.RegisterConfirmToken);
-        Assert.Equal(newUser.NewEmailConfirmationToken, savedUser.NewEmailConfirmationToken);
+        Assert.Equal(newUser.ChangeEmailConfirmToken, savedUser.ChangeEmailConfirmToken);
         Assert.Equal(newUser.ResetPasswordConfirmToken, savedUser.ResetPasswordConfirmToken);
         
         Assert.Equal(newUser.ExternalAccounts, savedUser.ExternalAccounts);
@@ -56,7 +56,7 @@ public class AddUserTests : BaseRepositoryTest
         Assert.Equal(newUser.Status, savedUser.Status);
         Assert.Equal(newUser.FullName, savedUser.FullName);
         Assert.Equal(newUser.RegisterConfirmToken, savedUser.RegisterConfirmToken);
-        Assert.Equal(newUser.NewEmailConfirmationToken, savedUser.NewEmailConfirmationToken);
+        Assert.Equal(newUser.ChangeEmailConfirmToken, savedUser.ChangeEmailConfirmToken);
         Assert.Equal(newUser.ResetPasswordConfirmToken, savedUser.ResetPasswordConfirmToken);
         Assert.Equal(newUser.ExternalAccounts, savedUser.ExternalAccounts);
     }

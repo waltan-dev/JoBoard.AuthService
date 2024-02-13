@@ -13,16 +13,19 @@ public class User : Entity, IAggregateRoot
     public DateTime RegisteredAt { get; init; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
+    public Email? NewEmail { get; private set; }
     public bool EmailConfirmed { get; private set; }
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
     public string? PasswordHash { get; private set; }
-    public ConfirmationToken? RegisterConfirmToken { get; private set; }
-    public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
+    
     private List<ExternalAccount> _externalAccounts;
     public IReadOnlyCollection<ExternalAccount> ExternalAccounts => _externalAccounts.AsReadOnly();
-    public Email? NewEmail { get; private set; }
-    public ConfirmationToken? NewEmailConfirmationToken { get; private set; }
+    
+    public ConfirmationToken? RegisterConfirmToken { get; private set; }
+    public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
+    public ConfirmationToken? ChangeEmailConfirmToken { get; private set; }
+    public ConfirmationToken? AccountDeactivationConfirmToken { get; private set; }
     
     private User() {} // only for ef core 
     
@@ -52,7 +55,7 @@ public class User : Entity, IAggregateRoot
     /// <summary>
     /// Register new user by google account
     /// </summary>
-    public User(UserId userId, FullName fullName, Email email, UserRole role, ExternalAccount externalAccount)
+    public User(UserId userId, FullName fullName, Email email, UserRole role, string googleUserId)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -64,7 +67,7 @@ public class User : Entity, IAggregateRoot
         EmailConfirmed = true;
         Role = role;
         Status = UserStatus.Active;
-        _externalAccounts = new List<ExternalAccount>() { externalAccount };
+        _externalAccounts = new List<ExternalAccount> { new(googleUserId, ExternalAccountProvider.Google) };
         
         AddDomainEvent(new UserRegisteredDomainEvent(this));
     }
@@ -113,6 +116,16 @@ public class User : Entity, IAggregateRoot
         
         _externalAccounts.Add(externalAccount);
     }
+    
+    public void DetachExternalAccount(ExternalAccount externalAccount)
+    {
+        ThrowIfBlockedOrDeactivated();
+        
+        if (ExternalAccounts.Contains(externalAccount) == false)
+            return;
+        
+        _externalAccounts.Remove(externalAccount);
+    }
 
     public void RequestPasswordReset(ConfirmationToken newToken)
     {
@@ -126,7 +139,7 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserRequestedPasswordResetDomainEvent(this));
     }
 
-    public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher)
+    public void ConfirmPasswordReset(string token, string newPassword, IPasswordHasher passwordHasher)
     {
         ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
@@ -169,31 +182,31 @@ public class User : Entity, IAggregateRoot
         if(Email.Equals(newEmail))
             throw new DomainException("New email is the same as current");
         
-        if (NewEmailConfirmationToken != null && NewEmailConfirmationToken.Expiration > DateTime.UtcNow)
+        if (ChangeEmailConfirmToken != null && ChangeEmailConfirmToken.Expiration > DateTime.UtcNow)
             throw new DomainException("Email change has been requested already");
 
         NewEmail = newEmail;
-        NewEmailConfirmationToken = confirmationToken;
+        ChangeEmailConfirmToken = confirmationToken;
         AddDomainEvent(new UserRequestedEmailChangeDomainEvent(this));
     }
 
-    public void ChangeEmail(string token)
+    public void ConfirmEmailChange(string token)
     {
         ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
         
         Guard.IsNotNullOrWhiteSpace(token);
 
-        if (NewEmailConfirmationToken == null || NewEmail == null)
+        if (ChangeEmailConfirmToken == null || NewEmail == null)
             throw new DomainException("Email change has not been requested");
 
-        if (NewEmailConfirmationToken.Verify(token) == false)
+        if (ChangeEmailConfirmToken.Verify(token) == false)
             throw new DomainException("Invalid confirmation token");
 
         Email = NewEmail;
         EmailConfirmed = true;
         NewEmail = null;
-        NewEmailConfirmationToken = null;
+        ChangeEmailConfirmToken = null;
         AddDomainEvent(new UserChangedEmailDomainEvent(this));
     }
 
@@ -209,11 +222,33 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserChangedRoleDomainEvent(this));
     }
 
-    public void Deactivate()
+    public void RequestAccountDeactivation(ConfirmationToken confirmationToken)
     {
+        ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
         
+        if (AccountDeactivationConfirmToken != null && AccountDeactivationConfirmToken.Expiration > DateTime.UtcNow)
+            throw new DomainException("Account deactivation has been requested already");
+        
+        AccountDeactivationConfirmToken = confirmationToken;
+        AddDomainEvent(new UserRequestedAccountDeactivationDomainEvent(this));
+    }
+
+    public void ConfirmAccountDeactivation(string token)
+    {
+        ThrowIfEmailIsNotConfirmed();
+        ThrowIfBlockedOrDeactivated();
+        
+        Guard.IsNotNullOrWhiteSpace(token);
+        
+        if (AccountDeactivationConfirmToken == null)
+            throw new DomainException("Account deactivation has not been requested");
+
+        if (AccountDeactivationConfirmToken.Verify(token) == false)
+            throw new DomainException("Invalid confirmation token");
+
         Status = UserStatus.Deactivated;
+        AccountDeactivationConfirmToken = null;
         AddDomainEvent(new UserDeactivatedDomainEvent(this));
     }
 

@@ -1,4 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Models;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
@@ -35,7 +35,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
         
         var googleUserProfile = await _googleAuthProvider.VerifyIdTokenAsync(request.GoogleIdToken);
         if (googleUserProfile == null)
-            throw new ValidationException("Google ID token isn't valid");
+            throw new ValidationException(nameof(request.GoogleIdToken),"Google ID token isn't valid");
         
         var externalAccount = new ExternalAccount(googleUserProfile.Id, ExternalAccountProvider.Google);
         var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount, ct);
@@ -58,7 +58,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
             fullName: new FullName(googleUserProfile.FirstName, googleUserProfile.LastName),
             email: email,
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
-            externalAccount: externalAccount);
+            googleUserId: googleUserProfile.Id);
         
         await _userRepository.AddAsync(newUser, ct);
         

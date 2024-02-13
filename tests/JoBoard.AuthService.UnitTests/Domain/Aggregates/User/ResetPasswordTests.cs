@@ -67,7 +67,7 @@ public class ResetPasswordTests
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         user.RequestPasswordReset(confirmationToken);
         
-        user.ResetPassword(confirmationToken.Value, "someNewPassword", passwordHasherStub);
+        user.ConfirmPasswordReset(confirmationToken.Value, "someNewPassword", passwordHasherStub);
         
         Assert.Equal(NewPasswordHash, user.PasswordHash);
         Assert.Null(user.ResetPasswordConfirmToken);
@@ -83,7 +83,7 @@ public class ResetPasswordTests
         
         Assert.Throws<DomainException>(() =>
         {
-            user.ResetPassword("invalid-token", "newPasswordHash", passwordHasherStub);
+            user.ConfirmPasswordReset("invalid-token", "newPasswordHash", passwordHasherStub);
         });
     }
     
@@ -97,7 +97,7 @@ public class ResetPasswordTests
         
         Assert.Throws<DomainException>(() =>
         {
-            user.ResetPassword(expiredConfirmationToken.Value, "newPasswordHash", passwordHasherStub);
+            user.ConfirmPasswordReset(expiredConfirmationToken.Value, "newPasswordHash", passwordHasherStub);
         });
     }
     
@@ -109,7 +109,7 @@ public class ResetPasswordTests
         
         Assert.Throws<DomainException>(() =>
         {
-            user.ResetPassword("invalid-token", "newPasswordHash", passwordHasherStub);
+            user.ConfirmPasswordReset("invalid-token", "newPasswordHash", passwordHasherStub);
         });
     }
     
@@ -123,7 +123,7 @@ public class ResetPasswordTests
         Assert.Throws<DomainException>(() =>
         {
             user.RequestPasswordReset(confirmationToken);
-            user.ResetPassword(confirmationToken.Value, "someNewPassword", passwordHasherStub);
+            user.ConfirmPasswordReset(confirmationToken.Value, "someNewPassword", passwordHasherStub);
         });
     }
     

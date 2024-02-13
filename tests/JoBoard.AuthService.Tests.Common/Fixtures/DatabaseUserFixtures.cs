@@ -45,7 +45,7 @@ public static class DatabaseUserFixtures
         fullName: new FullName(GoogleFixtures.UserProfileForExistingUser.FirstName, GoogleFixtures.UserProfileForExistingUser.LastName),
         email: new Email(GoogleFixtures.UserProfileForExistingUser.Email),
         role: UserRole.Worker, 
-        externalAccount: new ExternalAccount(GoogleFixtures.UserProfileForExistingUser.Id, ExternalAccountProvider.Google)); 
+        googleUserId: GoogleFixtures.UserProfileForExistingUser.Id); 
     
     public static readonly User ExistingUserWithExpiredToken = new(
         userId: UserId.Generate(),
