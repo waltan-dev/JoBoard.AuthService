@@ -3,7 +3,7 @@ using System.Security.Claims;
 using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Models;
 using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Application.UseCases.Auth.Login.CanLogin;
+using JoBoard.AuthService.Application.UseCases.Account.Login.CanLogin;
 using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Infrastructure.Auth.Models;
 using JoBoard.AuthService.Infrastructure.Auth.Services;

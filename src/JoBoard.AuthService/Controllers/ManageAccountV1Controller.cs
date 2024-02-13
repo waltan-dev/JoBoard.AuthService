@@ -1,9 +1,9 @@
-﻿using JoBoard.AuthService.Application.UseCases.Manage.ChangeEmail.Confirmation;
-using JoBoard.AuthService.Application.UseCases.Manage.ChangeEmail.Request;
-using JoBoard.AuthService.Application.UseCases.Manage.ChangePassword;
-using JoBoard.AuthService.Application.UseCases.Manage.ChangeRole;
-using JoBoard.AuthService.Application.UseCases.Manage.DeactivateAccount.Confirmation;
-using JoBoard.AuthService.Application.UseCases.Manage.DeactivateAccount.Request;
+﻿using JoBoard.AuthService.Application.UseCases.ManageAccount.ChangeEmail.Confirmation;
+using JoBoard.AuthService.Application.UseCases.ManageAccount.ChangeEmail.Request;
+using JoBoard.AuthService.Application.UseCases.ManageAccount.ChangePassword;
+using JoBoard.AuthService.Application.UseCases.ManageAccount.ChangeRole;
+using JoBoard.AuthService.Application.UseCases.ManageAccount.DeactivateAccount.Confirmation;
+using JoBoard.AuthService.Application.UseCases.ManageAccount.DeactivateAccount.Request;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

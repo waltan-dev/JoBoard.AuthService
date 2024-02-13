@@ -1,6 +1,6 @@
 ﻿using System.Net.Http.Headers;
 using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.Auth.Login.CanLoginByPassword;
+using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByPassword;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Models;
 using JoBoard.AuthService.Tests.Common.Fixtures;

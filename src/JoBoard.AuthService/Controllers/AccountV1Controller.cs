@@ -1,8 +1,8 @@
-﻿using JoBoard.AuthService.Application.UseCases.Auth.ConfirmEmail;
-using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
-using JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogle;
-using JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmation;
-using JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Request;
+﻿using JoBoard.AuthService.Application.UseCases.Account.ConfirmEmail;
+using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmail;
+using JoBoard.AuthService.Application.UseCases.Account.Register.ByGoogle;
+using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Confirmation;
+using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Request;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

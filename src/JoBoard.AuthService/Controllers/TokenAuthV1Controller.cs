@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Application.UseCases.Auth.Login.CanLoginByGoogle;
-using JoBoard.AuthService.Application.UseCases.Auth.Login.CanLoginByPassword;
+﻿using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByGoogle;
+using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByPassword;
 using JoBoard.AuthService.Infrastructure.Auth.Jwt;
 using JoBoard.AuthService.Models;
 using MediatR;

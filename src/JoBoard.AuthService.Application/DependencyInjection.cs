@@ -4,7 +4,7 @@ using FluentValidation;
 using JoBoard.AuthService.Application.Common.Behaviors;
 using JoBoard.AuthService.Application.Common.Configs;
 using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
+using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmail;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

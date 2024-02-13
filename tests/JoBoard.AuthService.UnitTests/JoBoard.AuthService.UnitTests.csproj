@@ -31,7 +31,10 @@
 
     <ItemGroup>
       <Folder Include="API\" />
-      <Folder Include="Application\" />
+      <Folder Include="Application\UseCases\Account\" />
+      <Folder Include="Application\UseCases\DomainEventHandlers\" />
+      <Folder Include="Application\UseCases\ManageAccount\" />
+      <Folder Include="Application\UseCases\ManageExternalAccount\" />
       <Folder Include="Domain\" />
       <Folder Include="Infrastructure\" />
     </ItemGroup>

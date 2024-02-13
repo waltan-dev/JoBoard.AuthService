@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.Manage.ChangePassword;
+using JoBoard.AuthService.Application.UseCases.ManageAccount.ChangePassword;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.ManageAccountV1Controller;

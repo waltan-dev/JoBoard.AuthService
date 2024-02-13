@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogle;
+using JoBoard.AuthService.Application.UseCases.Account.Register.ByGoogle;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AccountV1Controller;
