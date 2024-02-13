@@ -1,7 +1,6 @@
 ﻿using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 
 namespace JoBoard.AuthService.Infrastructure.Auth.Jwt;
 

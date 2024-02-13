@@ -1,5 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 
 namespace JoBoard.AuthService.Application.Common.Services;
 

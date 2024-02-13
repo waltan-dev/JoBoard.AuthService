@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

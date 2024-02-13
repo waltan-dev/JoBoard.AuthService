@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 using JoBoard.AuthService.Infrastructure.Data.EntityConfigs;
 using Microsoft.EntityFrameworkCore;
 

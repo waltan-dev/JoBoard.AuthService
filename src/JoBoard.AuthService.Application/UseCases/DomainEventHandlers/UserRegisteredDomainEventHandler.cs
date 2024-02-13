@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.DomainEventHandlers;

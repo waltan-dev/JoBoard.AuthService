@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Common.SeedWork;
 
-namespace JoBoard.AuthService.Domain.Aggregates.User;
+namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 
 public class UserRole : Enumeration
 {

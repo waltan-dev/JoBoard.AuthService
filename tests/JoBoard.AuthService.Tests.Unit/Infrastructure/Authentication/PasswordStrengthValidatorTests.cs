@@ -4,6 +4,10 @@ namespace JoBoard.AuthService.Tests.Unit.Infrastructure.Authentication;
 
 public class PasswordStrengthValidatorTests
 {
+    // min 6 chars
+    // max 32 chars
+    // at least 1 uppercase, 1 lowercase, 1 digit, 1 non-alphanumeric
+    
     [Theory]
     [InlineData("AAbb123$", true)]
     [InlineData("", false)]

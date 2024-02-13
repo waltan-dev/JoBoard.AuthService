@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Tests.Common.Stubs;
 

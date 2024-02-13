@@ -1,9 +1,8 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.Events;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Builders;
-using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ExternalAccountValue;
+using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects.ExternalAccountValue;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
 

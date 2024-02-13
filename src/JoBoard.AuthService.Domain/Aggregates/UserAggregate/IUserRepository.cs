@@ -1,7 +1,7 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 
-namespace JoBoard.AuthService.Domain.Aggregates.User;
+namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 
 public interface IUserRepository : IRepository<User>
 {

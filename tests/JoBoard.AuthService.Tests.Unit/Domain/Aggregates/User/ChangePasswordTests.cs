@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.DataFixtures;

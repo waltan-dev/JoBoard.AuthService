@@ -1,7 +1,7 @@
 ﻿using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;

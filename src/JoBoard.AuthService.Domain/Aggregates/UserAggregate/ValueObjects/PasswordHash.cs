@@ -2,7 +2,7 @@
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 
 public class PasswordHash : ValueObject
 {

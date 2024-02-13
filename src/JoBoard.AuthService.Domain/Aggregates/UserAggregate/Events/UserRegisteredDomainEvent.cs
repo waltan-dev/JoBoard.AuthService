@@ -1,6 +1,6 @@
 ﻿using MediatR;
 
-namespace JoBoard.AuthService.Domain.Aggregates.User.Events;
+namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
 
 public class UserRegisteredDomainEvent : INotification
 {

@@ -1,11 +1,11 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.Extensions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Domain.Aggregates.User;
+namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 
 public class User : Entity, IAggregateRoot
 {

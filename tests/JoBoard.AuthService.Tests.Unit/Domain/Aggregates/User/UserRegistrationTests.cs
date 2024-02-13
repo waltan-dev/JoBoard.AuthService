@@ -1,6 +1,6 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.Events;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
@@ -19,7 +19,7 @@ public class UserRegistrationTests
         var role = UserRole.Worker;
         var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
-        var newUser = AuthService.Domain.Aggregates.User.User.RegisterByEmailAndPassword(
+        var newUser = AuthService.Domain.Aggregates.UserAggregate.User.RegisterByEmailAndPassword(
             userId: userId,
             fullName: fullName,
             email: email,
@@ -50,7 +50,7 @@ public class UserRegistrationTests
         
         Assert.Throws<DomainException>(() =>
         {
-            AuthService.Domain.Aggregates.User.User.RegisterByEmailAndPassword(
+            AuthService.Domain.Aggregates.UserAggregate.User.RegisterByEmailAndPassword(
                 userId: userId,
                 fullName: fullName,
                 email: email,
@@ -68,7 +68,7 @@ public class UserRegistrationTests
         var role = UserRole.Worker;
         var googleUserId = GoogleFixtures.UserProfileForNewUser.Id;
         
-        var newUser = AuthService.Domain.Aggregates.User.User.RegisterByGoogleAccount(
+        var newUser = AuthService.Domain.Aggregates.UserAggregate.User.RegisterByGoogleAccount(
             userId: userId,
             fullName: fullName,
             email: email,
@@ -103,7 +103,7 @@ public class UserRegistrationTests
         
         Assert.Throws<DomainException>(() =>
         {
-            AuthService.Domain.Aggregates.User.User.RegisterByGoogleAccount(
+            AuthService.Domain.Aggregates.UserAggregate.User.RegisterByGoogleAccount(
                 userId: userId,
                 fullName: fullName,
                 email: email,
