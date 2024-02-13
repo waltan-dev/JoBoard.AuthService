@@ -45,12 +45,12 @@ public class CustomWebApplicationFactory : WebApplicationFactory<JoBoard.AuthSer
         DatabaseHelper.Reinitialize(dbContext);
     }
 
-    public Task InitializeAsync() // init test db before each test
+    public Task InitializeAsync() // init one test db per CustomWebApplicationFactory instance
     {
         return _postgreSqlContainer.StartAsync();
     }
     
-    public new Task DisposeAsync() // delete test db after each test
+    public new Task DisposeAsync() // delete test db when dispose CustomWebApplicationFactory
     {
         return _postgreSqlContainer.DisposeAsync().AsTask();
     }
