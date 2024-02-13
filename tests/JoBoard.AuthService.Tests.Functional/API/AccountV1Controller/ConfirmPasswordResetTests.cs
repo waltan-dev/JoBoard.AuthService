@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Confirmation;
+using JoBoard.AuthService.Application.Commands.Account.ResetPassword.Confirmation;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.DataFixtures;

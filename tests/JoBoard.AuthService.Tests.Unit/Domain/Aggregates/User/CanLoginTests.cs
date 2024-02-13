@@ -12,7 +12,7 @@ public class CanLoginTests
     [Fact]
     public void CanLogin()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
         
         var exception = Record.Exception(() =>
         {
@@ -24,7 +24,7 @@ public class CanLoginTests
     [Fact]
     public void CanLoginWithInactiveStatus()
     {
-        var user = new UserBuilder().WithInactiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithInactiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
         {
@@ -35,9 +35,9 @@ public class CanLoginTests
     [Fact]
     public void CanLoginWithValidPassword()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
         var password = PasswordFixtures.DefaultPassword;
-        var passwordHasherStub = PasswordHasherStubFactory.Create();
+        var passwordHasherStub = TestsRegistry.PasswordHasher;
 
         var exception = Record.Exception(() =>
         {
@@ -50,8 +50,8 @@ public class CanLoginTests
     [Fact]
     public void CanLoginWithInvalidPassword()
     {
-        var user = new UserBuilder().Build();
-        var passwordHasherStub = PasswordHasherStubFactory.Create();
+        var user = TestsRegistry.UserBuilder.Build();
+        var passwordHasherStub = TestsRegistry.PasswordHasher;
 
         Assert.Throws<DomainException>(() =>
         {
@@ -62,7 +62,7 @@ public class CanLoginTests
     [Fact]
     public void CanLoginWithValidExternalAccount()
     {
-        var user = new UserBuilder().WithGoogleAccount().Build();
+        var user = TestsRegistry.UserBuilder.WithGoogleAccount().Build();
         
         var exception = Record.Exception(() =>
         {
@@ -74,7 +74,7 @@ public class CanLoginTests
     [Fact]
     public void CanLoginWithInvalidExternalAccount()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
 
         Assert.Throws<DomainException>(() =>
         {

@@ -10,7 +10,7 @@ public class AddUserTests : BaseRepositoryTest
     {
         // Arrange
         await UserRepository.UnitOfWork.BeginTransactionAsync();
-        var newUser = new UserBuilder().Build();
+        var newUser = TestsRegistry.UserBuilder.Build();
 
         // Act
         await UserRepository.AddAsync(newUser);
@@ -23,7 +23,7 @@ public class AddUserTests : BaseRepositoryTest
         Assert.Equal(newUser.RegisteredAt, savedUser.RegisteredAt);
         Assert.Equal(newUser.Email, savedUser.Email);
         Assert.Equal(newUser.EmailConfirmed, savedUser.EmailConfirmed);
-        Assert.Equal(newUser.PasswordHash, savedUser.PasswordHash);
+        Assert.Equal(newUser.Password, savedUser.Password);
         Assert.Equal(newUser.Role, savedUser.Role);
         Assert.Equal(newUser.Status, savedUser.Status);
         Assert.Equal(newUser.FullName, savedUser.FullName);
@@ -39,7 +39,7 @@ public class AddUserTests : BaseRepositoryTest
     {
         // Arrange
         await UserRepository.UnitOfWork.BeginTransactionAsync();
-        var newUser = new UserBuilder().WithGoogleAccount().Build();
+        var newUser = TestsRegistry.UserBuilder.WithGoogleAccount().Build();
 
         // Act
         await UserRepository.AddAsync(newUser);
@@ -52,7 +52,7 @@ public class AddUserTests : BaseRepositoryTest
         Assert.Equal(newUser.RegisteredAt, savedUser.RegisteredAt);
         Assert.Equal(newUser.Email, savedUser.Email);
         Assert.Equal(newUser.EmailConfirmed, savedUser.EmailConfirmed);
-        Assert.Equal(newUser.PasswordHash, savedUser.PasswordHash);
+        Assert.Equal(newUser.Password, savedUser.Password);
         Assert.Equal(newUser.Role, savedUser.Role);
         Assert.Equal(newUser.Status, savedUser.Status);
         Assert.Equal(newUser.FullName, savedUser.FullName);

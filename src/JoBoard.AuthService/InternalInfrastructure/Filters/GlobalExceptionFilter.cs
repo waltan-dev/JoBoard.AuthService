@@ -1,5 +1,5 @@
 ﻿using System.Text.Json;
-using JoBoard.AuthService.Application.Common.Exceptions;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Mvc;

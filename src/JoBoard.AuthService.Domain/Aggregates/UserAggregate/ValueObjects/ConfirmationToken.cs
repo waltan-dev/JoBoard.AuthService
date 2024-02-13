@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 using JoBoard.AuthService.Domain.Common.Extensions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
@@ -16,7 +16,7 @@ public class ConfirmationToken : ValueObject
     
     private ConfirmationToken() {} // for ef core only
 
-    internal ConfirmationToken(string token, DateTime expiration)
+    private ConfirmationToken(string token, DateTime expiration)
     {
         Value = token;
         Expiration = expiration;
@@ -32,13 +32,7 @@ public class ConfirmationToken : ValueObject
     
     public void Verify(string token)
     {
-        Guard.IsNotNullOrWhiteSpace(token);
-
-        if (Value != token)
-            throw new DomainException("Invalid token");
-        
-        if(DateTime.UtcNow >= Expiration)
-            throw new DomainException("Token expired");
+        CheckRule(new ConfirmTokenMustBeValidRule(this, token));
     }
     
     protected override IEnumerable<object> GetEqualityComponents()

@@ -1,6 +1,6 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
+﻿using System.Reflection;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User.ValueObjects;
 
@@ -9,7 +9,7 @@ public class ConfirmationTokenTests
     [Fact]
     public void CreateValid()
     {
-        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var secureTokenizerStub = TestsRegistry.SecureTokenizer;
         var newToken = ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(24));
         
         Assert.NotEmpty(newToken.Value);
@@ -19,7 +19,7 @@ public class ConfirmationTokenTests
     [Fact]
     public void VerifyValid()
     {
-        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var secureTokenizerStub = TestsRegistry.SecureTokenizer;
         var exception = Record.Exception(() 
             => ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(24)));
         
@@ -29,7 +29,7 @@ public class ConfirmationTokenTests
     [Fact]
     public void VerifyInvalid()
     {
-        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var secureTokenizerStub = TestsRegistry.SecureTokenizer;
         var newToken = ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(24));
 
         Assert.Throws<DomainException>(() =>
@@ -41,7 +41,7 @@ public class ConfirmationTokenTests
     [Fact]
     public void VerifyExpired()
     {
-        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var secureTokenizerStub = TestsRegistry.SecureTokenizer;
         var value = Guid.NewGuid().ToString();
         var expiredConfirmationToken = ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(-1));
         
@@ -54,13 +54,24 @@ public class ConfirmationTokenTests
     [Fact]
     public void Compare()
     {
-        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var secureTokenizerStub = TestsRegistry.SecureTokenizer;
         var secureToken = secureTokenizerStub.Generate();
         var expires = DateTime.UtcNow.AddHours(24);
-
-        var token1 = new ConfirmationToken(secureToken, expires);
-        var token2 = new ConfirmationToken(secureToken, expires);
+        
+        var token1 = CreateWithPrivateConstructor(secureToken, expires);
+        var token2 = CreateWithPrivateConstructor(secureToken, expires);
         
         Assert.Equal(token1, token2);
+    }
+
+    private static ConfirmationToken CreateWithPrivateConstructor(string secureToken, DateTime expires)
+    {
+        Type type = typeof(ConfirmationToken);
+        var paramValues = new object[] { secureToken, expires };  
+        var paramTypes = new[] { typeof(string), typeof(DateTime) };  
+        var instance = type
+            .GetConstructor(BindingFlags.Instance | BindingFlags.NonPublic,null, paramTypes, null)!
+            .Invoke(paramValues);  
+        return (ConfirmationToken)instance;
     }
 }

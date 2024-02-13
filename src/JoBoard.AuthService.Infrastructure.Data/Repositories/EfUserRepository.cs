@@ -55,12 +55,4 @@ public class EfUserRepository : EfBaseRepository, IUserRepository
         // don't use .AsNoTracking()
         return await FindByIdAsync(extAccountDb.Id, ct);
     }
-    
-    public async Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct = default)
-    {
-        var emailExists = await DbContext.Users
-            .Where(x => x.Email.Value == email.Value)
-            .AnyAsync(ct);
-        return emailExists == false;
-    }
 }

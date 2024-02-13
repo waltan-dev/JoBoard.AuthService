@@ -1,6 +1,4 @@
-﻿using JoBoard.AuthService.Application.Common.Exceptions;
-using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
+﻿using JoBoard.AuthService.Application.Services;
 
 namespace JoBoard.AuthService.InternalInfrastructure.Jwt;
 
@@ -13,12 +11,9 @@ public class JwtIdentityService : IIdentityService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public UserId GetUserId()
+    public string? GetUserId()
     {
         // get user id from JWT
-        var userId = _httpContextAccessor.HttpContext!.User.GetUserId();
-        if (userId == null)
-            throw new NotFoundException("User not found");
-        return userId;
+        return _httpContextAccessor.HttpContext!.User.GetUserId();
     }
 }

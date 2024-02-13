@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Application.Common.Services;
+﻿using JoBoard.AuthService.Application.Services;
 
 namespace JoBoard.AuthService.Tests.Common.DataFixtures;
 
@@ -28,6 +28,6 @@ public static class GoogleFixtures
         Id = "NewUserWithExistingEmailId",
         FirstName = "Test",
         LastName = "test",
-        Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value.Email.Value
+        Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Email.Value
     };
 }

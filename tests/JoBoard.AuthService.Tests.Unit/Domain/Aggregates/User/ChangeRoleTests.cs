@@ -10,7 +10,7 @@ public class ChangeRoleTests
     [Fact]
     public void ChangeRoleToHirer()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
         
         user.ChangeRole(UserRole.Hirer);
         
@@ -21,7 +21,7 @@ public class ChangeRoleTests
     [Fact]
     public void ChangeRoleToWorker()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
         
         user.ChangeRole(UserRole.Worker);
         
@@ -32,7 +32,7 @@ public class ChangeRoleTests
     [Fact]
     public void ChangeRoleToAdmin()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
         {
@@ -43,7 +43,7 @@ public class ChangeRoleTests
     [Fact]
     public void ChangeRoleWithoutConfirmedEmail()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -54,7 +54,7 @@ public class ChangeRoleTests
     [Fact]
     public void ChangeRoleWithInactiveStatus()
     {
-        var user = new UserBuilder().WithInactiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithInactiveStatus().Build();
         
         Assert.Throws<DomainException>(() =>
         {

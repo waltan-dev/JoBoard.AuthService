@@ -1,7 +1,7 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
+using JoBoard.AuthService.Tests.Common;
 using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
-
 
 namespace JoBoard.AuthService.Tests.Integration.Infrastructure.Data.UserRepository;
 
@@ -16,9 +16,10 @@ public class ChangeEmailTests : BaseRepositoryTest
         var oldEmail = user!.Email;
         var token = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = new Email("new-email@gmail.com");
+        var userEmailUniquenessChecker = TestsRegistry.UserEmailUniquenessChecker;
         
         // Act
-        user.RequestEmailChange(newEmail, token);
+        user.RequestEmailChange(newEmail, token, userEmailUniquenessChecker);
         await UserRepository.UpdateAsync(user);
         await UserRepository.UnitOfWork.CommitTransactionAsync();
 
@@ -37,7 +38,8 @@ public class ChangeEmailTests : BaseRepositoryTest
         var user = await UserRepository.FindByIdAsync(DbUserFixtures.ExistingActiveUser.Id);
         var token = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = new Email("new-email@gmail.com");
-        user!.RequestEmailChange(newEmail, token);
+        var userEmailUniquenessChecker = TestsRegistry.UserEmailUniquenessChecker;
+        user!.RequestEmailChange(newEmail, token, userEmailUniquenessChecker);
         
         // Act
         user.ConfirmEmailChange(token.Value);

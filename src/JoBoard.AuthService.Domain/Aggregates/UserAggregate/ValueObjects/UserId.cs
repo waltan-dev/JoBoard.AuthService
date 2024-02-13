@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
@@ -7,7 +8,7 @@ public class UserId : ValueObject
 {
     public Guid Value { get; private set; }
     
-    internal UserId(Guid value)
+    private UserId(Guid value)
     {
         Guard.IsNotDefault(value);
         Value = value;
@@ -21,6 +22,13 @@ public class UserId : ValueObject
     public static UserId FromValue(Guid value)
     {
         return new UserId(value);
+    }
+    
+    public static UserId FromValue(string? value)
+    {
+        if (Guid.TryParse(value, out var guid) == false)
+            throw new DomainException("Invalid user id");
+        return FromValue(guid);
     }
     
     protected override IEnumerable<object> GetEqualityComponents()

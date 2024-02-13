@@ -35,9 +35,9 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
         });
         
         // map Password
-        builder.OwnsOne(x => x.PasswordHash, navBuilder =>
+        builder.OwnsOne(x => x.Password, navBuilder =>
         {
-            navBuilder.Property(y => y.Value).HasColumnName("PasswordHash");
+            navBuilder.Property("Hash").HasColumnName("PasswordHash");
         });
 
         // map Role

@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.ManageAccount.ChangePassword;
+using JoBoard.AuthService.Application.Commands.ManageAccount.ChangePassword;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
 
 
@@ -23,7 +23,7 @@ public class ChangePasswordTests : IClassFixture<CustomWebApplicationFactory>
             NewPassword = PasswordFixtures.NewPassword
         };
 
-        await _httpClient.AuthorizeAsync(DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value);
+        await _httpClient.AuthorizeAsync(DbUserFixtures.ExistingUserWithoutConfirmedEmail);
         var response = await _httpClient.PostAsJsonAsync(ManageAccountV1Routes.ChangePassword, request);
 
         await Assert.SuccessEmptyResponseAsync(response);

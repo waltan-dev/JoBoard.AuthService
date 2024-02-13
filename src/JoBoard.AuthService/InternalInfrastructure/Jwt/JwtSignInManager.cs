@@ -1,9 +1,9 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using JoBoard.AuthService.Application.Common.Exceptions;
-using JoBoard.AuthService.Application.Common.Models;
-using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Application.UseCases.Account.Login.CanLogin;
+using JoBoard.AuthService.Application.Commands.Account.Login.CanLogin;
+using JoBoard.AuthService.Application.Exceptions;
+using JoBoard.AuthService.Application.Models;
+using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Infrastructure.Auth.Models;
 using JoBoard.AuthService.Infrastructure.Auth.Services;
@@ -58,10 +58,10 @@ public class JwtSignInManager
         if (principal == null || userId == null)
             throw new ValidationException(request.ExpiredAccessToken, "Access token isn't valid");
         
-        var loginResult = await _mediator.Send(new CanLoginCommand { UserId = userId.Value, }, ct);
+        var loginResult = await _mediator.Send(new CanLoginCommand { UserId = userId, }, ct);
         
         // validate refresh token
-        var userRefreshTokens = await _refreshTokenRepository.GetTokensAsync(userId.Value.ToString(), ct);
+        var userRefreshTokens = await _refreshTokenRepository.GetTokensAsync(userId, ct);
         var currentRefreshToken = userRefreshTokens.FirstOrDefault(x => x.Token == request.RefreshToken);
         if(currentRefreshToken == null)
             throw new ValidationException(request.RefreshToken, "Refresh token isn't valid or expired");
@@ -82,12 +82,12 @@ public class JwtSignInManager
     public async Task RevokeRefreshTokenAsync(RevokeRefreshTokenRequest request, CancellationToken ct)
     {
         var userId = _identityService.GetUserId();
-        var userRefreshTokens = await _refreshTokenRepository.GetTokensAsync(userId.Value.ToString(), ct);
+        var userRefreshTokens = await _refreshTokenRepository.GetTokensAsync(userId, ct);
         var refreshToken = userRefreshTokens.FirstOrDefault(x => x.Token == request.RefreshToken);
         if (refreshToken == null)
             throw new NotFoundException("Refresh token not found");
         
-        await _refreshTokenRepository.RemoveTokenAsync(userId.Value.ToString(), refreshToken, ct);
+        await _refreshTokenRepository.RemoveTokenAsync(userId, refreshToken, ct);
     }
     
     private ClaimsPrincipal? GetPrincipalFromExpiredToken(string expiredAccessToken)

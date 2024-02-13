@@ -5,7 +5,6 @@ using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
 
-
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
 
 public class UserRegistrationTests
@@ -17,20 +16,22 @@ public class UserRegistrationTests
         var fullName = new FullName("Ivan", "Ivanov");
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Worker;
-        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
+        var newPassword = new UserPasswordBuilder().Create(PasswordFixtures.NewPassword);
+        var userEmailUniquenessChecker = TestsRegistry.UserEmailUniquenessChecker;
         
         var newUser = AuthService.Domain.Aggregates.UserAggregate.User.RegisterByEmailAndPassword(
             userId: userId,
             fullName: fullName,
             email: email,
             role: role, 
-            passwordHash: newPasswordHash);
+            password: newPassword,
+            userEmailUniquenessChecker);
 
         Assert.Equal(userId, newUser.Id);
         Assert.Equal(fullName, newUser.FullName);
         Assert.Equal(email, newUser.Email);
         Assert.Equal(role, newUser.Role);
-        Assert.Equal(newPasswordHash, newUser.PasswordHash);
+        Assert.Equal(newPassword, newUser.Password);
         
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
@@ -46,7 +47,8 @@ public class UserRegistrationTests
         var fullName = new FullName("Ivan", "Ivanov");
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Admin;
-        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
+        var newPassword = new UserPasswordBuilder().Create(PasswordFixtures.NewPassword);
+        var userEmailUniquenessChecker = TestsRegistry.UserEmailUniquenessChecker;
         
         Assert.Throws<DomainException>(() =>
         {
@@ -55,7 +57,8 @@ public class UserRegistrationTests
                 fullName: fullName,
                 email: email,
                 role: role, 
-                passwordHash: newPasswordHash);
+                password: newPassword,
+                userEmailUniquenessChecker);
         });
     }
     
@@ -67,13 +70,17 @@ public class UserRegistrationTests
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Worker;
         var googleUserId = GoogleFixtures.UserProfileForNewUser.Id;
+        var userEmailUniquenessChecker = TestsRegistry.UserEmailUniquenessChecker;
+        var externalAccountUniquenessChecker = TestsRegistry.ExternalAccountUniquenessChecker;
         
         var newUser = AuthService.Domain.Aggregates.UserAggregate.User.RegisterByGoogleAccount(
             userId: userId,
             fullName: fullName,
             email: email,
             role: role, 
-            googleUserId: googleUserId);
+            googleUserId: googleUserId,
+            userEmailUniquenessChecker,
+            externalAccountUniquenessChecker);
 
         Assert.Equal(userId, newUser.Id);
         Assert.Equal(fullName, newUser.FullName);
@@ -87,7 +94,7 @@ public class UserRegistrationTests
         Assert.Equal(UserStatus.Active, newUser.Status);
         Assert.True(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
-        Assert.Null(newUser.PasswordHash);
+        Assert.Null(newUser.Password);
         
         Assert.Single(newUser.DomainEvents, ev => ev is UserRegisteredDomainEvent);
     }
@@ -100,6 +107,8 @@ public class UserRegistrationTests
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Admin;
         var googleUserId = GoogleFixtures.UserProfileForNewUser.Id;
+        var userEmailUniquenessChecker = TestsRegistry.UserEmailUniquenessChecker;
+        var externalAccountUniquenessChecker = TestsRegistry.ExternalAccountUniquenessChecker;
         
         Assert.Throws<DomainException>(() =>
         {
@@ -108,7 +117,9 @@ public class UserRegistrationTests
                 fullName: fullName,
                 email: email,
                 role: role, 
-                googleUserId: googleUserId);
+                googleUserId: googleUserId,
+                userEmailUniquenessChecker,
+                externalAccountUniquenessChecker);
         });
     }
 }

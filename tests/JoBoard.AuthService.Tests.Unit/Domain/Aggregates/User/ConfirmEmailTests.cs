@@ -11,7 +11,7 @@ public class ConfirmEmailTests
     public void RequestEmailConfirmation()
     {
         var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
         
         user.RequestEmailConfirmation(confirmationToken);
         
@@ -23,7 +23,7 @@ public class ConfirmEmailTests
     public void RequestEmailConfirmationWithInactiveStatus()
     {
         var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
-        var user = new UserBuilder().WithInactiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithInactiveStatus().Build();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -35,7 +35,7 @@ public class ConfirmEmailTests
     public void RequestEmailConfirmationTwiceBeforeExpiration()
     {
         var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
         user.RequestEmailConfirmation(confirmationToken);
         
         Assert.Throws<DomainException>(() =>
@@ -47,7 +47,7 @@ public class ConfirmEmailTests
     [Fact]
     public void RequestEmailConfirmationTwiceAfterExpiration()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
         var oldEmail = user.Email;
         user.RequestEmailConfirmation(new ConfirmationTokenBuilder().BuildExpired());
         
@@ -62,7 +62,7 @@ public class ConfirmEmailTests
     [Fact]
     public void ConfirmEmailWithValidToken()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
         user.RequestEmailConfirmation(new ConfirmationTokenBuilder().BuildActive());
 
         user.ConfirmEmail(user.EmailConfirmToken!.Value);
@@ -75,7 +75,7 @@ public class ConfirmEmailTests
     [Fact]
     public void ConfirmEmailWithInvalidToken()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
 
         Assert.Throws<DomainException>(() =>
         {
@@ -86,7 +86,7 @@ public class ConfirmEmailTests
     [Fact]
     public void ConfirmEmailWithExpiredToken()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
         user.RequestEmailConfirmation(new ConfirmationTokenBuilder().BuildExpired());
 
         Assert.Throws<DomainException>(() =>
@@ -98,7 +98,7 @@ public class ConfirmEmailTests
     [Fact]
     public void ConfirmEmailWithInactiveStatus()
     {
-        var user = new UserBuilder().WithInactiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithInactiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
         {

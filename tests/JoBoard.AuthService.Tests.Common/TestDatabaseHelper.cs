@@ -1,6 +1,7 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
+using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Tests.Common;
@@ -21,14 +22,24 @@ public static class TestDatabaseHelper
 
     private static async Task AddUserFixturesAsync(AuthDbContext dbContext)
     {
-        var users = new List<User>
+        var existingUsers = new List<User>
         {
             DbUserFixtures.ExistingActiveUser,
-            DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value,
-            DbUserFixtures.ExistingUserRegisteredByGoogleAccount.Value,
-            DbUserFixtures.ExistingUserWithExpiredToken.Value
+            DbUserFixtures.ExistingUserWithoutConfirmedEmail,
+            DbUserFixtures.ExistingUserRegisteredByGoogleAccount,
+            DbUserFixtures.ExistingUserWithExpiredToken
         };
-        dbContext.Users.AddRange(users);
+        
+        dbContext.Users.AddRange(existingUsers);
         await dbContext.SaveChangesAsync();
+    }
+    
+    public static AuthDbContext CreateSqliteDbContext()
+    {
+        var connection = new SqliteConnection("Filename=:memory:");
+        connection.Open();
+        var dbContextOptions = new DbContextOptionsBuilder<AuthDbContext>()
+            .UseSqlite(connection, builder => builder.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName)).Options;
+        return new AuthDbContext(dbContextOptions);
     }
 }

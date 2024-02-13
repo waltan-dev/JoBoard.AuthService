@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.Extensions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
@@ -17,7 +17,7 @@ public class User : Entity, IAggregateRoot
     public bool EmailConfirmed { get; private set; }
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
-    public PasswordHash? PasswordHash { get; private set; }
+    public UserPassword? Password { get; private set; }
     
     private List<ExternalAccount> _externalAccounts;
     public IReadOnlyCollection<ExternalAccount> ExternalAccounts => _externalAccounts.AsReadOnly();
@@ -31,7 +31,7 @@ public class User : Entity, IAggregateRoot
     
     // universal constructor for different scenarios, e.g. register by google account or register by email and password
     private User(UserId userId, FullName fullName, Email email, bool emailConfirmed, UserRole role, UserStatus status,
-        PasswordHash? passwordHash, ExternalAccountValue? externalAccountValue)
+        UserPassword? password, ExternalAccountValue? externalAccountValue)
     {
         Id = userId;
         RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
@@ -40,7 +40,7 @@ public class User : Entity, IAggregateRoot
         EmailConfirmed = emailConfirmed;
         Role = role;
         Status = status;
-        PasswordHash = passwordHash;
+        Password = password;
         _externalAccounts = externalAccountValue == null 
             ? new List<ExternalAccount>() 
             : new List<ExternalAccount> { new(Id, externalAccountValue) };
@@ -49,10 +49,11 @@ public class User : Entity, IAggregateRoot
     }
 
     public static User RegisterByEmailAndPassword(UserId userId, FullName fullName, Email email, UserRole role, 
-        PasswordHash passwordHash)
+        UserPassword password, 
+        IUserEmailUniquenessChecker userEmailUniquenessChecker)
     {
-        if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
-            throw new DomainException("Invalid role");
+        CheckRule(new UserEmailMustBeUniqueRule(email, userEmailUniquenessChecker));
+        CheckRule(new UserRoleMustBeWorkerOrHirerRule(role));
         
         return new User(
             userId: userId,
@@ -61,15 +62,20 @@ public class User : Entity, IAggregateRoot
             emailConfirmed: false,
             role: role,
             status: UserStatus.Pending, 
-            passwordHash: passwordHash,
+            password: password, 
             null);
     }
     
     public static User RegisterByGoogleAccount(UserId userId, FullName fullName, Email email, UserRole role, 
-        string googleUserId)
+        string googleUserId, 
+        IUserEmailUniquenessChecker userEmailUniquenessChecker, 
+        IExternalAccountUniquenessChecker externalAccountUniquenessChecker)
     {
-        if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
-            throw new DomainException("Invalid role");
+        var externalAccountValue = new ExternalAccountValue(googleUserId, ExternalAccountProvider.Google);
+        
+        CheckRule(new UserRoleMustBeWorkerOrHirerRule(role));
+        CheckRule(new UserEmailMustBeUniqueRule(email, userEmailUniquenessChecker));
+        CheckRule(new ExternalAccountMustBeUniqueRule(externalAccountValue, null, externalAccountUniquenessChecker));
         
         return new User(
             userId: userId,
@@ -78,219 +84,190 @@ public class User : Entity, IAggregateRoot
             emailConfirmed: true,
             role: role,
             status: UserStatus.Active, 
-            passwordHash: null, 
-            externalAccountValue: new ExternalAccountValue(googleUserId, ExternalAccountProvider.Google));
+            password: null, 
+            externalAccountValue: externalAccountValue);
     }
 
     public void RequestEmailConfirmation(ConfirmationToken confirmationToken)
     {
-        ThrowIfBlockedOrDeactivated();
-        
-        if (EmailConfirmToken != null && EmailConfirmToken.Expiration > DateTime.UtcNow)
-            throw new DomainException("Email confirmation has been requested already");
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(EmailConfirmToken));
         
         EmailConfirmToken = confirmationToken;
+        
         AddDomainEvent(new UserRequestedEmailConfirmationDomainEvent(this));
     }
     
-    public void ConfirmEmail(string token)
+    public void ConfirmEmail(string requestToken)
     {
-        ThrowIfBlockedOrDeactivated();
-
-        if (EmailConfirmToken == null)
-            throw new DomainException("Email confirmation has not been requested");
-        
-        EmailConfirmToken.Verify(token);
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new ConfirmTokenMustBeRequestedFirstRule(EmailConfirmToken));
+        EmailConfirmToken!.Verify(requestToken);
         
         EmailConfirmed = true;
         EmailConfirmToken = null;
-        if(Status.Equals(UserStatus.Pending))
-            Status = UserStatus.Active;
+        if(Status.Equals(UserStatus.Pending)) Status = UserStatus.Active;
+        
         AddDomainEvent(new UserConfirmedEmailDomainEvent(this));
     }
     
     public void UpdateFullName(FullName fullName)
     {
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
         
         FullName = fullName;
+        
         AddDomainEvent(new UserUpdatedNameDomainEvent(this));
     }
     
     public void RequestPasswordReset(ConfirmationToken confirmationToken)
     {
-        ThrowIfEmailIsNotConfirmed();
-        ThrowIfBlockedOrDeactivated();
-        
-        if (ResetPasswordConfirmToken != null && ResetPasswordConfirmToken.Expiration > DateTime.UtcNow)
-            throw new DomainException("Password reset has been requested already");
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(ResetPasswordConfirmToken));
         
         ResetPasswordConfirmToken = confirmationToken;
+        
         AddDomainEvent(new UserRequestedPasswordResetDomainEvent(this));
     }
 
-    public void ConfirmPasswordReset(string token, PasswordHash newPasswordHash)
+    public void ConfirmPasswordReset(string requestToken, UserPassword newPassword)
     {
-        ThrowIfEmailIsNotConfirmed();
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
+        CheckRule(new ConfirmTokenMustBeRequestedFirstRule(ResetPasswordConfirmToken));
+        ResetPasswordConfirmToken!.Verify(requestToken);
         
-        if (ResetPasswordConfirmToken == null)
-            throw new DomainException("Password reset has not been requested");
-        
-        ResetPasswordConfirmToken.Verify(token);
-
-        PasswordHash = newPasswordHash;
+        Password = newPassword;
         ResetPasswordConfirmToken = null;
+        
         AddDomainEvent(new UserChangedPasswordDomainEvent(this));
     }
 
-    public void ChangePassword(string currentPassword, PasswordHash newPasswordHash, IPasswordHasher passwordHasher)
+    public void ChangePassword(string currentPassword, UserPassword newPassword, IPasswordHasher passwordHasher)
     {
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserMustHavePasswordRule(Password));
+        Password!.Verify(currentPassword, passwordHasher);
         
-        if(this.PasswordHash == null)
-            throw new DomainException("No current password");
-
-        if (this.PasswordHash.Verify(currentPassword, passwordHasher) == false)
-            throw new DomainException("Incorrect current password");
+        Password = newPassword;
         
-        PasswordHash = newPasswordHash;
         AddDomainEvent(new UserChangedPasswordDomainEvent(this));
     }
 
-    public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken)
+    public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken, IUserEmailUniquenessChecker userEmailUniquenessChecker)
     {
-        ThrowIfEmailIsNotConfirmed();
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
+        CheckRule(new UserEmailMustBeUniqueRule(newEmail, userEmailUniquenessChecker));
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(ChangeEmailConfirmToken));
         
-        if(Email.Equals(newEmail))
-            throw new DomainException("New email is the same as current");
-        
-        if (ChangeEmailConfirmToken != null && ChangeEmailConfirmToken.Expiration > DateTime.UtcNow)
-            throw new DomainException("Email change has been requested already");
-
         NewEmail = newEmail;
         ChangeEmailConfirmToken = confirmationToken;
+        
         AddDomainEvent(new UserRequestedEmailChangeDomainEvent(this));
     }
 
-    public void ConfirmEmailChange(string token)
+    public void ConfirmEmailChange(string requestToken)
     {
-        ThrowIfEmailIsNotConfirmed();
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
+        CheckRule(new ConfirmTokenMustBeRequestedFirstRule(ChangeEmailConfirmToken));
+        ChangeEmailConfirmToken!.Verify(requestToken);
         
-        if (ChangeEmailConfirmToken == null || NewEmail == null)
-            throw new DomainException("Email change has not been requested");
-
-        ChangeEmailConfirmToken.Verify(token);
-
-        Email = NewEmail;
+        Email = NewEmail!;
         EmailConfirmed = true;
         NewEmail = null;
         ChangeEmailConfirmToken = null;
+        
         AddDomainEvent(new UserChangedEmailDomainEvent(this));
     }
 
     public void ChangeRole(UserRole newRole)
     {
-        ThrowIfEmailIsNotConfirmed();
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
+        CheckRule(new UserRoleMustBeWorkerOrHirerRule(newRole));
         
-        if (newRole.Equals(UserRole.Hirer) == false && newRole.Equals(UserRole.Worker) == false)
-            throw new DomainException("Invalid role");
-
         Role = newRole;
+        
         AddDomainEvent(new UserChangedRoleDomainEvent(this));
     }
 
     public void RequestAccountDeactivation(ConfirmationToken confirmationToken)
     {
-        ThrowIfEmailIsNotConfirmed();
-        ThrowIfBlockedOrDeactivated();
-        
-        if (AccountDeactivationConfirmToken != null && AccountDeactivationConfirmToken.Expiration > DateTime.UtcNow)
-            throw new DomainException("Account deactivation has been requested already");
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(AccountDeactivationConfirmToken));
         
         AccountDeactivationConfirmToken = confirmationToken;
+        
         AddDomainEvent(new UserRequestedAccountDeactivationDomainEvent(this));
     }
 
-    public void ConfirmAccountDeactivation(string token)
+    public void ConfirmAccountDeactivation(string requestToken)
     {
-        ThrowIfEmailIsNotConfirmed();
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
+        CheckRule(new ConfirmTokenMustBeRequestedFirstRule(AccountDeactivationConfirmToken));
+        AccountDeactivationConfirmToken!.Verify(requestToken);
         
-        if (AccountDeactivationConfirmToken == null)
-            throw new DomainException("Account deactivation has not been requested");
-
-        AccountDeactivationConfirmToken.Verify(token);
-
         Status = UserStatus.Deactivated;
         AccountDeactivationConfirmToken = null;
+        
         AddDomainEvent(new UserDeactivatedDomainEvent(this));
     }
     
     public void Block()
     {
         Status = UserStatus.Blocked;
+        
         AddDomainEvent(new UserBlockedDomainEvent(this));
     }
 
     public void CanLogin()
     {
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
     }
     
-    public void CanLoginWithPassword(string password, IPasswordHasher passwordHasher)
+    public void CanLoginWithPassword(string currentPassword, IPasswordHasher passwordHasher)
     {
-        ThrowIfBlockedOrDeactivated();
-
-        if (PasswordHash == null || PasswordHash.Verify(password, passwordHasher) == false)
-            throw new DomainException("Invalid email or password");
-    }
-
-    public void CanLoginWithExternalAccount(ValueObjects.ExternalAccountValue externalAccountValue)
-    {
-        ThrowIfBlockedOrDeactivated();
-
-        if (_externalAccounts.Select(x=>x.Value).Contains(externalAccountValue) == false)
-            throw new DomainException("Unknown external account");
-    }
-    
-    public void AttachExternalAccount(ExternalAccountValue value)
-    {
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new UserMustHavePasswordRule(Password));
         
-        if (ExternalAccounts.Select(x=>x.Value).Contains(value))
-            return;
+        Password!.Verify(currentPassword, passwordHasher);
+    }
+
+    public void CanLoginWithExternalAccount(ExternalAccountValue externalAccountValue)
+    {
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new ExternalAccountMustBelongToUserRule(_externalAccounts, externalAccountValue));
+    }
+    
+    public void AttachExternalAccount(ExternalAccountValue value, IExternalAccountUniquenessChecker externalAccountUniquenessChecker)
+    {
+        CheckBlockedOrDeactivatedRule();
+        CheckRule(new ExternalAccountMustBeUniqueRule(value, _externalAccounts, externalAccountUniquenessChecker));
         
         _externalAccounts.Add(new ExternalAccount(Id, value));
+        
         AddDomainEvent(new UserAttachedExternalAccountDomainEvent(this));
     }
     
     public void DetachExternalAccount(ExternalAccountValue value)
     {
-        ThrowIfBlockedOrDeactivated();
+        CheckBlockedOrDeactivatedRule();
 
         var extAcc = ExternalAccounts.FirstOrDefault(x => x.Value.Equals(value));
-        if (extAcc == null)
-            return;
+        if (extAcc == null) return;
         
         _externalAccounts.Remove(extAcc);
         AddDomainEvent(new UserDetachedExternalAccountDomainEvent(this));
     }
     
-    private void ThrowIfEmailIsNotConfirmed()
+    private void CheckBlockedOrDeactivatedRule()
     {
-        if(Status.Equals(UserStatus.Pending))
-            throw new DomainException("Email is not confirmed yet");
-    }
-    
-    private void ThrowIfBlockedOrDeactivated()
-    {
-        if(Status.Equals(UserStatus.Deactivated))
-            throw new DomainException("Your account has been deactivated");
-        if(Status.Equals(UserStatus.Blocked))
-            throw new DomainException("User is blocked");
+        CheckRule(new UserCanNotBeDeactivatedRule(Status));
+        CheckRule(new UserCanNotBeBlockedRule(Status));
     }
 }

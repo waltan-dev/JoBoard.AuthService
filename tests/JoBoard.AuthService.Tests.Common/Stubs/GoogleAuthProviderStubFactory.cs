@@ -1,10 +1,11 @@
-﻿using JoBoard.AuthService.Application.Common.Services;
+﻿using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
 using Moq;
 
 namespace JoBoard.AuthService.Tests.Common.Stubs;
 
-public static class GoogleAuthProviderStubFactory
+// Thread-safe Singleton
+internal static class GoogleAuthProviderStubFactory
 {
     public static IGoogleAuthProvider Create()
     {

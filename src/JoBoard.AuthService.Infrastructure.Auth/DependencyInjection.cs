@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Application.Common.Services;
+using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Infrastructure.Auth.Configs;
 using JoBoard.AuthService.Infrastructure.Auth.Services;

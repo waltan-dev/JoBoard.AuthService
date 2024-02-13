@@ -9,7 +9,7 @@ public class BlockUserTests
     [Fact]
     public void Block()
     {
-        var user = new UserBuilder().Build();
+        var user = TestsRegistry.UserBuilder.Build();
         
         user.Block();
         

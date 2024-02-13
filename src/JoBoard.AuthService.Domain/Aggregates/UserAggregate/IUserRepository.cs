@@ -11,6 +11,4 @@ public interface IUserRepository : IRepository<User>
     Task<User?> FindByIdAsync(UserId userId, CancellationToken ct = default);
     Task<User?> FindByEmailAsync(Email email, CancellationToken ct = default);
     Task<User?> FindByExternalAccountValueAsync(ValueObjects.ExternalAccountValue externalAccount, CancellationToken ct = default);
-    
-    Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct = default);
 }

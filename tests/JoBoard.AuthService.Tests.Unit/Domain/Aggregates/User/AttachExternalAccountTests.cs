@@ -1,8 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Tests.Common.Builders;
-using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects.ExternalAccountValue;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
 
@@ -11,10 +9,11 @@ public class AttachExternalAccountTests
     [Fact]
     public void AttachExternalAccount()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
-
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
+        var externalAccountUniquenessChecker = TestsRegistry.ExternalAccountUniquenessChecker;
+        
         var externalAccount = new ExternalAccountValue("externalUserId", ExternalAccountProvider.Google);
-        user.AttachExternalAccount(externalAccount);
+        user.AttachExternalAccount(externalAccount, externalAccountUniquenessChecker);
         
         Assert.Single(user.ExternalAccounts);
         Assert.Equal(externalAccount, user.ExternalAccounts.First().Value);
@@ -24,35 +23,38 @@ public class AttachExternalAccountTests
     [Fact]
     public void AttachSameExternalAccountTwice()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
+        var externalAccountUniquenessChecker = TestsRegistry.ExternalAccountUniquenessChecker;
 
         var externalAccount = new ExternalAccountValue("externalUserId", ExternalAccountProvider.Google);
-        user.AttachExternalAccount(externalAccount);
-        user.AttachExternalAccount(externalAccount);
-        
-        Assert.Single(user.ExternalAccounts);
-        Assert.Equal(externalAccount, user.ExternalAccounts.First().Value);
-        Assert.Single(user.DomainEvents, ev => ev is UserAttachedExternalAccountDomainEvent);
+        user.AttachExternalAccount(externalAccount, externalAccountUniquenessChecker);
+
+        Assert.Throws<DomainException>(() =>
+        {
+            user.AttachExternalAccount(externalAccount, externalAccountUniquenessChecker);
+        });
     }
     
     [Fact]
     public void AttachExternalAccountWithInactiveStatus()
     {
-        var user = new UserBuilder().WithInactiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithInactiveStatus().Build();
+        var externalAccountUniquenessChecker = TestsRegistry.ExternalAccountUniquenessChecker;
 
         Assert.Throws<DomainException>(() =>
         {
             var externalAccount = new ExternalAccountValue("externalUserId", ExternalAccountProvider.Google);
-            user.AttachExternalAccount(externalAccount);
+            user.AttachExternalAccount(externalAccount, externalAccountUniquenessChecker);
         });
     }
     
     [Fact]
     public void DetachExternalAccount()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
         var externalAccount = new ExternalAccountValue("externalUserId", ExternalAccountProvider.Google);
-        user.AttachExternalAccount(externalAccount);
+        var externalAccountUniquenessChecker = TestsRegistry.ExternalAccountUniquenessChecker;
+        user.AttachExternalAccount(externalAccount, externalAccountUniquenessChecker);
         
         user.DetachExternalAccount(externalAccount);
         
@@ -63,9 +65,10 @@ public class AttachExternalAccountTests
     [Fact]
     public void DetachExternalAccountTwice()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
         var externalAccount = new ExternalAccountValue("externalUserId", ExternalAccountProvider.Google);
-        user.AttachExternalAccount(externalAccount);
+        var externalAccountUniquenessChecker = TestsRegistry.ExternalAccountUniquenessChecker;
+        user.AttachExternalAccount(externalAccount, externalAccountUniquenessChecker);
         
         user.DetachExternalAccount(externalAccount);
         user.DetachExternalAccount(externalAccount);
@@ -77,7 +80,7 @@ public class AttachExternalAccountTests
     [Fact]
     public void DetachExternalAccountWithInactiveStatus()
     {
-        var user = new UserBuilder().WithGoogleAccount().WithInactiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithGoogleAccount().WithInactiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
         {

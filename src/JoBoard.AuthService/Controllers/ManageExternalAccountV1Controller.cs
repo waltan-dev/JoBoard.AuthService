@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Application.UseCases.ManageExternalAccount.AttachGoogleAccount;
-using JoBoard.AuthService.Application.UseCases.ManageExternalAccount.DetachExternalAccount;
+﻿using JoBoard.AuthService.Application.Commands.ManageExternalAccount.AttachGoogleAccount;
+using JoBoard.AuthService.Application.Commands.ManageExternalAccount.DetachExternalAccount;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;

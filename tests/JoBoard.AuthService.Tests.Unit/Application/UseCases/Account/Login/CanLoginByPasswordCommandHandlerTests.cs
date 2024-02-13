@@ -1,8 +1,6 @@
-﻿using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByPassword;
+﻿using JoBoard.AuthService.Application.Commands.Account.Login.CanLoginByPassword;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
-
-using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Application.UseCases.Account.Login;
 
@@ -13,7 +11,7 @@ public class CanLoginByPasswordCommandHandlerTests
     {
         var command = new CanLoginByPasswordCommand
         {
-            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value.Email.Value,
+            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Email.Value,
             Password = PasswordFixtures.DefaultPassword
         };
         
@@ -42,7 +40,7 @@ public class CanLoginByPasswordCommandHandlerTests
     private static CanLoginByPasswordCommandHandler CreateHandler()
     {
         return new CanLoginByPasswordCommandHandler(
-            PasswordHasherStubFactory.Create(),
-            UserRepositoryStubFactory.Create());
+            TestsRegistry.PasswordHasher,
+            TestsRegistry.UserRepository);
     }
 }

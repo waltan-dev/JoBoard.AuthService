@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Request;
+using JoBoard.AuthService.Application.Commands.Account.ResetPassword.Request;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
 
 
@@ -32,7 +32,7 @@ public class RequestPasswordResetTests : IClassFixture<CustomWebApplicationFacto
     {
         var request = new RequestPasswordResetCommand()
         {
-            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value.Email.Value
+            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Email.Value
         };
         
         var response = await _httpClient.PostAsJsonAsync(AccountV1Routes.RequestPasswordReset, request);

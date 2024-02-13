@@ -1,8 +1,6 @@
-﻿using JoBoard.AuthService.Application.UseCases.Account.Register.ByGoogle;
+﻿using JoBoard.AuthService.Application.Commands.Account.Register.ByGoogle;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
-
-using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Application.UseCases.Account.Register;
 
@@ -33,9 +31,11 @@ public class RegisterByGoogleAccountCommandHandlerTests
         };
         
         var handler = CreateHandler();
-        var result = await handler.Handle(command, default);
-        
-        Assert.Equal(result, MediatR.Unit.Value);
+
+        await Assert.ThrowsAsync<DomainException>(async () =>
+        {
+            _ = await handler.Handle(command, default);
+        });
     }
     
     [Fact]
@@ -56,13 +56,11 @@ public class RegisterByGoogleAccountCommandHandlerTests
     
     private static RegisterByGoogleAccountCommandHandler CreateHandler()
     {
-        var googleAuthProvider = GoogleAuthProviderStubFactory.Create();
-        var eventDispatcher = DomainEventDispatcherStubFactory.Create();
-        var userRepository = UserRepositoryStubFactory.Create();
-        
         return new RegisterByGoogleAccountCommandHandler(
-            eventDispatcher,
-            googleAuthProvider,
-            userRepository);
+            TestsRegistry.DomainEventDispatcher,
+            TestsRegistry.GoogleAuthProvider,
+            TestsRegistry.UserRepository,
+            TestsRegistry.UserEmailUniquenessChecker,
+            TestsRegistry.ExternalAccountUniquenessChecker);
     }
 }

@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmailAndPassword;
+using JoBoard.AuthService.Application.Commands.Account.Register.ByEmailAndPassword;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
 
 
@@ -38,7 +38,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
         {
             FirstName = "Test",
             LastName = "Test",
-            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value.Email.Value,
+            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Email.Value,
             Password = "ValidPassword123$",
             Role = "Hirer"
         };

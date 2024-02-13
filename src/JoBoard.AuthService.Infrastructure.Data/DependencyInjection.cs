@@ -20,6 +20,8 @@ public static class DependencyInjection
                 x.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName));
         });
 
+        services.AddScoped<IUserEmailUniquenessChecker, EfUserEmailUniquenessChecker>();
+        services.AddScoped<IExternalAccountUniquenessChecker, EfExternalAccountUniquenessChecker>();
         services.AddScoped<IUserRepository, EfUserRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
         services.AddScoped<IChangeTracker, EfChangeTracker>();

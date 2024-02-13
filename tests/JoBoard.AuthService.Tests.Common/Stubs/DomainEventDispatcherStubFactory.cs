@@ -3,7 +3,8 @@ using Moq;
 
 namespace JoBoard.AuthService.Tests.Common.Stubs;
 
-public static class DomainEventDispatcherStubFactory
+// Thread-safe Singleton
+internal static class DomainEventDispatcherStubFactory
 {
     public static IDomainEventDispatcher Create()
     {

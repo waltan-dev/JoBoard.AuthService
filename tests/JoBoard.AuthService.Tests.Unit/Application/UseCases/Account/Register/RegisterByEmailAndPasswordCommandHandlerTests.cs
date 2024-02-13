@@ -1,9 +1,7 @@
-﻿using JoBoard.AuthService.Application.Common.Configs;
-using JoBoard.AuthService.Application.Common.Exceptions;
-using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmailAndPassword;
+﻿using JoBoard.AuthService.Application.Commands.Account.Register.ByEmailAndPassword;
+using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
-
-using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Application.UseCases.Account.Register;
 
@@ -34,7 +32,7 @@ public class RegisterByEmailAndPasswordCommandHandlerTests
         {
             FirstName = "Ivan",
             LastName = "Ivanov",
-            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value.Email.Value,
+            Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Email.Value,
             Password = PasswordFixtures.DefaultPassword,
             Role = "Worker"
         };
@@ -48,19 +46,13 @@ public class RegisterByEmailAndPasswordCommandHandlerTests
 
     private static RegisterByEmailAndPasswordCommandHandler CreateHandler()
     {
-        var passwordValidator = PasswordStrengthValidatorStubFactory.Create();
-        var passwordHasher = PasswordHasherStubFactory.Create();
-        var tokenizer = SecureTokenizerStubFactory.Create();
-        var eventDispatcher = DomainEventDispatcherStubFactory.Create();
-        var userRepository = UserRepositoryStubFactory.Create();
-        var confirmTokenConfig = new ConfirmationTokenConfig { TokenLifeSpan = TimeSpan.FromHours(24) };
-        
         return new RegisterByEmailAndPasswordCommandHandler(
-            passwordValidator, 
-            tokenizer,
-            eventDispatcher,
-            userRepository,
-            passwordHasher,
-            confirmTokenConfig);
+            TestsRegistry.PasswordStrengthValidator, 
+            TestsRegistry.SecureTokenizer,
+            TestsRegistry.DomainEventDispatcher,
+            TestsRegistry.UserRepository,
+            TestsRegistry.PasswordHasher,
+            TestsRegistry.UserEmailUniquenessChecker,
+            new ConfirmationTokenConfig { TokenLifeSpan = TimeSpan.FromHours(24) });
     }
 }

@@ -10,7 +10,7 @@ public class UpdateFullNameTests
     [Fact]
     public void UpdateFullName()
     {
-        var user = new UserBuilder().WithActiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithActiveStatus().Build();
         var newName = new FullName("New", "Name");
 
         user.UpdateFullName(newName);
@@ -22,7 +22,7 @@ public class UpdateFullNameTests
     [Fact]
     public void UpdateFullNameWithInactiveStatus()
     {
-        var user = new UserBuilder().WithInactiveStatus().Build();
+        var user = TestsRegistry.UserBuilder.WithInactiveStatus().Build();
         var newName = new FullName("New", "Name");
 
         Assert.Throws<DomainException>(() =>

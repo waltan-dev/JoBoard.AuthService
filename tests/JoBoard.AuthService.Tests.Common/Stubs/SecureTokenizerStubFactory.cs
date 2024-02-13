@@ -3,7 +3,8 @@ using JoBoard.AuthService.Infrastructure.Auth.Services;
 
 namespace JoBoard.AuthService.Tests.Common.Stubs;
 
-public static class SecureTokenizerStubFactory
+// Thread-safe Singleton
+internal static class SecureTokenizerStubFactory
 {
     public static ISecureTokenizer Create()
     {
