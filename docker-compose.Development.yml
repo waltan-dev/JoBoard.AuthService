@@ -9,7 +9,7 @@ services:
       - "8080:5000"
     environment:
       # localhost:5432 - address is in the internal docker network
-      ConnectionStrings__DefaultConnection: "Host=auth-service-db;Port=5432;Database=auth-service;Username=auth-service-user;Password=auth-service-password"
+      ConnectionStrings__DefaultConnection: "Host=auth-service-db;Port=5432;Database=auth-service;Username=auth-service-user;Password=password"
     depends_on: 
       - auth-service-db
   

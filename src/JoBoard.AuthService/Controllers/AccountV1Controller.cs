@@ -23,7 +23,7 @@ public class AccountV1Controller : ControllerBase
         return StatusCode(StatusCodes.Status201Created);
     }
     
-    [HttpPost("register")]
+    [HttpPost("register-with-google")]
     public async Task<IActionResult> RegisterWithGoogle(RegisterByEmailCommand command, CancellationToken ct)
     {
         await _mediator.Send(command, ct);
