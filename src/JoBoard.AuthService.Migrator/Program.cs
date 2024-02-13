@@ -9,8 +9,7 @@ var host = Host.CreateDefaultBuilder()
     .ConfigureServices((context, services) =>
     {
         var connectionStr = context.Configuration.GetConnectionString("DefaultConnection");
-        services.AddDbContext<AuthDbContext>(options => options.UseNpgsql(connectionStr, 
-            x => x.MigrationsAssembly(typeof(Program).Assembly.FullName)));
+        services.AddDatabase(connectionStr);
     })
     .ConfigureLogging(builder =>
     {
