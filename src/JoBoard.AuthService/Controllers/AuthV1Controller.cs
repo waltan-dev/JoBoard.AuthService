@@ -6,7 +6,6 @@ using JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogle;
 using JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmation;
 using JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Request;
 using JoBoard.AuthService.Infrastructure.Auth.Jwt;
-using JoBoard.AuthService.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -19,40 +18,40 @@ namespace JoBoard.AuthService.Controllers;
 public class AuthV1Controller : ControllerBase
 {
     private readonly IMediator _mediator;
-    private readonly IJwtManager _jwtManager;
+    private readonly JwtSignInManager _jwtSignInManager;
 
-    public AuthV1Controller(IMediator mediator, IJwtManager jwtManager)
+    public AuthV1Controller(IMediator mediator, JwtSignInManager jwtSignInManager)
     {
         _mediator = mediator;
-        _jwtManager = jwtManager;
+        _jwtSignInManager = jwtSignInManager;
     }
     
     [HttpPost(AuthV1Routes.Login)]
     public async Task<IActionResult> Login(LoginByEmailCommand command, CancellationToken ct)
     {
         var userResult = await _mediator.Send(command, ct);
-        return Ok(UserResponse.Create(userResult, _jwtManager));
+        return Ok(await _jwtSignInManager.SignInAsync(userResult));
     }
     
     [HttpPost(AuthV1Routes.LoginByGoogle)]
     public async Task<IActionResult> LoginByGoogle(LoginByGoogleAccountCommand command, CancellationToken ct)
     {
         var userResult = await _mediator.Send(command, ct);
-        return Ok(UserResponse.Create(userResult, _jwtManager));
+        return Ok(await _jwtSignInManager.SignInAsync(userResult));
     }
     
     [HttpPost(AuthV1Routes.Register)]
     public async Task<IActionResult> Register(RegisterByEmailCommand command, CancellationToken ct)
     {
         var userResult = await _mediator.Send(command, ct);
-        return Ok(UserResponse.Create(userResult, _jwtManager));
+        return Ok(await _jwtSignInManager.SignInAsync(userResult));
     }
     
     [HttpPost(AuthV1Routes.RegisterByGoogle)]
     public async Task<IActionResult> RegisterByGoogle(RegisterByGoogleAccountCommand command, CancellationToken ct)
     {
         var userResult = await _mediator.Send(command, ct);
-        return Ok(UserResponse.Create(userResult, _jwtManager));
+        return Ok(await _jwtSignInManager.SignInAsync(userResult));
     }
     
     [HttpPost(AuthV1Routes.ConfirmEmail)]

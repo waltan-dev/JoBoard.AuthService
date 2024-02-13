@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
-using JoBoard.AuthService.Tests.Common;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AuthV1Controller;
@@ -38,7 +37,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
         {
             FirstName = "Test",
             LastName = "Test",
-            Email = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Email.Value,
+            Email = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Value.Email.Value,
             Password = "ValidPassword123$",
             Role = "Hirer"
         };

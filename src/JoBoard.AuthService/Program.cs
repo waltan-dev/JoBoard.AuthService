@@ -2,6 +2,7 @@ using JoBoard.AuthService.Application;
 using JoBoard.AuthService.Application.Common.Configs;
 using JoBoard.AuthService.Infrastructure.Auth;
 using JoBoard.AuthService.Infrastructure.Auth.Configs;
+using JoBoard.AuthService.Infrastructure.Auth.Jwt;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Infrastructure.HttpEndpoints;
 using JoBoard.AuthService.Infrastructure.Jwt;
@@ -21,7 +22,8 @@ var connectionString = builder.Configuration.GetConnectionString("DefaultConnect
 builder.Services.AddDatabaseInfrastructure(connectionString);
 
 var googleAuthConfig = builder.Configuration.GetRequiredSection(nameof(GoogleAuthConfig)).Get<GoogleAuthConfig>();
-builder.Services.AddAuthInfrastructure(googleAuthConfig);
+var redisConfig = builder.Configuration.GetRequiredSection(nameof(RedisConfig)).Get<RedisConfig>();
+builder.Services.AddAuthInfrastructure(googleAuthConfig, redisConfig);
 
 var confirmTokenConfig = builder.Configuration.GetRequiredSection(nameof(ConfirmationTokenConfig)).Get<ConfirmationTokenConfig>();
 var refreshTokenConfig = builder.Configuration.GetRequiredSection(nameof(RefreshTokenConfig)).Get<RefreshTokenConfig>();

@@ -40,7 +40,7 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
         if (user == null)
             throw new NotFoundException("User not found");
 
-        var newPassword = Password.Create(request.NewPassword, _passwordStrengthValidator, _passwordHasher);
+        var newPassword = PasswordHash.Create(request.NewPassword, _passwordStrengthValidator, _passwordHasher);
         user.ChangePassword(request.CurrentPassword, newPassword, _passwordHasher);
 
         await _userRepository.UpdateAsync(user, ct);

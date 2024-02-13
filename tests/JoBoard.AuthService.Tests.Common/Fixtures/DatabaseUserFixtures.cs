@@ -20,7 +20,7 @@ public static class DatabaseUserFixtures
                     fullName: new FullName("Test", "Hirer"),
                     email: new Email("ExistingActiveUser@gmail.com"),
                     role: UserRole.Hirer,
-                    password: PasswordFixtures.CreateDefault(),
+                    passwordHash: PasswordFixtures.CreateDefault(),
                     registerConfirmToken: ConfirmationTokenFixtures.CreateNew());
                 
                 user.ConfirmEmail(user.RegisterConfirmToken!.Value);
@@ -30,27 +30,37 @@ public static class DatabaseUserFixtures
             }
         }
     }
+
+    public static readonly Lazy<User> ExistingUserRegisteredByEmail = new(() =>
+    {
+        return User.RegisterByEmailAndPassword(
+            userId: UserId.Generate(),
+            fullName: new FullName("Test", "Hirer"),
+            email: new Email("ExistingUserRegisteredByEmail@gmail.com"),
+            role: UserRole.Hirer,
+            passwordHash: PasswordFixtures.CreateDefault(),
+            registerConfirmToken: ConfirmationTokenFixtures.CreateNew());
+    });
     
-    public static readonly User ExistingUserRegisteredByEmail = User.RegisterByEmailAndPassword(
-        userId: UserId.Generate(),
-        fullName: new FullName("Test", "Hirer"),
-        email: new Email("ExistingUserRegisteredByEmail@gmail.com"),
-        role: UserRole.Hirer, 
-        password: PasswordFixtures.CreateDefault(),
-        registerConfirmToken: ConfirmationTokenFixtures.CreateNew()); 
+    public static readonly Lazy<User> ExistingUserRegisteredByGoogleAccount = new(() =>
+    {
+        return User.RegisterByGoogleAccount(
+            userId: UserId.Generate(),
+            fullName: new FullName(GoogleFixtures.UserProfileForExistingUser.FirstName,
+                GoogleFixtures.UserProfileForExistingUser.LastName),
+            email: new Email(GoogleFixtures.UserProfileForExistingUser.Email),
+            role: UserRole.Worker,
+            googleUserId: GoogleFixtures.UserProfileForExistingUser.Id);
+    });
     
-    public static readonly User ExistingUserRegisteredByGoogleAccount = User.RegisterByGoogleAccount(
-        userId: UserId.Generate(),
-        fullName: new FullName(GoogleFixtures.UserProfileForExistingUser.FirstName, GoogleFixtures.UserProfileForExistingUser.LastName),
-        email: new Email(GoogleFixtures.UserProfileForExistingUser.Email),
-        role: UserRole.Worker, 
-        googleUserId: GoogleFixtures.UserProfileForExistingUser.Id); 
-    
-    public static readonly User ExistingUserWithExpiredToken = User.RegisterByEmailAndPassword(
-        userId: UserId.Generate(),
-        fullName: new FullName("Test", "Hirer"),
-        email: new Email("ExistingUserWithExpiredToken@gmail.com"),
-        role: UserRole.Hirer, 
-        password: PasswordFixtures.CreateDefault(),
-        registerConfirmToken: ConfirmationTokenFixtures.CreateExpired());
+    public static readonly Lazy<User> ExistingUserWithExpiredToken = new(() =>
+    {
+        return User.RegisterByEmailAndPassword(
+            userId: UserId.Generate(),
+            fullName: new FullName("Test", "Hirer"),
+            email: new Email("ExistingUserWithExpiredToken@gmail.com"),
+            role: UserRole.Hirer, 
+            passwordHash: PasswordFixtures.CreateDefault(),
+            registerConfirmToken: ConfirmationTokenFixtures.CreateExpired());
+        });
 }

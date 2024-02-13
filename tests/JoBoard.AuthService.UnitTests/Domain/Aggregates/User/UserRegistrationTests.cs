@@ -21,14 +21,14 @@ public class UserRegistrationTests
             fullName: fullName,
             email: email,
             role: role, 
-            password: password,
+            passwordHash: password,
             registerConfirmToken: registerConfirmToken);
 
         Assert.Equal(userId, newUser.Id);
         Assert.Equal(fullName, newUser.FullName);
         Assert.Equal(email, newUser.Email);
         Assert.Equal(role, newUser.Role);
-        Assert.Equal(password, newUser.Password);
+        Assert.Equal(password, newUser.PasswordHash);
         Assert.Equal(registerConfirmToken, newUser.RegisterConfirmToken);
         
         Assert.Equal(UserStatus.Pending, newUser.Status);
@@ -73,7 +73,7 @@ public class UserRegistrationTests
         Assert.Equal(UserStatus.Active, newUser.Status);
         Assert.True(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
-        Assert.Null(newUser.Password);
+        Assert.Null(newUser.PasswordHash);
     }
     
     [Fact]

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240105102417_CreateUsersTbl")]
-    partial class CreateUsersTbl
+    [Migration("20240114011657_Init")]
+    partial class Init
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -37,6 +37,8 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 
                     b.HasKey("Id", "ExternalUserId", "Provider");
 
+                    b.HasIndex("ExternalUserId", "Provider");
+
                     b.ToTable("ExternalAccounts", (string)null);
                 });
 
@@ -47,9 +49,6 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("boolean");
-
-                    b.Property<string>("PasswordHash")
-                        .HasColumnType("text");
 
                     b.Property<DateTime>("RegisteredAt")
                         .HasColumnType("timestamp with time zone");
@@ -99,6 +98,68 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                                 .HasForeignKey("UserId");
                         });
 
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.PasswordHash", "PasswordHash", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("PasswordHash");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "AccountDeactivationConfirmToken", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("Expiration")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("AccountDeactivationConfirmTokenExpiration");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("AccountDeactivationConfirmToken");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "ChangeEmailConfirmToken", b1 =>
+                        {
+                            b1.Property<Guid>("UserId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<DateTime>("Expiration")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("ChangeEmailConfirmTokenExpiration");
+
+                            b1.Property<string>("Value")
+                                .IsRequired()
+                                .HasColumnType("text")
+                                .HasColumnName("ChangeEmailConfirmToken");
+
+                            b1.HasKey("UserId");
+
+                            b1.ToTable("Users");
+
+                            b1.WithOwner()
+                                .HasForeignKey("UserId");
+                        });
+
                     b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.Email", "Email", b1 =>
                         {
                             b1.Property<Guid>("UserId")
@@ -130,28 +191,6 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                                 .IsRequired()
                                 .HasColumnType("text")
                                 .HasColumnName("NewEmail");
-
-                            b1.HasKey("UserId");
-
-                            b1.ToTable("Users");
-
-                            b1.WithOwner()
-                                .HasForeignKey("UserId");
-                        });
-
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ConfirmationToken", "NewEmailConfirmationToken", b1 =>
-                        {
-                            b1.Property<Guid>("UserId")
-                                .HasColumnType("uuid");
-
-                            b1.Property<DateTime>("Expiration")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("NewEmailConfirmationTokenExpiration");
-
-                            b1.Property<string>("Value")
-                                .IsRequired()
-                                .HasColumnType("text")
-                                .HasColumnName("NewEmailConfirmationToken");
 
                             b1.HasKey("UserId");
 
@@ -205,6 +244,10 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                                 .HasForeignKey("UserId");
                         });
 
+                    b.Navigation("AccountDeactivationConfirmToken");
+
+                    b.Navigation("ChangeEmailConfirmToken");
+
                     b.Navigation("Email")
                         .IsRequired();
 
@@ -213,10 +256,9 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 
                     b.Navigation("NewEmail");
 
-                    b.Navigation("NewEmailConfirmationToken");
+                    b.Navigation("PasswordHash");
 
-                    b.Navigation("RegisterConfirmToken")
-                        .IsRequired();
+                    b.Navigation("RegisterConfirmToken");
 
                     b.Navigation("ResetPasswordConfirmToken");
                 });

@@ -22,7 +22,7 @@ public class ChangePasswordTests : IClassFixture<CustomWebApplicationFactory>
             NewPassword = PasswordFixtures.NewPassword
         };
 
-        await _httpClient.AuthorizeAsync(DatabaseUserFixtures.ExistingUserRegisteredByEmail);
+        await _httpClient.AuthorizeAsync(DatabaseUserFixtures.ExistingUserRegisteredByEmail.Value);
         var response = await _httpClient.PostAsJsonAsync(ManageV1Routes.ChangePassword, request);
 
         await Assert.SuccessEmptyResponseAsync(response);

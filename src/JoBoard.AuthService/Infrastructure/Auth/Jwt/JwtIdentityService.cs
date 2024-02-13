@@ -1,8 +1,9 @@
 ﻿using System.Security.Claims;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
+using Microsoft.AspNetCore.Http;
 
-namespace JoBoard.AuthService.Infrastructure.Jwt;
+namespace JoBoard.AuthService.Infrastructure.Auth.Services;
 
 public class JwtIdentityService : IIdentityService
 {

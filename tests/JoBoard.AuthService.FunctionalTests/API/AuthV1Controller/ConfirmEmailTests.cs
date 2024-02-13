@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Auth.ConfirmEmail;
-using JoBoard.AuthService.Tests.Common;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AuthV1Controller;
@@ -19,8 +18,8 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new ConfirmEmailCommand
         {
-            UserId = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Id.Value,
-            Token = DatabaseUserFixtures.ExistingUserRegisteredByEmail.RegisterConfirmToken!.Value,
+            UserId = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Value.Id.Value,
+            Token = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Value.RegisterConfirmToken!.Value,
         };
         
         var response = await _httpClient.PostAsJsonAsync(AuthV1Routes.ConfirmEmail, request);
@@ -33,8 +32,8 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new ConfirmEmailCommand
         {
-            UserId = DatabaseUserFixtures.ExistingUserWithExpiredToken.Id.Value,
-            Token = DatabaseUserFixtures.ExistingUserWithExpiredToken.RegisterConfirmToken!.Value,
+            UserId = DatabaseUserFixtures.ExistingUserWithExpiredToken.Value.Id.Value,
+            Token = DatabaseUserFixtures.ExistingUserWithExpiredToken.Value.RegisterConfirmToken!.Value,
         };
         
         var response = await _httpClient.PostAsJsonAsync(AuthV1Routes.ConfirmEmail, request);
@@ -47,7 +46,7 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new ConfirmEmailCommand
         {
-            UserId = DatabaseUserFixtures.ExistingUserWithExpiredToken.Id.Value,
+            UserId = DatabaseUserFixtures.ExistingUserWithExpiredToken.Value.Id.Value,
             Token = "invalid-token",
         };
         

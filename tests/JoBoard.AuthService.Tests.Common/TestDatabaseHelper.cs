@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Infrastructure.Data;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 using Microsoft.EntityFrameworkCore;
 
@@ -20,12 +21,14 @@ public static class TestDatabaseHelper
 
     private static void AddUserFixtures(AuthDbContext dbContext)
     {
-        dbContext.Users.AddRange(
-            DatabaseUserFixtures.ExistingActiveUser, 
-            DatabaseUserFixtures.ExistingUserRegisteredByEmail, 
-            DatabaseUserFixtures.ExistingUserRegisteredByGoogleAccount,
-            DatabaseUserFixtures.ExistingUserWithExpiredToken
-            );
+        var users = new List<User>
+        {
+            DatabaseUserFixtures.ExistingActiveUser,
+            DatabaseUserFixtures.ExistingUserRegisteredByEmail.Value,
+            DatabaseUserFixtures.ExistingUserRegisteredByGoogleAccount.Value,
+            DatabaseUserFixtures.ExistingUserWithExpiredToken.Value
+        };
+        dbContext.Users.AddRange(users);
         dbContext.SaveChanges();
     }
 }

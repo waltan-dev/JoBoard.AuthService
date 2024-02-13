@@ -18,7 +18,7 @@ public static class HttpClientExtensions
         };
         var response = await httpClient.PostAsJsonAsync(AuthV1Routes.Login, request);
         response.EnsureSuccessStatusCode();
-        var responseBody = await response.Content.ReadFromJsonAsync<UserResponse>();
+        var responseBody = await response.Content.ReadFromJsonAsync<AuthResponse>();
         
         httpClient.DefaultRequestHeaders.Authorization = 
             new AuthenticationHeaderValue("Bearer", responseBody!.AccessToken);

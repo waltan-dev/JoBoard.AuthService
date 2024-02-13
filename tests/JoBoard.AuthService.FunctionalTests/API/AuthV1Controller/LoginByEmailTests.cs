@@ -19,7 +19,7 @@ public class LoginByEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new LoginByEmailCommand()
         {
-            Email = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Email.Value,
+            Email = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Value.Email.Value,
             Password = PasswordFixtures.DefaultPassword,
         };
         

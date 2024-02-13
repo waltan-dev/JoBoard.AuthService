@@ -65,7 +65,7 @@ public class ResetPasswordTests
         var newPassword = PasswordFixtures.CreateNew();
         user.ConfirmPasswordReset(confirmationToken.Value, newPassword);
         
-        Assert.Equal(newPassword, user.Password);
+        Assert.Equal(newPassword, user.PasswordHash);
         Assert.Null(user.ResetPasswordConfirmToken);
     }
     

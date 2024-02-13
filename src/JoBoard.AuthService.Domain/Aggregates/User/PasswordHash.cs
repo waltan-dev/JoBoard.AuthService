@@ -4,30 +4,32 @@ using JoBoard.AuthService.Domain.Common.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
-public class Password : ValueObject
+public class PasswordHash : ValueObject
 {
-    public string Hash { get; private set; }
+    public string Value { get; private set; }
     
-    private Password(string hash)
+    private PasswordHash() {} // for ef core only
+    
+    private PasswordHash(string value)
     {
-        Hash = hash;
+        Value = value;
     }
 
-    public static Password Create(string password, IPasswordStrengthValidator passwordStrengthValidator, IPasswordHasher passwordHasher)
+    public static PasswordHash Create(string password, IPasswordStrengthValidator passwordStrengthValidator, IPasswordHasher passwordHasher)
     {
         if (passwordStrengthValidator.Validate(password) == false)
             throw new DomainException("Password is not strength");
 
-        return new Password(passwordHasher.Hash(password));
+        return new PasswordHash(passwordHasher.Hash(password));
     }
 
     public bool Verify(string passwordForCheck, IPasswordHasher passwordHasher)
     {
-        return passwordHasher.Verify(Hash, passwordForCheck);
+        return passwordHasher.Verify(Value, passwordForCheck);
     }
     
     protected override IEnumerable<object> GetEqualityComponents()
     {
-        yield return Hash;
+        yield return Value;
     }
 }

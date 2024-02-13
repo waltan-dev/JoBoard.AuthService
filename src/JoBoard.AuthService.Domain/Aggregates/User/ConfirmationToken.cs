@@ -15,20 +15,19 @@ public class ConfirmationToken : ValueObject
     public DateTime Expiration { get; private set; }
     
     private ConfirmationToken() {} // for ef core only
-    
-    private ConfirmationToken(string token, int expiresInHours)
+
+    private ConfirmationToken(string token, DateTime expiration)
     {
-        Guard.IsNotNullOrWhiteSpace(token);
-        Guard.IsNotDefault(expiresInHours);
-        
         Value = token;
-        Expiration = DateTime.UtcNow.AddHours(expiresInHours).TrimMilliseconds();
+        Expiration = expiration;
     }
 
     public static ConfirmationToken Create(ISecureTokenizer secureTokenizer, int expiresInHours)
     {
+        Guard.IsNotDefault(expiresInHours);
+        
         var secureToken = secureTokenizer.Generate();
-        return new ConfirmationToken(secureToken, expiresInHours);
+        return new ConfirmationToken(secureToken, DateTime.UtcNow.AddHours(expiresInHours).TrimMilliseconds());
     }
     
     public void Verify(string token)

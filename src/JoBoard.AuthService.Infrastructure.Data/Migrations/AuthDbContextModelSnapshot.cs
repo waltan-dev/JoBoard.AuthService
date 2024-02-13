@@ -39,7 +39,7 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 
                     b.ToTable("ExternalAccounts", (string)null);
                 });
-            
+
             modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -70,7 +70,7 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-            
+
             modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.User", b =>
                 {
                     b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.FullName", "FullName", b1 =>
@@ -96,12 +96,12 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.Password", "Password", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.PasswordHash", "PasswordHash", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<string>("Hash")
+                            b1.Property<string>("Value")
                                 .IsRequired()
                                 .HasColumnType("text")
                                 .HasColumnName("PasswordHash");
@@ -254,7 +254,7 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 
                     b.Navigation("NewEmail");
 
-                    b.Navigation("Password");
+                    b.Navigation("PasswordHash");
 
                     b.Navigation("RegisterConfirmToken");
 

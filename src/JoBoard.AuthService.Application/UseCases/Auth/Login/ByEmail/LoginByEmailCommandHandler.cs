@@ -28,7 +28,7 @@ public class LoginByEmailCommandHandler : IRequestHandler<LoginByEmailCommand, U
             throw new NotFoundException("User not found");
         user.ThrowIfBlockedOrDeactivated();
 
-        if (user.Password == null || user.Password.Verify(request.Password, _passwordHasher) == false)
+        if (user.PasswordHash == null || user.PasswordHash.Verify(request.Password, _passwordHasher) == false)
             throw new DomainException("Invalid email or password");
         
         return new UserResult(

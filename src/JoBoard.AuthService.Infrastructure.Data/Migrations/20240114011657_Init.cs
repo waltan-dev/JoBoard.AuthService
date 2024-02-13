@@ -5,7 +5,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 
 namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 {
-    public partial class CreateUsersTbl : Migration
+    public partial class Init : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -18,17 +18,19 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                     FirstName = table.Column<string>(type: "text", nullable: false),
                     LastName = table.Column<string>(type: "text", nullable: false),
                     Email = table.Column<string>(type: "text", nullable: false),
+                    NewEmail = table.Column<string>(type: "text", nullable: true),
                     EmailConfirmed = table.Column<bool>(type: "boolean", nullable: false),
                     Role = table.Column<int>(type: "integer", nullable: false),
                     Status = table.Column<int>(type: "integer", nullable: false),
                     PasswordHash = table.Column<string>(type: "text", nullable: true),
-                    RegisterConfirmToken = table.Column<string>(type: "text", nullable: false),
-                    RegisterConfirmTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: false),
+                    RegisterConfirmToken = table.Column<string>(type: "text", nullable: true),
+                    RegisterConfirmTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
                     ResetPasswordConfirmToken = table.Column<string>(type: "text", nullable: true),
                     ResetPasswordConfirmTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
-                    NewEmail = table.Column<string>(type: "text", nullable: true),
-                    NewEmailConfirmationToken = table.Column<string>(type: "text", nullable: true),
-                    NewEmailConfirmationTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
+                    ChangeEmailConfirmToken = table.Column<string>(type: "text", nullable: true),
+                    ChangeEmailConfirmTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true),
+                    AccountDeactivationConfirmToken = table.Column<string>(type: "text", nullable: true),
+                    AccountDeactivationConfirmTokenExpiration = table.Column<DateTime>(type: "timestamp with time zone", nullable: true)
                 },
                 constraints: table =>
                 {
@@ -53,6 +55,11 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                 });
+
+            migrationBuilder.CreateIndex(
+                name: "IX_ExternalAccounts_ExternalUserId_Provider",
+                table: "ExternalAccounts",
+                columns: new[] { "ExternalUserId", "Provider" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_Users_Email",

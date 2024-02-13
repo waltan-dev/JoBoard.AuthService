@@ -36,7 +36,7 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
         if (user == null)
             throw new NotFoundException("User not found");
 
-        var newPassword = Password.Create(request.NewPassword, _passwordStrengthValidator, _passwordHasher);
+        var newPassword = PasswordHash.Create(request.NewPassword, _passwordStrengthValidator, _passwordHasher);
         user.ConfirmPasswordReset(request.ConfirmationToken, newPassword);
 
         await _userRepository.UpdateAsync(user, ct);

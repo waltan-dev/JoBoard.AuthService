@@ -33,7 +33,7 @@ public class UserBuilder
                 fullName: new FullName("Ivan", "Ivanov"),
                 email: new Email("ivan@gmail.com"),
                 role: userRole,
-                password: PasswordFixtures.CreateDefault(),
+                passwordHash: PasswordFixtures.CreateDefault(),
                 registerConfirmToken: registerConfirmToken);
         }
         

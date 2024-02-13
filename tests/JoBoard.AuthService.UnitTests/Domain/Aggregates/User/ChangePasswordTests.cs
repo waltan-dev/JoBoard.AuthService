@@ -15,7 +15,7 @@ public class ChangePasswordTests
         
         user.ChangePassword(PasswordFixtures.DefaultPassword, newPassword, passwordHasher);
         
-        Assert.Equal(newPassword, user.Password);
+        Assert.Equal(newPassword, user.PasswordHash);
     }
     
     [Fact]

@@ -16,7 +16,7 @@ public class User : Entity, IAggregateRoot
     public bool EmailConfirmed { get; private set; }
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
-    public Password? Password { get; private set; }
+    public PasswordHash? PasswordHash { get; private set; }
     
     private List<ExternalAccount> _externalAccounts;
     public IReadOnlyCollection<ExternalAccount> ExternalAccounts => _externalAccounts.AsReadOnly();
@@ -30,7 +30,7 @@ public class User : Entity, IAggregateRoot
     
     // universal constructor for different scenarios, e.g. register by google account or register by email and password
     private User(UserId userId, FullName fullName, Email email, bool emailConfirmed, UserRole role, UserStatus status,
-        Password? password, ConfirmationToken? registerConfirmToken, ExternalAccount? externalAccount)
+        PasswordHash? passwordHash, ConfirmationToken? registerConfirmToken, ExternalAccount? externalAccount)
     {
         Id = userId;
         RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
@@ -39,7 +39,7 @@ public class User : Entity, IAggregateRoot
         EmailConfirmed = emailConfirmed;
         Role = role;
         Status = status;
-        Password = password;
+        PasswordHash = passwordHash;
         RegisterConfirmToken = registerConfirmToken;
         _externalAccounts = externalAccount == null 
             ? new List<ExternalAccount>() 
@@ -49,7 +49,7 @@ public class User : Entity, IAggregateRoot
     }
 
     public static User RegisterByEmailAndPassword(UserId userId, FullName fullName, Email email, UserRole role, 
-        Password password, ConfirmationToken registerConfirmToken)
+        PasswordHash passwordHash, ConfirmationToken registerConfirmToken)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -61,7 +61,7 @@ public class User : Entity, IAggregateRoot
             emailConfirmed: false,
             role: role,
             status: UserStatus.Pending, 
-            password: password, 
+            passwordHash: passwordHash, 
             registerConfirmToken: registerConfirmToken,
             null);
     }
@@ -79,7 +79,7 @@ public class User : Entity, IAggregateRoot
             emailConfirmed: true,
             role: role,
             status: UserStatus.Active, 
-            password: null, 
+            passwordHash: null, 
             registerConfirmToken: null,
             new ExternalAccount(googleUserId, ExternalAccountProvider.Google));
     }
@@ -139,7 +139,7 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserRequestedPasswordResetDomainEvent(this));
     }
 
-    public void ConfirmPasswordReset(string token, Password newPassword)
+    public void ConfirmPasswordReset(string token, PasswordHash newPasswordHash)
     {
         ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
@@ -149,21 +149,21 @@ public class User : Entity, IAggregateRoot
         
         ResetPasswordConfirmToken.Verify(token);
 
-        Password = newPassword;
+        PasswordHash = newPasswordHash;
         ResetPasswordConfirmToken = null;
     }
 
-    public void ChangePassword(string currentPassword, Password newPassword, IPasswordHasher passwordHasher)
+    public void ChangePassword(string currentPassword, PasswordHash newPasswordHash, IPasswordHasher passwordHasher)
     {
         ThrowIfBlockedOrDeactivated();
         
-        if(this.Password == null)
+        if(this.PasswordHash == null)
             throw new DomainException("No current password");
 
-        if (this.Password.Verify(currentPassword, passwordHasher) == false)
+        if (this.PasswordHash.Verify(currentPassword, passwordHasher) == false)
             throw new DomainException("Incorrect current password");
         
-        Password = newPassword;
+        PasswordHash = newPasswordHash;
         AddDomainEvent(new UserChangedPasswordDomainEvent(this));
     }
 

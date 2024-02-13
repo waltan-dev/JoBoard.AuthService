@@ -46,12 +46,12 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             throw new DomainException("This email is already in use");
         
         var newToken = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.ExpiresInHours);
-        var password = Password.Create(request.Password, _passwordStrengthValidator, _passwordHasher);
+        var password = PasswordHash.Create(request.Password, _passwordStrengthValidator, _passwordHasher);
         var newUser = User.RegisterByEmailAndPassword(userId: UserId.Generate(),
             fullName: new FullName(request.FirstName, request.LastName),
             email: new Email(request.Email),
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
-            password: password,
+            passwordHash: password,
             registerConfirmToken: newToken);
         
         await _userRepository.AddAsync(newUser, ct);

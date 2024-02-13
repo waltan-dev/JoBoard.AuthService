@@ -7,14 +7,12 @@ namespace JoBoard.AuthService.Tests.Common.Fixtures;
 public static class PasswordFixtures
 {
     public static string DefaultPassword = "ValidPassword123#";
-    //public static string DefaultPasswordHash = "10000.sV/vif/8IYZO52XF9Tfn5w==.Mi4Hj8hZxlmtkqNlpNRDe1rxrA/Z+6szDZLwQ9vjBrs=";
-    public static Password CreateDefault() 
-        => Password.Create(DefaultPassword, GetPasswordStrengthValidatorStub(), GetPasswordHasherStub());
+    public static PasswordHash CreateDefault() 
+        => PasswordHash.Create(DefaultPassword, GetPasswordStrengthValidatorStub(), GetPasswordHasherStub());
     
     public static string NewPassword = "ValidPassword123#";
-    //public static string NewPasswordHash = "10000.sV/vif/8IYZO52XF9Tfn5w==.Mi4Hj8hZxlmtkqNlpNRDe1rxrA/Z+6szDZLwQ9vjBrs=";
-    public static Password CreateNew() 
-        => Password.Create(NewPassword, GetPasswordStrengthValidatorStub(), GetPasswordHasherStub());
+    public static PasswordHash CreateNew() 
+        => PasswordHash.Create(NewPassword, GetPasswordStrengthValidatorStub(), GetPasswordHasherStub());
     
     public static IPasswordHasher GetPasswordHasherStub()
     {
