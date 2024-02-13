@@ -7,19 +7,19 @@ namespace JoBoard.AuthService.Tests.Common;
 
 public static class TestDatabaseHelper
 {
-    public static void Initialize(AuthDbContext dbContext)
+    public static async Task InitializeAsync(AuthDbContext dbContext)
     {
-        dbContext.Database.Migrate();
-        AddUserFixtures(dbContext);
+        await dbContext.Database.MigrateAsync();
+        await AddUserFixturesAsync(dbContext);
     }
     
-    public static void Clear(DbContext dbContext)
+    public static async Task ClearAsync(DbContext dbContext)
     {
-        dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE \"public\".\"Users\" CASCADE ;");
-        dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE \"public\".\"ExternalAccounts\" CASCADE;");
+        await dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"public\".\"Users\" CASCADE ;");
+        await dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"public\".\"ExternalAccounts\" CASCADE;");
     }
 
-    private static void AddUserFixtures(AuthDbContext dbContext)
+    private static async Task AddUserFixturesAsync(AuthDbContext dbContext)
     {
         var users = new List<User>
         {
@@ -29,6 +29,6 @@ public static class TestDatabaseHelper
             DatabaseUserFixtures.ExistingUserWithExpiredToken.Value
         };
         dbContext.Users.AddRange(users);
-        dbContext.SaveChanges();
+        await dbContext.SaveChangesAsync();
     }
 }

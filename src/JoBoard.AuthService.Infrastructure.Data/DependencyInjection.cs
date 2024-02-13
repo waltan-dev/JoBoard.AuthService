@@ -26,16 +26,4 @@ public static class DependencyInjection
 
         return services;
     }
-
-    public static IServiceCollection RemoveDatabase(this IServiceCollection services)
-    {
-        services.RemoveAll<DbContextOptions<AuthDbContext>>();
-        services.RemoveAll<AuthDbContext>();
-
-        services.RemoveAll<IUserRepository>();
-        services.RemoveAll<IUnitOfWork>();
-        services.RemoveAll<IChangeTracker>();
-
-        return services;
-    }
 }

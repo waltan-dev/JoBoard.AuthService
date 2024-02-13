@@ -10,7 +10,7 @@ namespace JoBoard.AuthService.IntegrationTests.Infrastructure.Data;
 
 public abstract class BaseRepositoryTest : IAsyncLifetime
 {
-    private static readonly SemaphoreSlim Semaphore = new(4); // max 4 parallel tests and docker databases
+    private static readonly SemaphoreSlim Semaphore = new(8); // max 8 parallel tests and docker databases
     
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
         .WithDatabase($"db_for_integration_tests-{Guid.NewGuid()}")
@@ -33,7 +33,7 @@ public abstract class BaseRepositoryTest : IAsyncLifetime
                 x.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName))
             .Options;
         
-        TestDatabaseHelper.Initialize(new AuthDbContext(options));
+        await TestDatabaseHelper.InitializeAsync(new AuthDbContext(options));
         
         var dbContext = new AuthDbContext(options);
         UnitOfWork = new EfUnitOfWork(dbContext);
