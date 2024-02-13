@@ -14,8 +14,6 @@
       <PackageReference Include="FluentValidation" Version="11.9.0" />
       <PackageReference Include="FluentValidation.DependencyInjectionExtensions" Version="11.9.0" />
       <PackageReference Include="MediatR" Version="12.2.0" />
-      <PackageReference Include="Microsoft.Extensions.Caching.Abstractions" Version="6.0.0" />
-      <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.33.0" />
     </ItemGroup>
 
     <ItemGroup>
