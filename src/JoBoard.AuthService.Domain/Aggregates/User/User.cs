@@ -8,8 +8,8 @@ namespace JoBoard.AuthService.Domain.Aggregates.User;
 
 public class User : Entity, IAggregateRoot
 {
-    public new UserId Id { get; }
-    public DateTime RegisteredAt { get; }
+    public new UserId Id { get; private set; }
+    public DateTime RegisteredAt { get; private set; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public Email? NewEmail { get; private set; }
@@ -47,6 +47,7 @@ public class User : Entity, IAggregateRoot
         _externalAccounts = externalAccount == null 
             ? new List<ExternalAccount>() 
             : new List<ExternalAccount> { externalAccount };
+        _refreshTokens = new List<RefreshToken>();
         
         AddDomainEvent(new UserRegisteredDomainEvent(this));
     }
@@ -95,8 +96,7 @@ public class User : Entity, IAggregateRoot
         
         _refreshTokens.Remove(currentUserRefreshToken);
 
-        var newSecureToken = secureTokenizer.Generate();
-        var newUserRefreshToken = new RefreshToken(Guid.NewGuid(), Id, newSecureToken, tokenExpiresInHours);
+        var newUserRefreshToken = Aggregates.User.RefreshToken.Create(Id, tokenExpiresInHours, secureTokenizer);
         _refreshTokens.Add(newUserRefreshToken);
         return newUserRefreshToken;
     }
@@ -122,12 +122,31 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserConfirmedEmailDomainEvent(this));
     }
 
-    public void LoginWithPassword(string passwordForCheck, IPasswordHasher passwordHasher)
+    public RefreshToken LoginWithPassword(
+        string passwordForCheck, 
+        IPasswordHasher passwordHasher, 
+        ISecureTokenizer secureTokenizer,
+        int tokenExpiresInHours)
     {
         ThrowIfBlockedOrDeactivated();
         
         if(Password == null || Password.Verify(passwordForCheck, passwordHasher) == false)
             throw new DomainException("Invalid email or password");
+        
+        var newUserRefreshToken = Aggregates.User.RefreshToken.Create(Id, tokenExpiresInHours, secureTokenizer);
+        _refreshTokens.Add(newUserRefreshToken);
+        return newUserRefreshToken;
+    }
+    
+    public RefreshToken LoginWithExternalAccount(
+        ISecureTokenizer secureTokenizer,
+        int tokenExpiresInHours)
+    {
+        ThrowIfBlockedOrDeactivated();
+        
+        var newUserRefreshToken = Aggregates.User.RefreshToken.Create(Id, tokenExpiresInHours, secureTokenizer);
+        _refreshTokens.Add(newUserRefreshToken);
+        return newUserRefreshToken;
     }
     
     public void UpdateFullName(FullName fullName)

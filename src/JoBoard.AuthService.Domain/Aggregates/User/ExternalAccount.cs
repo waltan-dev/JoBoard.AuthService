@@ -5,9 +5,9 @@ namespace JoBoard.AuthService.Domain.Aggregates.User;
 
 public class ExternalAccount : ValueObject
 {
-    public UserId Id { get; init; }
-    public string ExternalUserId { get; init; }
-    public ExternalAccountProvider Provider { get; init; }
+    public UserId Id { get; private set; }
+    public string ExternalUserId { get; private set; }
+    public ExternalAccountProvider Provider { get; private set; }
 
     private ExternalAccount() { } // only for ef core 
     

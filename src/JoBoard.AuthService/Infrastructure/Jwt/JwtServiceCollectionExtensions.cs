@@ -20,7 +20,6 @@ public static class JwtServiceCollectionExtensions
         Guard.IsNotNullOrWhiteSpace(jwtConfig.Issuer);
         Guard.IsNotNullOrWhiteSpace(jwtConfig.Audience);
         Guard.IsNotDefault(jwtConfig.TokenLifeSpan);
-        Guard.IsNotDefault(jwtConfig.RefreshTokenLifeSpan);
 
         services.AddSingleton(jwtConfig);
         services.AddHttpContextAccessor();

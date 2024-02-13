@@ -15,7 +15,7 @@ public class Email : ValueObject
         Value = value.Trim().ToLower();
     }
 
-    public string Value { get; }
+    public string Value { get; private set; }
 
     private static bool IsValid(string email)
     {

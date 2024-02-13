@@ -1,26 +1,34 @@
-﻿using JoBoard.AuthService.Application.Common.Exceptions;
+﻿using JoBoard.AuthService.Application.Common.Configs;
+using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Models;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogle;
 
 public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByGoogleAccountCommand, UserResult>
 {
+    private readonly RefreshTokenConfig _refreshTokenConfig;
+    private readonly ISecureTokenizer _secureTokenizer;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IGoogleAuthProvider _googleAuthProvider;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterByGoogleAccountCommandHandler(
+        RefreshTokenConfig refreshTokenConfig,
+        ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
         IGoogleAuthProvider googleAuthProvider,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _refreshTokenConfig = refreshTokenConfig;
+        _secureTokenizer = secureTokenizer;
         _domainEventDispatcher = domainEventDispatcher;
         _googleAuthProvider = googleAuthProvider;
         _userRepository = userRepository;
@@ -39,13 +47,17 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
         
         var externalAccount = new ExternalAccount(googleUserProfile.Id, ExternalAccountProvider.Google);
         var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount, ct);
-        if (existingUser != null) // user is already registered
+        if (existingUser != null) // user is already registered 
+        {
+            var refreshTokenForExistingUser = existingUser.LoginWithExternalAccount(_secureTokenizer, _refreshTokenConfig.ExpiresInHours);
             return new UserResult(
                 existingUser.Id.Value,
                 existingUser.FullName.FirstName,
                 existingUser.FullName.LastName,
                 existingUser.Email.Value,
-                existingUser.Role.Name);
+                existingUser.Role.Name,
+                refreshTokenForExistingUser.Token);
+        }
         
         // register new user
         var email = new Email(googleUserProfile.Email);
@@ -59,6 +71,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
             email: email,
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
             googleUserId: googleUserProfile.Id);
+        var refreshToken = newUser.LoginWithExternalAccount(_secureTokenizer, _refreshTokenConfig.ExpiresInHours);
         
         await _userRepository.AddAsync(newUser, ct);
         
@@ -70,6 +83,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
             newUser.FullName.FirstName,
             newUser.FullName.LastName,
             newUser.Email.Value,
-            newUser.Role.Name);
+            newUser.Role.Name,
+            refreshToken.Token);
     }
 }

@@ -11,8 +11,8 @@ namespace JoBoard.AuthService.Domain.Aggregates.User;
 /// </summary>
 public class ConfirmationToken : ValueObject
 {
-    public string Value { get; }
-    public DateTime Expiration { get; }
+    public string Value { get; private set; }
+    public DateTime Expiration { get; private set; }
     
     private ConfirmationToken() {} // for ef core only
     

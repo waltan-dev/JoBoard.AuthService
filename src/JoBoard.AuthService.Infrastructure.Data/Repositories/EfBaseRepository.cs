@@ -6,13 +6,15 @@ public abstract class EfBaseRepository
 
     protected EfBaseRepository(AuthDbContext dbContext)
     {
+        dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
         dbContext.Database.AutoTransactionsEnabled = false;
         DbContext = dbContext;
     }
 
-    protected Task ExecuteWithoutCommitAsync(CancellationToken cancellationToken = default)
+    protected Task SaveChangesWithoutCommitAsync(CancellationToken cancellationToken = default)
     {
         // this isn't transaction commit
+        // it's just a part of transaction
         return DbContext.SaveChangesAsync(cancellationToken); 
     }
 }

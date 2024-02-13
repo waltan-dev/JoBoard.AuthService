@@ -6,7 +6,7 @@ namespace JoBoard.AuthService.Domain.Aggregates.User;
 
 public class Password : ValueObject
 {
-    public string Hash { get; }
+    public string Hash { get; private set; }
     
     private Password(string hash)
     {

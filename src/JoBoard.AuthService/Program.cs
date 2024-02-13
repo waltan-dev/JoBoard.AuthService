@@ -24,6 +24,7 @@ var googleAuthConfig = builder.Configuration.GetRequiredSection(nameof(GoogleAut
 builder.Services.AddInfrastructure(googleAuthConfig);
 
 var confirmTokenConfig = builder.Configuration.GetRequiredSection(nameof(ConfirmationTokenConfig)).Get<ConfirmationTokenConfig>();
-builder.Services.AddApplication(confirmTokenConfig);
+var refreshTokenConfig = builder.Configuration.GetRequiredSection(nameof(RefreshTokenConfig)).Get<RefreshTokenConfig>();
+builder.Services.AddApplication(confirmTokenConfig, refreshTokenConfig);
 
 builder.Build().Run();

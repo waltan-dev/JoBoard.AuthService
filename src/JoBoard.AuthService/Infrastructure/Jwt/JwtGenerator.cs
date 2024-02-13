@@ -1,14 +1,12 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JoBoard.AuthService.Infrastructure.Jwt;
 
 public interface IJwtGenerator
 {
-    string GenerateAccessToken(IEnumerable<Claim> claims);
-    string GenerateRefreshToken(IEnumerable<Claim> claims);
+    string Generate(IEnumerable<Claim> claims);
 }
 
 public class JwtGenerator : IJwtGenerator
@@ -19,21 +17,10 @@ public class JwtGenerator : IJwtGenerator
     {
         _jwtConfig = jwtConfig;
     }
-
-    public string GenerateAccessToken(IEnumerable<Claim> claims)
-    {
-        DateTime exp = DateTime.UtcNow.Add(_jwtConfig.TokenLifeSpan);
-        return Generate(exp, claims);
-    }
-
-    public string GenerateRefreshToken(IEnumerable<Claim> claims)
-    {
-        DateTime exp = DateTime.UtcNow.Add(_jwtConfig.RefreshTokenLifeSpan);
-        return Generate(exp, claims);
-    }
     
-    private string Generate(DateTime exp, IEnumerable<Claim> claims)
+    public string Generate(IEnumerable<Claim> claims)
     {
+        var exp = DateTime.UtcNow.Add(_jwtConfig.TokenLifeSpan);
         var key = _jwtConfig.GetSymmetricSecurityKey();
         var jwt = new JwtSecurityToken(
             issuer: _jwtConfig.Issuer,

@@ -12,6 +12,7 @@ public class RefreshTokenConfig : IEntityTypeConfiguration<RefreshToken>
         
         // map Id
         builder.HasKey(x => x.Id);
+        builder.Property(x => x.Id).ValueGeneratedNever();
         
         builder.Property(x => x.UserId).HasConversion(
             userId => userId.Value, 

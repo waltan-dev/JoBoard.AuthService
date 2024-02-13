@@ -6,19 +6,8 @@ namespace JoBoard.AuthService.Models;
 
 public class AuthResponse : UserResult
 {
-    public string AccessToken { get; set; }
-    public string RefreshToken { get; set; }
+    public string AccessToken { get; init; }
     
-    public AuthResponse(Guid userId, 
-        string firstName, string lastName, 
-        string email, 
-        string role, 
-        string accessToken, string refreshToken) : base(userId, firstName, lastName, email, role)
-    {
-        AccessToken = accessToken;
-        RefreshToken = refreshToken;
-    }
-
     public static AuthResponse Create(UserResult userResult, IJwtGenerator jwtGenerator)
     {
         var claims = new List<Claim>
@@ -29,16 +18,17 @@ public class AuthResponse : UserResult
             new(ClaimTypes.Surname, userResult.LastName),
             new(ClaimTypes.Role, userResult.Role)
         };
-        var accessToken = jwtGenerator.GenerateAccessToken(claims);
-        var refreshToken = jwtGenerator.GenerateRefreshToken(claims);
+        var accessToken = jwtGenerator.Generate(claims);
 
-        return new AuthResponse(
-            userResult.UserId,
-            userResult.FirstName,
-            userResult.LastName,
-            userResult.Email,
-            userResult.Role,
-            accessToken,
-            refreshToken);
+        return new AuthResponse
+        {
+            UserId = userResult.UserId,
+            FirstName = userResult.FirstName,
+            LastName = userResult.LastName,
+            Email = userResult.Email,
+            Role = userResult.Role,
+            RefreshToken = userResult.RefreshToken,
+            AccessToken = accessToken
+        };
     }
 }
