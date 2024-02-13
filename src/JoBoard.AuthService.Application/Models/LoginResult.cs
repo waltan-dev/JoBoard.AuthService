@@ -8,6 +8,8 @@ public class LoginResult
     public string Email { get; init; }
     public string Role { get; init; }
     
+    public LoginResult() {}
+    
     public LoginResult(string userId, 
         string firstName, string lastName, 
         string email, 

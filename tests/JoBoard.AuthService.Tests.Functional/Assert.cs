@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Net.Mime;
 using JoBoard.AuthService.Models;
+using JoBoard.AuthService.Models.Responses;
 using Microsoft.AspNetCore.Http;
 
 namespace JoBoard.AuthService.Tests.Functional;

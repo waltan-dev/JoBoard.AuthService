@@ -2,5 +2,5 @@
 
 public interface IIdentityService
 {
-    public string? GetUserId();
+    public string GetUserId();
 }

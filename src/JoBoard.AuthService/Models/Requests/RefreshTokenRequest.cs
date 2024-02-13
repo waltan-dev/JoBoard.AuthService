@@ -1,4 +1,4 @@
-﻿namespace JoBoard.AuthService.Models;
+﻿namespace JoBoard.AuthService.Models.Requests;
 
 public class RefreshTokenRequest
 {

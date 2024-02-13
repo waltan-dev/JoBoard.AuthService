@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Application.Exceptions;
 
-namespace JoBoard.AuthService.Models;
+namespace JoBoard.AuthService.Models.Responses;
 
 public class ValidationResponse
 {

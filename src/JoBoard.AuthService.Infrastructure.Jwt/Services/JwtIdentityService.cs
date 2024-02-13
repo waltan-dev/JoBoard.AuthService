@@ -1,6 +1,8 @@
 ﻿using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Infrastructure.Jwt.Extensions;
+using Microsoft.AspNetCore.Http;
 
-namespace JoBoard.AuthService.InternalInfrastructure.Jwt;
+namespace JoBoard.AuthService.Infrastructure.Jwt.Services;
 
 public class JwtIdentityService : IIdentityService
 {
@@ -11,7 +13,7 @@ public class JwtIdentityService : IIdentityService
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public string? GetUserId()
+    public string GetUserId()
     {
         // get user id from JWT
         return _httpContextAccessor.HttpContext!.User.GetUserId();

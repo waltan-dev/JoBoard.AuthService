@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Application", "src\JoBoard.AuthService.Application\JoBoard.AuthService.Application.csproj", "{36B8C4BF-CEAC-4138-B172-8BECE6515964}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Auth", "src\JoBoard.AuthService.Infrastructure.Auth\JoBoard.AuthService.Infrastructure.Auth.csproj", "{F85A174E-03CD-41ED-A26F-0C1DB7743514}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Common", "src\JoBoard.AuthService.Infrastructure.Common\JoBoard.AuthService.Infrastructure.Common.csproj", "{F85A174E-03CD-41ED-A26F-0C1DB7743514}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Migrator", "src\JoBoard.AuthService.Migrator\JoBoard.AuthService.Migrator.csproj", "{5F3F3FA3-59D9-448A-9830-E2647A6EFDB1}"
 EndProject
@@ -35,6 +35,8 @@ EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Tests.Integration", "tests\JoBoard.AuthService.Tests.Integration\JoBoard.AuthService.Tests.Integration.csproj", "{CAE6FA2B-AB66-42A6-82C3-CA881B24DFC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Tests.Common", "tests\JoBoard.AuthService.Tests.Common\JoBoard.AuthService.Tests.Common.csproj", "{FC5AF56C-F190-455F-BA78-DFDE331A905C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Jwt", "src\JoBoard.AuthService.Infrastructure.Jwt\JoBoard.AuthService.Infrastructure.Jwt.csproj", "{72EAF434-1DAC-45A0-ABC1-244218101BAC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -82,6 +84,10 @@ Global
 		{FC5AF56C-F190-455F-BA78-DFDE331A905C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FC5AF56C-F190-455F-BA78-DFDE331A905C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FC5AF56C-F190-455F-BA78-DFDE331A905C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{72EAF434-1DAC-45A0-ABC1-244218101BAC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{72EAF434-1DAC-45A0-ABC1-244218101BAC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{72EAF434-1DAC-45A0-ABC1-244218101BAC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{72EAF434-1DAC-45A0-ABC1-244218101BAC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{937C18AB-3858-48CD-88B5-235AAB1B78B9} = {5B78A882-52A1-42BA-B5D0-EB9688D70F27}
@@ -94,5 +100,6 @@ Global
 		{39EABE58-F5E4-4547-B6B9-1994E9C7AE14} = {A8B9121C-E3A7-4AD3-93A9-3D5D98DF6F01}
 		{CAE6FA2B-AB66-42A6-82C3-CA881B24DFC6} = {A8B9121C-E3A7-4AD3-93A9-3D5D98DF6F01}
 		{FC5AF56C-F190-455F-BA78-DFDE331A905C} = {A8B9121C-E3A7-4AD3-93A9-3D5D98DF6F01}
+		{72EAF434-1DAC-45A0-ABC1-244218101BAC} = {5B78A882-52A1-42BA-B5D0-EB9688D70F27}
 	EndGlobalSection
 EndGlobal

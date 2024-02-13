@@ -1,5 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Common.Services;
-using JoBoard.AuthService.Infrastructure.Auth.Services;
+using JoBoard.AuthService.Infrastructure.Common.Services;
 
 namespace JoBoard.AuthService.Tests.Common.Stubs;
 

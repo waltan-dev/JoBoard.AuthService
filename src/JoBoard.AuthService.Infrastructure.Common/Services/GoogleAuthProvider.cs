@@ -1,8 +1,8 @@
 ﻿using Google.Apis.Auth;
 using JoBoard.AuthService.Application.Services;
-using JoBoard.AuthService.Infrastructure.Auth.Configs;
+using JoBoard.AuthService.Infrastructure.Common.Configs;
 
-namespace JoBoard.AuthService.Infrastructure.Auth.Services;
+namespace JoBoard.AuthService.Infrastructure.Common.Services;
 
 public class GoogleAuthProvider : IGoogleAuthProvider
 {

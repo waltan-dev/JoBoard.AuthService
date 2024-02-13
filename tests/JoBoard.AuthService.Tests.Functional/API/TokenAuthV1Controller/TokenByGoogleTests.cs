@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.Commands.Account.Login.CanLoginByGoogle;
+using JoBoard.AuthService.Models.Requests;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
-
 
 namespace JoBoard.AuthService.Tests.Functional.API.TokenAuthV1Controller;
 
@@ -17,9 +16,9 @@ public class TokenByGoogleTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task TokenByGoogle()
     {
-        var request = new CanLoginByGoogleAccountCommand
+        var request = new LoginByGoogleRequest
         {
-            GoogleIdToken = GoogleFixtures.IdTokenForExistingUser
+            IdToken = GoogleFixtures.IdTokenForExistingUser
         };
         
         var response = await _httpClient.PostAsJsonAsync(AuthTokenV1Routes.TokenByGoogle, request);

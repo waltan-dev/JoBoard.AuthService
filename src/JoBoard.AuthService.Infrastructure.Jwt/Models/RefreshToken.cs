@@ -1,13 +1,13 @@
 ﻿using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Infrastructure.Auth.Models;
+namespace JoBoard.AuthService.Infrastructure.Jwt.Models;
 
 public class RefreshToken
 {
     public string Token { get; private set; }
     public DateTime ExpiresAt { get; private set; }
-    
-    public RefreshToken(string token, DateTime expiresAt)
+
+    private RefreshToken(string token, DateTime expiresAt)
     {
         Token = token;
         ExpiresAt = expiresAt;

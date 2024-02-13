@@ -26,7 +26,7 @@
     <ItemGroup>
       <ProjectReference Include="..\..\src\JoBoard.AuthService.Domain\JoBoard.AuthService.Domain.csproj" />
       <ProjectReference Include="..\..\src\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj" />
-      <ProjectReference Include="..\..\src\JoBoard.AuthService.Infrastructure.Auth\JoBoard.AuthService.Infrastructure.Auth.csproj" />
+      <ProjectReference Include="..\..\src\JoBoard.AuthService.Infrastructure.Common\JoBoard.AuthService.Infrastructure.Common.csproj" />
     </ItemGroup>
 
 </Project>

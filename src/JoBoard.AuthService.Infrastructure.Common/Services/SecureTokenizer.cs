@@ -1,7 +1,7 @@
 ﻿using System.Security.Cryptography;
 using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Infrastructure.Auth.Services;
+namespace JoBoard.AuthService.Infrastructure.Common.Services;
 
 public class SecureTokenizer : ISecureTokenizer
 {

@@ -1,8 +1,8 @@
 ﻿using System.Text.Json;
-using JoBoard.AuthService.Infrastructure.Auth.Models;
-using StackExchange.Redis;
+using JoBoard.AuthService.Infrastructure.Jwt.Models;
+using Microsoft.Extensions.Caching.Distributed;
 
-namespace JoBoard.AuthService.Infrastructure.Auth.Services;
+namespace JoBoard.AuthService.Infrastructure.Jwt.Services;
 
 public interface IRefreshTokenRepository
 {
@@ -13,21 +13,23 @@ public interface IRefreshTokenRepository
 
 public class RedisRefreshTokenRepository : IRefreshTokenRepository
 {
-    private readonly IDatabase _database;
-    private static string KeyPrefix = "/auth/refresh-tokens/";
-    private static RedisKey GetKey(string userId) => KeyPrefix + userId;
+    private readonly IDistributedCache _cache;
+
+    private const string KeyPrefix = "/auth/refresh-tokens/";
+    private static string GetKey(string userId) => KeyPrefix + userId;
     
-    public RedisRefreshTokenRepository(IConnectionMultiplexer redis)
+    public RedisRefreshTokenRepository(IDistributedCache cache)
     {
-        _database = redis.GetDatabase();
+        _cache = cache;
     }
 
     public async Task<List<RefreshToken>> GetTokensAsync(string userId, CancellationToken ct)
     {
-        using var currentRefreshTokensBytes = await _database.StringGetLeaseAsync(GetKey(userId));
+        //using var currentRefreshTokensBytes = await _database.StringGetLeaseAsync(GetKey(userId));
+        var currentRefreshTokensBytes = await _cache.GetAsync(GetKey(userId), ct);
         return currentRefreshTokensBytes is null || currentRefreshTokensBytes.Length == 0
             ? new List<RefreshToken>() 
-            : JsonSerializer.Deserialize<List<RefreshToken>>(currentRefreshTokensBytes.Span)!;
+            : JsonSerializer.Deserialize<List<RefreshToken>>(currentRefreshTokensBytes)!;
     }
     
     public async Task<bool> AddTokenAsync(string userId, RefreshToken refreshToken, CancellationToken ct)
@@ -47,6 +49,8 @@ public class RedisRefreshTokenRepository : IRefreshTokenRepository
     private async Task<bool> UpdateTokensAsync(string userId, List<RefreshToken> refreshTokens, CancellationToken ct)
     {
         var bytes = JsonSerializer.SerializeToUtf8Bytes(refreshTokens);
-        return await _database.StringSetAsync(GetKey(userId), bytes);
+        await _cache.SetAsync(GetKey(userId), bytes, ct);
+        return true;
+        //return await _database.StringSetAsync(GetKey(userId), bytes);
     }
 }

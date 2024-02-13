@@ -1,4 +1,4 @@
-﻿namespace JoBoard.AuthService.Infrastructure.Auth.Configs;
+﻿namespace JoBoard.AuthService.Infrastructure.Jwt.Configs;
 
 public class RedisConfig
 {

@@ -1,7 +1,6 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.Commands.Account.Login.CanLoginByPassword;
+using JoBoard.AuthService.Models.Requests;
 using JoBoard.AuthService.Tests.Common.DataFixtures;
-
 
 namespace JoBoard.AuthService.Tests.Functional.API.TokenAuthV1Controller;
 
@@ -17,7 +16,7 @@ public class TokenByPasswordTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task TokenByPassword()
     {
-        var request = new CanLoginByPasswordCommand()
+        var request = new LoginByPasswordRequest
         {
             Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Email.Value,
             Password = PasswordFixtures.DefaultPassword,

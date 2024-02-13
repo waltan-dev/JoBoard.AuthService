@@ -2,6 +2,7 @@
 using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Models;
+using JoBoard.AuthService.Models.Responses;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
 

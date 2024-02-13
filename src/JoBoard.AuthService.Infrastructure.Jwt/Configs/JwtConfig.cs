@@ -1,7 +1,7 @@
 ﻿using System.Text;
 using Microsoft.IdentityModel.Tokens;
 
-namespace JoBoard.AuthService.InternalInfrastructure.Jwt;
+namespace JoBoard.AuthService.Infrastructure.Jwt.Configs;
 
 
 public class JwtConfig
