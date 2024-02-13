@@ -10,17 +10,20 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 
 public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailCommand, UserResult>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterByEmailCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         ConfirmationTokenConfig confirmationTokenConfig,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _confirmationTokenConfig = confirmationTokenConfig;
@@ -46,6 +49,8 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             registerConfirmToken: newToken);
 
         await _userRepository.AddAsync(newUser, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         // TODO send confirmation email

@@ -9,7 +9,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace JoBoard.AuthService.Migrator.Migrations
+namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
     [Migration("20240105111934_AddIndexToExternalAccountsTbl")]

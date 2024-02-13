@@ -9,15 +9,18 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmati
 
 public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswordResetCommand, Unit>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
 
     public ConfirmPasswordResetCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
         _passwordHasher = passwordHasher;
@@ -34,6 +37,8 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
         user.ResetPassword(request.ConfirmationToken, request.NewPassword, _passwordHasher);
 
         await _userRepository.UpdateAsync(user, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         return Unit.Value;

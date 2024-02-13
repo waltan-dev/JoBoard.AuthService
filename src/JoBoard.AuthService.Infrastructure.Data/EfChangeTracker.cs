@@ -3,11 +3,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Infrastructure.Data;
 
-public class ChangeTracker : IChangeTracker
+public class EfChangeTracker : IChangeTracker
 {
     private readonly DbContext _dbContext;
 
-    public ChangeTracker(AuthDbContext dbContext)
+    public EfChangeTracker(AuthDbContext dbContext)
     {
         _dbContext = dbContext;
     }

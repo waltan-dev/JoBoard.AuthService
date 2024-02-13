@@ -3,17 +3,19 @@ using System;
 using JoBoard.AuthService.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace JoBoard.AuthService.Migrator.Migrations
+namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    partial class AuthDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240105102417_CreateUsersTbl")]
+    partial class CreateUsersTbl
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,8 +36,6 @@ namespace JoBoard.AuthService.Migrator.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id", "ExternalUserId", "Provider");
-
-                    b.HasIndex("ExternalUserId", "Provider");
 
                     b.ToTable("ExternalAccounts", (string)null);
                 });
@@ -215,7 +215,8 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
                     b.Navigation("NewEmailConfirmationToken");
 
-                    b.Navigation("RegisterConfirmToken");
+                    b.Navigation("RegisterConfirmToken")
+                        .IsRequired();
 
                     b.Navigation("ResetPasswordConfirmToken");
                 });

@@ -53,12 +53,12 @@ public abstract class Entity
             return base.GetHashCode();
 
     }
-    public static bool operator ==(Entity left, Entity right)
+    public static bool operator ==(Entity? left, Entity? right)
     {
         return left?.Equals(right) ?? object.Equals(right, null);
     }
 
-    public static bool operator !=(Entity left, Entity right)
+    public static bool operator !=(Entity? left, Entity? right)
     {
         return !(left == right);
     }

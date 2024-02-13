@@ -15,28 +15,28 @@ public abstract class BaseRepositoryTest : IAsyncLifetime
         .WithUsername("postgres")
         .WithPassword("postgres")
         .WithCleanUp(true)
-        .Build(); 
+        .Build();
     
     protected IUnitOfWork UnitOfWork { get; private set; }
     protected IUserRepository UserRepository { get; private set; }
     
-    public async Task InitializeAsync() // init test db before each test
+    public async Task InitializeAsync() // init test db before each test file
     {
         await _postgreSqlContainer.StartAsync();
         
         var options = new DbContextOptionsBuilder<AuthDbContext>()
             .UseNpgsql(_postgreSqlContainer.GetConnectionString(), x => 
-                x.MigrationsAssembly(typeof(AuthService.Migrator.AssemblyReference).Assembly.FullName))
+                x.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName))
             .Options;
         
         DatabaseHelper.Reinitialize(new AuthDbContext(options));
         
         var dbContext = new AuthDbContext(options);
-        UnitOfWork = new UnitOfWork(dbContext, null, null);
-        UserRepository = new UserRepository(dbContext);
+        UnitOfWork = new EfUnitOfWork(dbContext);
+        UserRepository = new EfUserRepository(dbContext);
     }
     
-    public Task DisposeAsync() // delete test db after each test
+    public Task DisposeAsync() // delete test db after each test file
     {
         return _postgreSqlContainer.DisposeAsync().AsTask();
     }

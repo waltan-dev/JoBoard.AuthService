@@ -3,7 +3,9 @@ using CommunityToolkit.Diagnostics;
 using FluentValidation;
 using JoBoard.AuthService.Application.Behaviors;
 using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
+using JoBoard.AuthService.Domain.SeedWork;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -22,6 +24,8 @@ public static class DependencyInjection
             config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             config.RegisterServicesFromAssemblyContaining<RegisterByEmailCommandHandler>();
         });
+        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
+        
         services.AddValidatorsFromAssembly(typeof(RegisterByEmailCommandHandler).Assembly);
 
         ValidatorOptions.Global.LanguageManager.Culture = new CultureInfo("en-US");

@@ -3,32 +3,26 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Infrastructure.Data.Repositories;
 
-public class UserRepository : IUserRepository
+public class EfUserRepository : EfBaseRepository, IUserRepository
 {
-    private readonly AuthDbContext _dbContext;
+    public EfUserRepository(AuthDbContext dbContext) : base(dbContext) { }
 
-    public UserRepository(AuthDbContext dbContext)
+    public Task AddAsync(User user, CancellationToken ct = default)
     {
-        // auto transactions disabled
-        _dbContext = dbContext;
+        DbContext.Users.Add(user);
+        return ExecuteWithoutCommitAsync(ct);
     }
 
-    public async Task AddAsync(User user, CancellationToken ct = default)
+    public Task UpdateAsync(User user, CancellationToken ct = default)
     {
-        _dbContext.Users.Add(user);
-        await _dbContext.SaveChangesAsync(ct); // this isn't transaction
-    }
-
-    public async Task UpdateAsync(User user, CancellationToken ct = default)
-    {
-        _dbContext.Entry(user).State = EntityState.Detached;
-        _dbContext.Users.Update(user);
-        await _dbContext.SaveChangesAsync(ct); // this isn't transaction
+        DbContext.Entry(user).State = EntityState.Detached;
+        DbContext.Users.Update(user);
+        return ExecuteWithoutCommitAsync(ct);
     }
 
     public async Task<User?> FindByIdAsync(UserId userId, CancellationToken ct = default)
     {
-        return await _dbContext.Users
+        return await DbContext.Users
             .AsNoTracking()
             .Include(x=>x.ExternalAccounts)
             .FirstOrDefaultAsync(x=>x.Id == userId, ct);
@@ -36,7 +30,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> FindByEmailAsync(Email email, CancellationToken ct = default)
     {
-        return await _dbContext.Users
+        return await DbContext.Users
             .AsNoTracking()
             .Include(x=>x.ExternalAccounts)
             .FirstOrDefaultAsync(x=>x.Email.Value == email.Value, ct);
@@ -44,7 +38,7 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> FindByExternalAccountAsync(ExternalAccount externalAccount, CancellationToken ct = default)
     {
-        var extAccountDb = await _dbContext.ExternalAccounts
+        var extAccountDb = await DbContext.ExternalAccounts
             .AsNoTracking()
             .FirstOrDefaultAsync(x => 
                 x.ExternalUserId == externalAccount.ExternalUserId && x.Provider == externalAccount.Provider, ct);
@@ -56,7 +50,7 @@ public class UserRepository : IUserRepository
     
     public async Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct = default)
     {
-        var emailExists = await _dbContext.Users
+        var emailExists = await DbContext.Users
             .Where(x => x.Email.Value == email.Value)
             .AnyAsync(ct);
         return emailExists == false;

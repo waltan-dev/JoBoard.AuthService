@@ -10,15 +10,18 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogle;
 
 public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByGoogleAccountCommand, UserResult>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IGoogleAuthProvider _googleAuthProvider;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterByGoogleAccountCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IGoogleAuthProvider googleAuthProvider,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _googleAuthProvider = googleAuthProvider;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
@@ -58,6 +61,8 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
             externalAccount: externalAccount);
         
         await _userRepository.AddAsync(newUser, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         return new UserResult(

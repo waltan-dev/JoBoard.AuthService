@@ -9,15 +9,18 @@ namespace JoBoard.AuthService.Application.UseCases.Manage.ChangeEmail.Confirmati
 
 public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Unit>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public ChangeEmailCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
@@ -34,6 +37,8 @@ public class ChangeEmailCommandHandler : IRequestHandler<ChangeEmailCommand, Uni
         user.ChangeEmail(request.ConfirmationToken);
 
         await _userRepository.UpdateAsync(user, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         return Unit.Value;

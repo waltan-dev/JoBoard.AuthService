@@ -30,11 +30,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<JoBoard.AuthSer
             services.AddSingleton<IGoogleAuthProvider>(GoogleFixture.GetGoogleAuthProvider());
             
             // db
-            services.RemoveAll<DbContextOptions<AuthDbContext>>();
-            services.RemoveAll<AuthDbContext>();
-            services.AddDbContext<AuthDbContext>(options => 
-                options.UseNpgsql(_postgreSqlContainer.GetConnectionString(), x => 
-                    x.MigrationsAssembly(typeof(AuthService.Migrator.AssemblyReference).Assembly.FullName)));
+            services.RemoveDatabase();
+            services.AddDatabase(_postgreSqlContainer.GetConnectionString());
         });
     }
     

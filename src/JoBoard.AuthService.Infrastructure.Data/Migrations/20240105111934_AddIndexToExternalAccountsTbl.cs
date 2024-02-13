@@ -2,7 +2,7 @@
 
 #nullable disable
 
-namespace JoBoard.AuthService.Migrator.Migrations
+namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 {
     public partial class AddIndexToExternalAccountsTbl : Migration
     {

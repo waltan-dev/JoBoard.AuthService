@@ -9,11 +9,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
 
-namespace JoBoard.AuthService.Migrator.Migrations
+namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 {
     [DbContext(typeof(AuthDbContext))]
-    [Migration("20240105102417_CreateUsersTbl")]
-    partial class CreateUsersTbl
+    [Migration("20240109215827_FixRegistrationToken")]
+    partial class FixRegistrationToken
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -36,6 +36,8 @@ namespace JoBoard.AuthService.Migrator.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id", "ExternalUserId", "Provider");
+
+                    b.HasIndex("ExternalUserId", "Provider");
 
                     b.ToTable("ExternalAccounts", (string)null);
                 });
@@ -215,8 +217,7 @@ namespace JoBoard.AuthService.Migrator.Migrations
 
                     b.Navigation("NewEmailConfirmationToken");
 
-                    b.Navigation("RegisterConfirmToken")
-                        .IsRequired();
+                    b.Navigation("RegisterConfirmToken");
 
                     b.Navigation("ResetPasswordConfirmToken");
                 });

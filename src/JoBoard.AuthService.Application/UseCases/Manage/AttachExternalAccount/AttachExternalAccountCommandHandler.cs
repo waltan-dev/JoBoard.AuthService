@@ -9,15 +9,18 @@ namespace JoBoard.AuthService.Application.UseCases.Manage.AttachExternalAccount;
 
 public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExternalAccountCommand, Unit>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public AttachExternalAccountCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
@@ -37,6 +40,8 @@ public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExterna
         user.AttachExternalAccount(externalAccount);
         
         await _userRepository.UpdateAsync(user, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         return Unit.Value;

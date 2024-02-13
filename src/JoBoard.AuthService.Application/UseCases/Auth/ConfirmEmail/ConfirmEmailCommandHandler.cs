@@ -8,13 +8,16 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.ConfirmEmail;
 
 public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, Unit>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public ConfirmEmailCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
     }
@@ -30,6 +33,8 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, U
         user.ConfirmEmail(request.Token);
         
         await _userRepository.UpdateAsync(user, ct);
+
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
 
         return Unit.Value;

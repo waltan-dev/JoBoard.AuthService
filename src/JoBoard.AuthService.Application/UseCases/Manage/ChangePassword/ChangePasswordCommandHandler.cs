@@ -10,17 +10,20 @@ namespace JoBoard.AuthService.Application.UseCases.Manage.ChangePassword;
 
 public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordCommand, Unit>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IPasswordHasher _passwordHasher;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public ChangePasswordCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         IPasswordHasher passwordHasher,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _passwordHasher = passwordHasher;
         _userRepository = userRepository;
@@ -38,6 +41,8 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
         user.ChangePassword(request.CurrentPassword, request.NewPassword, _passwordHasher);
 
         await _userRepository.UpdateAsync(user, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         return Unit.Value;

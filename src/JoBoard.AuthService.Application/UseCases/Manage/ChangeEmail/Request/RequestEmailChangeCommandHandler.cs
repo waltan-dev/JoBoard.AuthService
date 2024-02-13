@@ -10,17 +10,20 @@ namespace JoBoard.AuthService.Application.UseCases.Manage.ChangeEmail.Request;
 
 public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChangeCommand, Unit>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public RequestEmailChangeCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         ConfirmationTokenConfig confirmationTokenConfig,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _confirmationTokenConfig = confirmationTokenConfig;
         _userRepository = userRepository;
@@ -44,6 +47,8 @@ public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChan
         user.RequestEmailChange(newEmail, newToken);
 
         await _userRepository.UpdateAsync(user, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         // TODO send email

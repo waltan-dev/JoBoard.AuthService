@@ -9,15 +9,18 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Request;
 
 public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswordResetCommand, Unit>
 {
+    private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public RequestPasswordResetCommandHandler(
+        IDomainEventDispatcher domainEventDispatcher,
         ConfirmationTokenConfig confirmationTokenConfig,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _domainEventDispatcher = domainEventDispatcher;
         _confirmationTokenConfig = confirmationTokenConfig;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
@@ -36,6 +39,8 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         user.RequestPasswordReset(newToken);
 
         await _userRepository.UpdateAsync(user, ct);
+        
+        await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
         
         // TODO send email
