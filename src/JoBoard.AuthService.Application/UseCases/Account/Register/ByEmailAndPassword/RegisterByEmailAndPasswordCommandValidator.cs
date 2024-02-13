@@ -2,11 +2,11 @@
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Application.UseCases.Account.Register.ByEmail;
+namespace JoBoard.AuthService.Application.UseCases.Account.Register.ByEmailAndPassword;
 
-public class RegisterByEmailCommandValidator : AbstractValidator<RegisterByEmailCommand>
+public class RegisterByEmailAndPasswordCommandValidator : AbstractValidator<RegisterByEmailAndPasswordCommand>
 {
-    public RegisterByEmailCommandValidator(IPasswordStrengthValidator passwordStrengthValidator)
+    public RegisterByEmailAndPasswordCommandValidator(IPasswordStrengthValidator passwordStrengthValidator)
     {
         RuleFor(c => c.FirstName)
             .NotEmpty()

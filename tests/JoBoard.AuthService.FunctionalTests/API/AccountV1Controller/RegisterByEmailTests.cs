@@ -1,5 +1,5 @@
 ﻿using System.Net.Http.Json;
-using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmail;
+using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmailAndPassword;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AccountV1Controller;
@@ -16,7 +16,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task RegisterByEmail()
     {
-        var request = new RegisterByEmailCommand
+        var request = new RegisterByEmailAndPasswordCommand
         {
             FirstName = "Test",
             LastName = "Test",
@@ -33,7 +33,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task RegisterWithExistingEmail()
     {
-        var request = new RegisterByEmailCommand
+        var request = new RegisterByEmailAndPasswordCommand
         {
             FirstName = "Test",
             LastName = "Test",
@@ -50,7 +50,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
     [Fact]
     public async Task RegisterWithEmpty()
     {
-        var request = new RegisterByEmailCommand
+        var request = new RegisterByEmailAndPasswordCommand
         {
             FirstName = "", LastName = "", Email = "", Password = "", Role = ""
         };
@@ -64,7 +64,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
     public async Task RegisterWithInvalidFields()
     {
         // TODO implement request validation and response
-        var request = new RegisterByEmailCommand
+        var request = new RegisterByEmailAndPasswordCommand
         {
             FirstName = "  ", LastName = "  ", Email = "invalid-email", Password = "1", Role = "invalid-role"
         };

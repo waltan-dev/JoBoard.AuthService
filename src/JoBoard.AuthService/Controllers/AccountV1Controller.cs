@@ -1,5 +1,5 @@
 ﻿using JoBoard.AuthService.Application.UseCases.Account.ConfirmEmail;
-using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmail;
+using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmailAndPassword;
 using JoBoard.AuthService.Application.UseCases.Account.Register.ByGoogle;
 using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Confirmation;
 using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Request;
@@ -22,9 +22,9 @@ public class AccountV1Controller : ControllerBase
     }
     
     [HttpPost(AccountV1Routes.Register)]
-    public async Task<IActionResult> Register(RegisterByEmailCommand command, CancellationToken ct)
+    public async Task<IActionResult> Register(RegisterByEmailAndPasswordCommand andPasswordCommand, CancellationToken ct)
     {
-        await _mediator.Send(command, ct);
+        await _mediator.Send(andPasswordCommand, ct);
         return Ok();
     }
     

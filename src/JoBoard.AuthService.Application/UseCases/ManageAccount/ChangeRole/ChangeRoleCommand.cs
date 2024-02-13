@@ -2,8 +2,9 @@
 
 namespace JoBoard.AuthService.Application.UseCases.ManageAccount.ChangeRole;
 
+// immutable command
 public class ChangeRoleCommand : IRequest<Unit>
 {
-    public Guid UserId { get; set; }
-    public string NewRole { get; set; }
+    public Guid UserId { get; init; }
+    public string NewRole { get; init; }
 }

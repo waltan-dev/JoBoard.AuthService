@@ -2,8 +2,9 @@
 
 namespace JoBoard.AuthService.Application.UseCases.Account.ConfirmEmail;
 
+// immutable command
 public class ConfirmEmailCommand : IRequest<Unit>
 {
-    public Guid UserId { get; set; }
-    public string Token { get; set; }
+    public Guid UserId { get; init; }
+    public string Token { get; init; }
 }

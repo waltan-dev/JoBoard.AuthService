@@ -6,9 +6,9 @@ using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
 
-namespace JoBoard.AuthService.Application.UseCases.Account.Register.ByEmail;
+namespace JoBoard.AuthService.Application.UseCases.Account.Register.ByEmailAndPassword;
 
-public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailCommand, Unit>
+public class RegisterByEmailAndPasswordCommandHandler : IRequestHandler<RegisterByEmailAndPasswordCommand, Unit>
 {
     private readonly IPasswordStrengthValidator _passwordStrengthValidator;
     private readonly ISecureTokenizer _secureTokenizer;
@@ -18,7 +18,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUnitOfWork _unitOfWork;
 
-    public RegisterByEmailCommandHandler(
+    public RegisterByEmailAndPasswordCommandHandler(
         IPasswordStrengthValidator passwordStrengthValidator,
         ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
@@ -36,7 +36,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<Unit> Handle(RegisterByEmailCommand request, CancellationToken ct)
+    public async Task<Unit> Handle(RegisterByEmailAndPasswordCommand request, CancellationToken ct)
     {
         await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         

@@ -1,9 +1,9 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using MediatR;
+﻿using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.ManageExternalAccount.AttachGoogleAccount;
 
+// immutable command
 public class AttachGoogleAccountCommand : IRequest<Unit>
 {
-    public string GoogleIdToken { get; set; }
+    public string GoogleIdToken { get; init; }
 }
