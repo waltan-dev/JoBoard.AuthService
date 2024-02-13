@@ -11,8 +11,8 @@ public static class UserFixture
     public static readonly string DefaultPasswordHash = "DefaultPasswordHash";
     public static readonly string DefaultPassword = "DefaultPassword";
     public static readonly ConfirmationToken DefaultConfirmationToken = ConfirmationToken.Generate();
-    public static readonly ExternalAccount DefaultExternalAccount =
-        new("externalUserId", ExternalAccountProvider.Google);
+    public static readonly ExternalAccount DefaultGoogleAccount =
+        new("googleUserId", ExternalAccountProvider.Google);
     
     public static ConfirmationToken CreateNewConfirmationToken()
     {

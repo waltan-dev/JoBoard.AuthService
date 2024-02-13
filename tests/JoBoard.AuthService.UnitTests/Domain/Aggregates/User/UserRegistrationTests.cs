@@ -31,18 +31,18 @@ public class UserRegistrationTests
     }
     
     [Fact]
-    public void CreateNewUserByExternalAccount()
+    public void CreateNewUserByGoogleAccount()
     {
-        var newUser = new UserBuilder().WithExternalAccount().Build();
+        var newUser = new UserBuilder().WithGoogleAccount().Build();
 
         Assert.Equal(UserFixture.DefaultUserId, newUser.Id);
         Assert.Equal(UserFixture.DefaultFullName, newUser.FullName);
         Assert.Equal(UserFixture.DefaultEmail, newUser.Email);
         Assert.Equal(UserFixture.DefaultUserRole, newUser.Role);
-        Assert.Equal(UserFixture.DefaultConfirmationToken, newUser.RegisterConfirmToken);
-        Assert.Equal(UserFixture.DefaultExternalAccount, newUser.ExternalAccounts.First());
-        Assert.Equal(UserStatus.Pending, newUser.Status);
-        Assert.False(newUser.EmailConfirmed);
+        Assert.Null(newUser.RegisterConfirmToken);
+        Assert.Equal(UserFixture.DefaultGoogleAccount, newUser.ExternalAccounts.First());
+        Assert.Equal(UserStatus.Active, newUser.Status);
+        Assert.True(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
         Assert.Null(newUser.PasswordHash);
     }
@@ -52,41 +52,7 @@ public class UserRegistrationTests
     {
         Assert.Throws<DomainException>(() =>
         {
-            _ = new UserBuilder().WithExternalAccount().WithAdminRole().Build();
-        });
-    }
-
-    [Fact]
-    public void ConfirmEmailWithValidToken()
-    {
-        var userBuilder = new UserBuilder();
-        var user = userBuilder.Build();
-
-        user.ConfirmEmail(UserFixture.DefaultConfirmationToken.Value);
-
-        Assert.Equal(UserStatus.Active, user.Status);
-        Assert.True(user.EmailConfirmed);
-    }
-
-    [Fact]
-    public void ConfirmEmailWithInvalidToken()
-    {
-        var user = new UserBuilder().Build();
-
-        Assert.Throws<DomainException>(() =>
-        {
-            user.ConfirmEmail("invalid-token");
-        });
-    }
-    
-    [Fact]
-    public void ConfirmEmailWithExpiredToken()
-    {
-        var user = new UserBuilder().WithExpiredRegisterToken().Build();
-
-        Assert.Throws<DomainException>(() =>
-        {
-            user.ConfirmEmail(user.RegisterConfirmToken!.Value);
+            _ = new UserBuilder().WithGoogleAccount().WithAdminRole().Build();
         });
     }
 }

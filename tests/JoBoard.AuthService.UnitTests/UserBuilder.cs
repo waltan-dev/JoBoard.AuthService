@@ -5,7 +5,7 @@ namespace JoBoard.AuthService.UnitTests;
 
 public class UserBuilder
 {
-    private bool _withExternalAccountOption = false;
+    private bool _withGoogleAccountOption = false;
     private bool _withActiveStatusOption = false;
     private bool _withAdminRoleOption = false;
     private bool _withExpiredRegisterTokenOption = false;
@@ -19,7 +19,7 @@ public class UserBuilder
         var registerConfirmToken = _withExpiredRegisterTokenOption
             ? UserFixture.CreateExpiredConfirmationToken()
             : UserFixture.DefaultConfirmationToken;
-        if (_withExternalAccountOption == false)
+        if (_withGoogleAccountOption == false)
             user = new User(
                 userId: UserFixture.DefaultUserId,
                 fullName: UserFixture.DefaultFullName,
@@ -33,8 +33,7 @@ public class UserBuilder
                 fullName: UserFixture.DefaultFullName,
                 email: UserFixture.DefaultEmail,
                 role: userRole,
-                externalAccount: UserFixture.DefaultExternalAccount,
-                registerConfirmToken: registerConfirmToken);
+                externalAccount: UserFixture.DefaultGoogleAccount);
         
         if(_withActiveStatusOption)
             user.ConfirmEmail(registerConfirmToken.Value);
@@ -48,9 +47,9 @@ public class UserBuilder
         return this;
     }
     
-    public UserBuilder WithExternalAccount()
+    public UserBuilder WithGoogleAccount()
     {
-        _withExternalAccountOption = true;
+        _withGoogleAccountOption = true;
         return this;
     }
 

@@ -46,10 +46,9 @@ public class User : Entity<UserId>, IAggregateRoot
     }
     
     /// <summary>
-    /// Register new user by external account
+    /// Register new user by google account
     /// </summary>
-    public User(UserId userId, FullName fullName, Email email, UserRole role, 
-        ExternalAccount externalAccount, ConfirmationToken registerConfirmToken)
+    public User(UserId userId, FullName fullName, Email email, UserRole role, ExternalAccount externalAccount)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -58,10 +57,9 @@ public class User : Entity<UserId>, IAggregateRoot
         RegisteredAt = DateTime.UtcNow;
         FullName = fullName;
         Email = email;
-        EmailConfirmed = false;
+        EmailConfirmed = true;
         Role = role;
-        Status = UserStatus.Pending;
-        RegisterConfirmToken = registerConfirmToken;
+        Status = UserStatus.Active;
         _externalAccounts = new List<ExternalAccount>() { externalAccount };
     }
     

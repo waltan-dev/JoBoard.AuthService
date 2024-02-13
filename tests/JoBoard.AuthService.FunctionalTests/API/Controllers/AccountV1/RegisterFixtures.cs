@@ -19,8 +19,7 @@ public static class RegisterFixtures
         fullName: new FullName("Test", "Worker"),
         email: new Email("ExistingUserRegisteredByExternalAccount@gmail.com"),
         role: UserRole.Worker, 
-        externalAccount: new ExternalAccount("1", ExternalAccountProvider.Google),
-        registerConfirmToken: ConfirmationToken.Generate()); 
+        externalAccount: new ExternalAccount("1", ExternalAccountProvider.Google)); 
     
     public static readonly User ExistingUserWithExpiredToken = new(
         userId: UserId.Generate(),

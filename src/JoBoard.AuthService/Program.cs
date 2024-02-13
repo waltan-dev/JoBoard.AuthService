@@ -1,6 +1,7 @@
 using JoBoard.AuthService.Application;
 using JoBoard.AuthService.Application.Configs;
 using JoBoard.AuthService.Infrastructure;
+using JoBoard.AuthService.Infrastructure.Authentication;
 using JoBoard.AuthService.Infrastructure.Data;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,7 +17,8 @@ services.AddHttpContextAccessor();
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 services.AddDatabase(connectionString);
 
-services.AddInfrastructure();
+var googleAuthConfig = configuration.GetRequiredSection(nameof(GoogleAuthConfig)).Get<GoogleAuthConfig>();
+services.AddInfrastructure(googleAuthConfig);
 
 var confirmTokenConfig = configuration.GetRequiredSection(nameof(ConfirmationTokenConfig)).Get<ConfirmationTokenConfig>();
 services.AddApplication(confirmTokenConfig);

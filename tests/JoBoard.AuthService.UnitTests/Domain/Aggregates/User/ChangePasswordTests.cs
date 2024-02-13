@@ -51,7 +51,7 @@ public class ChangePasswordTests
     public void ChangePasswordWithoutCurrent()
     {
         var passwordHasherStub = GetPasswordHasherStub();
-        var user = new UserBuilder().WithExternalAccount().WithActiveStatus().Build();
+        var user = new UserBuilder().WithGoogleAccount().WithActiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
         {
