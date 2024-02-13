@@ -73,7 +73,6 @@ public class RegisterByEmailAndPasswordCommandHandler : IRequestHandler<Register
         await _domainEventDispatcher.DispatchAsync(ct);
         await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
-        // TODO send confirmation email
         return Unit.Value;
     }
 }

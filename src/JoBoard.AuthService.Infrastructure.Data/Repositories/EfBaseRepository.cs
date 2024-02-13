@@ -9,10 +9,7 @@ public abstract class EfBaseRepository
 
     protected EfBaseRepository(AuthDbContext dbContext, IUnitOfWork unitOfWork)
     {
-        if(dbContext.ChangeTracker != null) // only for tests
-            dbContext.ChangeTracker.AutoDetectChangesEnabled = true;
-        if(dbContext.Database != null) // only for tests
-            dbContext.Database.AutoTransactionsEnabled = false;
+        dbContext.Database.AutoTransactionsEnabled = false;
         DbContext = dbContext;
         UnitOfWork = unitOfWork;
     }

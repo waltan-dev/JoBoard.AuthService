@@ -4,7 +4,7 @@ using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 
-public class UserPassword : ValueObject
+public sealed class UserPassword : ValueObject
 {
     private string Hash { get; set; }
     
