@@ -7,15 +7,15 @@ public class RefreshToken
     public string Token { get; private set; }
     public DateTime ExpiresAt { get; private set; }
     
-    private RefreshToken(string token, int tokenExpiresInHours)
+    public RefreshToken(string token, DateTime expiresAt)
     {
         Token = token;
-        ExpiresAt = DateTime.UtcNow.AddHours(tokenExpiresInHours);
+        ExpiresAt = expiresAt;
     }
 
     public static RefreshToken Create(int tokenExpiresInHours, ISecureTokenizer secureTokenizer)
     {
         var secureToken = secureTokenizer.Generate();
-        return new RefreshToken(secureToken, tokenExpiresInHours);
+        return new RefreshToken(secureToken, DateTime.UtcNow.AddHours(tokenExpiresInHours));
     }
 }
