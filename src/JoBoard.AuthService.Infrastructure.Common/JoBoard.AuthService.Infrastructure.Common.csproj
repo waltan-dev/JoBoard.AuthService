@@ -12,6 +12,7 @@
     </ItemGroup>
 
     <ItemGroup>
+      <PackageReference Include="CommunityToolkit.Diagnostics" Version="8.2.2" />
       <PackageReference Include="Google.Apis.Auth" Version="1.65.0" />
     </ItemGroup>
     

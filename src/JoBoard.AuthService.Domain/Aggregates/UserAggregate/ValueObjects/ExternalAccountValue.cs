@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Domain.Common.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 
@@ -12,7 +11,7 @@ public class ExternalAccountValue : ValueObject
     
     public ExternalAccountValue(string externalUserId, ExternalAccountProvider provider)
     {
-        Guard.IsNotNullOrWhiteSpace(externalUserId);
+        DomainGuard.IsNotNullOrWhiteSpace(externalUserId);
         
         ExternalUserId = externalUserId;
         Provider = provider;

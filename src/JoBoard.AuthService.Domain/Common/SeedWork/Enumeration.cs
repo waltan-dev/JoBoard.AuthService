@@ -1,6 +1,7 @@
 ﻿using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 using System.Reflection;
+using JoBoard.AuthService.Domain.Common.Exceptions;
 
 namespace JoBoard.AuthService.Domain.Common.SeedWork;
 
@@ -60,7 +61,7 @@ public class Enumeration : IComparable
         var matchingItem = GetAll<T>().FirstOrDefault(predicate);
 
         if (matchingItem == null)
-            throw new InvalidEnumArgumentException($"'{value}' is not a valid {description} in {typeof(T)}");
+            throw new DomainException($"'{value}' is not a valid {description} in {typeof(T)}");
 
         return matchingItem;
     }

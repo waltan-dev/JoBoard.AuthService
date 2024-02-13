@@ -5,7 +5,7 @@ using JoBoard.AuthService.Infrastructure.Jwt.Configs;
 using JoBoard.AuthService.Infrastructure.Jwt.Models;
 using Microsoft.IdentityModel.Tokens;
 
-namespace JoBoard.AuthService.Infrastructure.Jwt;
+namespace JoBoard.AuthService.Infrastructure.Jwt.Services;
 
 public interface IJwtGenerator
 {

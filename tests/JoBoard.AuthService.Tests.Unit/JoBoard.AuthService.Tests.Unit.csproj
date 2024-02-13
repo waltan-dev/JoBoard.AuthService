@@ -30,11 +30,13 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="API\" />
-      <Folder Include="Application\UseCases\DomainEventHandlers\" />
-      <Folder Include="Application\UseCases\ManageAccount\" />
-      <Folder Include="Application\UseCases\ManageExternalAccount\" />
-      <Folder Include="Infrastructure\" />
+      <Folder Include="Tests\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <Content Update="xunit.runner.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
 </Project>

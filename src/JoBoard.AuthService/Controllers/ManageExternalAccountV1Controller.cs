@@ -1,5 +1,6 @@
-﻿using JoBoard.AuthService.Application.Commands.ManageExternalAccount.AttachGoogleAccount;
-using JoBoard.AuthService.Application.Commands.ManageExternalAccount.DetachExternalAccount;
+﻿using JoBoard.AuthService.Application.Commands.AttachExternalAccount;
+using JoBoard.AuthService.Application.Commands.DetachExternalAccount;
+using JoBoard.AuthService.Models.Responses;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -22,13 +23,13 @@ public class ManageExternalAccountV1Controller : ControllerBase
     public async Task<IActionResult> AttachGoogleAccount(AttachGoogleAccountCommand command, CancellationToken ct)
     {
         await _mediator.Send(command, ct);
-        return Ok();
+        return Ok(new EmptyResponse());
     }
     
     [HttpPost(ManageExternalAccountV1Routes.DetachExternalAccount)]
     public async Task<IActionResult> DetachExternalAccount(DetachExternalAccountCommand command, CancellationToken ct)
     {
         await _mediator.Send(command, ct);
-        return Ok();
+        return Ok(new EmptyResponse());
     }
 }

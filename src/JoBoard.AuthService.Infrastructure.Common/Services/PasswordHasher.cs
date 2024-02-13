@@ -1,5 +1,5 @@
 ﻿using System.Security.Cryptography;
-using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 
 namespace JoBoard.AuthService.Infrastructure.Common.Services;
@@ -12,7 +12,7 @@ public class PasswordHasher : IPasswordHasher
 
     public string Hash(string password)
     {
-        Guard.IsNotNullOrWhiteSpace(password);
+        DomainGuard.IsNotNullOrWhiteSpace(password);
         
         using var algorithm = new Rfc2898DeriveBytes(password, SaltSize, Iterations, HashAlgorithmName.SHA512);
         var key = Convert.ToBase64String(algorithm.GetBytes(KeySize));

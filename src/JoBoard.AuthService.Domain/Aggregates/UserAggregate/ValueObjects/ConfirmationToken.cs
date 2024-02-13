@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 using JoBoard.AuthService.Domain.Common.Extensions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
@@ -24,15 +23,16 @@ public class ConfirmationToken : ValueObject
 
     public static ConfirmationToken Create(ISecureTokenizer secureTokenizer, TimeSpan lifeSpan)
     {
-        Guard.IsNotDefault(lifeSpan);
+        DomainGuard.IsNotDefault(lifeSpan);
+        DomainGuard.IsGreaterThan(lifeSpan, TimeSpan.Zero);
         
         var secureToken = secureTokenizer.Generate();
         return new ConfirmationToken(secureToken, DateTime.UtcNow.Add(lifeSpan).TrimMilliseconds());
     }
     
-    public void Verify(string token)
+    public void Verify(string token, IDateTime dateTime)
     {
-        CheckRule(new ConfirmTokenMustBeValidRule(this, token));
+        CheckRule(new ConfirmTokenMustBeValidRule(this, token, dateTime));
     }
     
     protected override IEnumerable<object> GetEqualityComponents()

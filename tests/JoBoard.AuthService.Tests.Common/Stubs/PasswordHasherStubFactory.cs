@@ -3,10 +3,9 @@ using JoBoard.AuthService.Infrastructure.Common.Services;
 
 namespace JoBoard.AuthService.Tests.Common.Stubs;
 
-// Thread-safe Singleton
-internal static class PasswordHasherStubFactory
+public class PasswordHasherStubFactory
 {
-    public static IPasswordHasher Create()
+    public IPasswordHasher Create()
     {
         return new PasswordHasher();
     }

@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Application.Services;
+﻿using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Infrastructure.Jwt.Extensions;
 using Microsoft.AspNetCore.Http;
 

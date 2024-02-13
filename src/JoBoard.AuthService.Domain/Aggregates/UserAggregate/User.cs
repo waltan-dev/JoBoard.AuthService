@@ -88,21 +88,21 @@ public class User : Entity, IAggregateRoot
             externalAccountValue: externalAccountValue);
     }
 
-    public void RequestEmailConfirmation(ConfirmationToken confirmationToken)
+    public void RequestEmailConfirmation(ConfirmationToken confirmationToken, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
-        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(EmailConfirmToken));
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(EmailConfirmToken, dateTime));
         
         EmailConfirmToken = confirmationToken;
         
         AddDomainEvent(new UserRequestedEmailConfirmationDomainEvent(this));
     }
     
-    public void ConfirmEmail(string requestToken)
+    public void ConfirmEmail(string requestToken, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
         CheckRule(new ConfirmTokenMustBeRequestedFirstRule(EmailConfirmToken));
-        EmailConfirmToken!.Verify(requestToken);
+        EmailConfirmToken!.Verify(requestToken, dateTime);
         
         EmailConfirmed = true;
         EmailConfirmToken = null;
@@ -120,23 +120,23 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserUpdatedNameDomainEvent(this));
     }
     
-    public void RequestPasswordReset(ConfirmationToken confirmationToken)
+    public void RequestPasswordReset(ConfirmationToken confirmationToken, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
         CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
-        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(ResetPasswordConfirmToken));
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(ResetPasswordConfirmToken, dateTime));
         
         ResetPasswordConfirmToken = confirmationToken;
         
         AddDomainEvent(new UserRequestedPasswordResetDomainEvent(this));
     }
 
-    public void ConfirmPasswordReset(string requestToken, UserPassword newPassword)
+    public void ConfirmPasswordReset(string requestToken, UserPassword newPassword, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
         CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
         CheckRule(new ConfirmTokenMustBeRequestedFirstRule(ResetPasswordConfirmToken));
-        ResetPasswordConfirmToken!.Verify(requestToken);
+        ResetPasswordConfirmToken!.Verify(requestToken, dateTime);
         
         Password = newPassword;
         ResetPasswordConfirmToken = null;
@@ -155,12 +155,13 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserChangedPasswordDomainEvent(this));
     }
 
-    public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken, IUserEmailUniquenessChecker userEmailUniquenessChecker)
+    public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken, 
+        IUserEmailUniquenessChecker userEmailUniquenessChecker, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
         CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
         CheckRule(new UserEmailMustBeUniqueRule(newEmail, userEmailUniquenessChecker));
-        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(ChangeEmailConfirmToken));
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(ChangeEmailConfirmToken, dateTime));
         
         NewEmail = newEmail;
         ChangeEmailConfirmToken = confirmationToken;
@@ -168,12 +169,12 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserRequestedEmailChangeDomainEvent(this));
     }
 
-    public void ConfirmEmailChange(string requestToken)
+    public void ConfirmEmailChange(string requestToken, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
         CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
         CheckRule(new ConfirmTokenMustBeRequestedFirstRule(ChangeEmailConfirmToken));
-        ChangeEmailConfirmToken!.Verify(requestToken);
+        ChangeEmailConfirmToken!.Verify(requestToken, dateTime);
         
         Email = NewEmail!;
         EmailConfirmed = true;
@@ -194,23 +195,23 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserChangedRoleDomainEvent(this));
     }
 
-    public void RequestAccountDeactivation(ConfirmationToken confirmationToken)
+    public void RequestAccountDeactivation(ConfirmationToken confirmationToken, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
         CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
-        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(AccountDeactivationConfirmToken));
+        CheckRule(new ConfirmTokenCanNotBeRequestedYetRule(AccountDeactivationConfirmToken, dateTime));
         
         AccountDeactivationConfirmToken = confirmationToken;
         
         AddDomainEvent(new UserRequestedAccountDeactivationDomainEvent(this));
     }
 
-    public void ConfirmAccountDeactivation(string requestToken)
+    public void ConfirmAccountDeactivation(string requestToken, IDateTime dateTime)
     {
         CheckBlockedOrDeactivatedRule();
         CheckRule(new UserEmailMustBeConfirmedRule(Status, EmailConfirmed));
         CheckRule(new ConfirmTokenMustBeRequestedFirstRule(AccountDeactivationConfirmToken));
-        AccountDeactivationConfirmToken!.Verify(requestToken);
+        AccountDeactivationConfirmToken!.Verify(requestToken, dateTime);
         
         Status = UserStatus.Deactivated;
         AccountDeactivationConfirmToken = null;

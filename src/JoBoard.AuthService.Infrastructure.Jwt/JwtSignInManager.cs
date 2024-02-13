@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
-using JoBoard.AuthService.Application.Commands.Account.Login.CanLogin;
-using JoBoard.AuthService.Application.Exceptions;
-using JoBoard.AuthService.Application.Models;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Commands.Login.CanLogin;
+using JoBoard.AuthService.Application.Common.Exceptions;
+using JoBoard.AuthService.Application.Common.Models;
+using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Infrastructure.Jwt.Extensions;
 using JoBoard.AuthService.Infrastructure.Jwt.Models;
 using JoBoard.AuthService.Infrastructure.Jwt.Services;
@@ -28,7 +28,7 @@ public class JwtSignInManager
         _identityService = identityService;
     }
     
-    public async Task<AuthResult> SignInAsync(LoginResult loginResult, CancellationToken ct)
+    public async Task<AuthInfo> SignInAsync(LoginResult loginResult, CancellationToken ct)
     {
         var claims = new List<Claim>
         {
@@ -43,7 +43,7 @@ public class JwtSignInManager
         var refreshToken = _jwtGenerator.GenerateRefreshToken();
         await _refreshTokenRepository.AddTokenAsync(loginResult.UserId, refreshToken, ct);
         
-        return new AuthResult(
+        return new AuthInfo(
             loginResult.UserId, 
             loginResult.FirstName, 
             loginResult.LastName, 
@@ -53,7 +53,7 @@ public class JwtSignInManager
             refreshToken.Token);
     }
 
-    public async Task<AuthResult> RefreshTokenAsync(string expiredAccessToken, string refreshToken, CancellationToken ct)
+    public async Task<AuthInfo> RefreshTokenAsync(string expiredAccessToken, string refreshToken, CancellationToken ct)
     {
         // validate access token
         var principal = _jwtGenerator.GetPrincipalFromExpiredToken(expiredAccessToken);

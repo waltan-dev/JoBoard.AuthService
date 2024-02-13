@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Infrastructure.Jwt.Configs;
 using JoBoard.AuthService.Infrastructure.Jwt.Services;
 using Microsoft.AspNetCore.Authentication;

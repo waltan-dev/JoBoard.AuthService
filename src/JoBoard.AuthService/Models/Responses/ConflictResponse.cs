@@ -1,6 +1,5 @@
 ﻿namespace JoBoard.AuthService.Models.Responses;
 
-public class ConflictResponse
+public class ConflictResponse : BaseResponse
 {
-    public string Message { get; set; }
 }

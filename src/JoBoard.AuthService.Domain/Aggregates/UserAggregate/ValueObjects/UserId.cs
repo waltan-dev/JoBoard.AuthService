@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.Common.Exceptions;
+﻿using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
@@ -10,7 +9,7 @@ public class UserId : ValueObject
     
     private UserId(Guid value)
     {
-        Guard.IsNotDefault(value);
+        DomainGuard.IsNotDefault(value);
         Value = value;
     }
 

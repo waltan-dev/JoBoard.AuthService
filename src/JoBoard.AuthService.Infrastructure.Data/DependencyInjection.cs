@@ -1,10 +1,9 @@
-﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
+using Guard = CommunityToolkit.Diagnostics.Guard;
 
 namespace JoBoard.AuthService.Infrastructure.Data;
 

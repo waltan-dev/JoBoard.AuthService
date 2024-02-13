@@ -1,5 +1,5 @@
 using JoBoard.AuthService.Application;
-using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Common.Configs;
 using JoBoard.AuthService.Infrastructure.Common;
 using JoBoard.AuthService.Infrastructure.Common.Configs;
 using JoBoard.AuthService.Infrastructure.Data;

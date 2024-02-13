@@ -1,10 +1,10 @@
 ﻿using System.Globalization;
 using CommunityToolkit.Diagnostics;
 using FluentValidation;
-using JoBoard.AuthService.Application.Behaviors;
-using JoBoard.AuthService.Application.Commands.Account.Register.ByEmailAndPassword;
-using JoBoard.AuthService.Application.Configs;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Commands.Register.ByEmailAndPassword;
+using JoBoard.AuthService.Application.Common.Behaviors;
+using JoBoard.AuthService.Application.Common.Configs;
+using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;

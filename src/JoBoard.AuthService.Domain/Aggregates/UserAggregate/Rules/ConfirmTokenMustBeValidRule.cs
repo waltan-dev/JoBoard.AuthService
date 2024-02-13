@@ -7,18 +7,21 @@ public class ConfirmTokenMustBeValidRule : IBusinessRule
 {
     private readonly ConfirmationToken _confirmationToken;
     private readonly string _requestToken;
+    private readonly IDateTime _dateTime;
 
-    public ConfirmTokenMustBeValidRule(ConfirmationToken confirmationToken, string requestToken)
+    public ConfirmTokenMustBeValidRule(ConfirmationToken confirmationToken, string requestToken, IDateTime dateTime)
     {
         _confirmationToken = confirmationToken;
         _requestToken = requestToken;
+        _dateTime = dateTime;
     }
     
     public bool IsBroken()
     {
+        var utcNow = _dateTime?.UtcNow ?? DateTime.UtcNow;
         return string.IsNullOrWhiteSpace(_requestToken)
                || _confirmationToken.Value != _requestToken 
-               || DateTime.UtcNow > _confirmationToken.Expiration;
+               || utcNow > _confirmationToken.Expiration;
     }
 
     public string Message => "Invalid or expired token";

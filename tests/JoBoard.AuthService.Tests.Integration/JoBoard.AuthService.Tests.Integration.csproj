@@ -41,4 +41,8 @@
       <ProjectReference Include="..\JoBoard.AuthService.Tests.Common\JoBoard.AuthService.Tests.Common.csproj" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Tests\" />
+    </ItemGroup>
+
 </Project>

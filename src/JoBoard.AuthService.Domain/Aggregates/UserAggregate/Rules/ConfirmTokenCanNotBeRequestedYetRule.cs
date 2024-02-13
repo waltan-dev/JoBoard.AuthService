@@ -6,15 +6,18 @@ namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 public class ConfirmTokenCanNotBeRequestedYetRule : IBusinessRule
 {
     private readonly ConfirmationToken? _confirmationToken;
+    private readonly IDateTime _dateTime;
 
-    public ConfirmTokenCanNotBeRequestedYetRule(ConfirmationToken? confirmationToken)
+    public ConfirmTokenCanNotBeRequestedYetRule(ConfirmationToken? confirmationToken, IDateTime dateTime)
     {
         _confirmationToken = confirmationToken;
+        _dateTime = dateTime;
     }
     
     public bool IsBroken()
     {
-        return _confirmationToken != null && _confirmationToken.Expiration > DateTime.UtcNow;
+        var utcNow = _dateTime?.UtcNow ?? DateTime.UtcNow;
+        return _confirmationToken != null && _confirmationToken.Expiration > utcNow;
     }
 
     public string Message => "This operation has been request already";

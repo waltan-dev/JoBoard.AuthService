@@ -2,7 +2,7 @@
 
 namespace JoBoard.AuthService.Models.Responses;
 
-public class AuthResponse : AuthResult
+public class AuthResponse : BaseDataResponse<AuthInfo>
 {
    
 }

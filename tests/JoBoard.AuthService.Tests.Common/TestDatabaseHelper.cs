@@ -1,6 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 using JoBoard.AuthService.Infrastructure.Data;
-using JoBoard.AuthService.Tests.Common.DataFixtures;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 
@@ -8,10 +7,12 @@ namespace JoBoard.AuthService.Tests.Common;
 
 public static class TestDatabaseHelper
 {
-    public static async Task InitializeAsync(AuthDbContext dbContext)
+    public static async Task InitializeAsync(AuthDbContext dbContext, IEnumerable<User> users)
     {
         await dbContext.Database.MigrateAsync();
-        await AddUserFixturesAsync(dbContext);
+        
+        dbContext.Users.AddRange(users);
+        await dbContext.SaveChangesAsync();
     }
     
     public static async Task ClearAsync(DbContext dbContext)
@@ -20,18 +21,13 @@ public static class TestDatabaseHelper
         await dbContext.Database.ExecuteSqlRawAsync("TRUNCATE TABLE \"public\".\"ExternalAccounts\" CASCADE;");
     }
 
-    private static async Task AddUserFixturesAsync(AuthDbContext dbContext)
+    public static AuthDbContext CreatePostgresDbContext(string connectionString)
     {
-        var existingUsers = new List<User>
-        {
-            DbUserFixtures.ExistingActiveUser,
-            DbUserFixtures.ExistingUserWithoutConfirmedEmail,
-            DbUserFixtures.ExistingUserRegisteredByGoogleAccount,
-            DbUserFixtures.ExistingUserWithExpiredToken
-        };
-        
-        dbContext.Users.AddRange(existingUsers);
-        await dbContext.SaveChangesAsync();
+        var options = new DbContextOptionsBuilder<AuthDbContext>()
+            .UseNpgsql(connectionString, x => 
+                x.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName))
+            .Options;
+        return new AuthDbContext(options);
     }
     
     public static AuthDbContext CreateSqliteDbContext()

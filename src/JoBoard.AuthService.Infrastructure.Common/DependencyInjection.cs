@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Common.Services;
+using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Infrastructure.Common.Configs;
 using JoBoard.AuthService.Infrastructure.Common.Services;
@@ -15,6 +16,8 @@ public static class DependencyInjection
         Guard.IsNotNull(googleAuthConfig?.ClientId);
         //Guard.IsNotNull(googleAuthConfig?.ClientSecret);
         services.AddSingleton(googleAuthConfig);
+
+        services.AddSingleton<IDateTime, DateTimeProvider>();
         
         services.AddScoped<IGoogleAuthProvider, GoogleAuthProvider>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();

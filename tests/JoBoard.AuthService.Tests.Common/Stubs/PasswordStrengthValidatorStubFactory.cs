@@ -3,10 +3,9 @@ using JoBoard.AuthService.Infrastructure.Common.Services;
 
 namespace JoBoard.AuthService.Tests.Common.Stubs;
 
-// Thread-safe Singleton
-internal static class PasswordStrengthValidatorStubFactory
+public class PasswordStrengthValidatorStubFactory
 {
-    public static IPasswordStrengthValidator Create()
+    public IPasswordStrengthValidator Create()
     {
         return new PasswordStrengthValidator();
     }
