@@ -10,6 +10,8 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 
 public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailCommand, UserResult>
 {
+    private readonly IPasswordStrengthValidator _passwordStrengthValidator;
+    private readonly ISecureTokenizer _secureTokenizer;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
@@ -17,12 +19,16 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterByEmailCommandHandler(
+        IPasswordStrengthValidator passwordStrengthValidator,
+        ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         ConfirmationTokenConfig confirmationTokenConfig,
         IUnitOfWork unitOfWork)
     {
+        _passwordStrengthValidator = passwordStrengthValidator;
+        _secureTokenizer = secureTokenizer;
         _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
@@ -39,15 +45,15 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
         if (emailIsUnique == false)
             throw new DomainException("This email is already in use");
         
-        var newToken = ConfirmationToken.Generate(_confirmationTokenConfig.ExpiresInHours);
-        var newUser = new User(
-            userId: UserId.Generate(),
+        var newToken = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.ExpiresInHours);
+        var password = Password.Create(request.Password, _passwordStrengthValidator, _passwordHasher);
+        var newUser = User.RegisterByEmailAndPassword(userId: UserId.Generate(),
             fullName: new FullName(request.FirstName, request.LastName),
             email: new Email(request.Email),
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
-            passwordHash: _passwordHasher.Hash(request.Password),
+            password: password,
             registerConfirmToken: newToken);
-
+            
         await _userRepository.AddAsync(newUser, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);

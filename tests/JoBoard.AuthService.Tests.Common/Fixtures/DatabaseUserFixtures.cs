@@ -15,16 +15,15 @@ public static class DatabaseUserFixtures
             {
                 if (_existingActiveUser != null)
                     return _existingActiveUser;
-            
-                var token = ConfirmationToken.Generate();
-                var user = new User(
-                    userId: UserId.Generate(),
+                
+                var user = User.RegisterByEmailAndPassword(userId: UserId.Generate(),
                     fullName: new FullName("Test", "Hirer"),
                     email: new Email("ExistingActiveUser@gmail.com"),
                     role: UserRole.Hirer,
-                    passwordHash: PasswordFixtures.DefaultPasswordHash,
-                    registerConfirmToken: token);
-                user.ConfirmEmail(token.Value);
+                    password: PasswordFixtures.CreateDefault(),
+                    registerConfirmToken: ConfirmationTokenFixtures.CreateNew());
+                
+                user.ConfirmEmail(user.RegisterConfirmToken!.Value);
                 _existingActiveUser = user;
             
                 return _existingActiveUser; 
@@ -32,26 +31,26 @@ public static class DatabaseUserFixtures
         }
     }
     
-    public static readonly User ExistingUserRegisteredByEmail = new(
+    public static readonly User ExistingUserRegisteredByEmail = User.RegisterByEmailAndPassword(
         userId: UserId.Generate(),
         fullName: new FullName("Test", "Hirer"),
         email: new Email("ExistingUserRegisteredByEmail@gmail.com"),
         role: UserRole.Hirer, 
-        passwordHash: PasswordFixtures.DefaultPasswordHash,
+        password: PasswordFixtures.CreateDefault(),
         registerConfirmToken: ConfirmationTokenFixtures.CreateNew()); 
     
-    public static readonly User ExistingUserRegisteredByGoogleAccount = new(
+    public static readonly User ExistingUserRegisteredByGoogleAccount = User.RegisterByGoogleAccount(
         userId: UserId.Generate(),
         fullName: new FullName(GoogleFixtures.UserProfileForExistingUser.FirstName, GoogleFixtures.UserProfileForExistingUser.LastName),
         email: new Email(GoogleFixtures.UserProfileForExistingUser.Email),
         role: UserRole.Worker, 
         googleUserId: GoogleFixtures.UserProfileForExistingUser.Id); 
     
-    public static readonly User ExistingUserWithExpiredToken = new(
+    public static readonly User ExistingUserWithExpiredToken = User.RegisterByEmailAndPassword(
         userId: UserId.Generate(),
         fullName: new FullName("Test", "Hirer"),
         email: new Email("ExistingUserWithExpiredToken@gmail.com"),
         role: UserRole.Hirer, 
-        passwordHash: PasswordFixtures.DefaultPasswordHash,
+        password: PasswordFixtures.CreateDefault(),
         registerConfirmToken: ConfirmationTokenFixtures.CreateExpired());
 }

@@ -1,14 +1,23 @@
-# Commands for development database
-start-dev-db: run-dev-db-container wait-dev-db migrate-dev-db-via-migrator
+start-api: start-dev-db
+	docker-compose -f .\docker-compose.Development.yml up -d
 
-migrate-dev-db-via-migrator: 
+clear-docker:
+	docker image rm --force auth-service
+
+# Commands for development database
+start-dev-db: run-container-dev-db wait-container-dev-db run-container-migrator
+
+run-container-migrator: 
 	docker-compose -f .\docker-compose.Development.yml run --rm --entrypoint="/bin/bash" auth-service "docker-entrypoint.RunMigrator.sh"
 
-wait-dev-db:
+wait-container-dev-db:
 	docker-compose -f .\docker-compose.Development.yml run --rm --entrypoint="/bin/bash" auth-service wait-for-it.sh auth-service-db:5432 -t 10 
 
-run-dev-db-container:
+run-container-dev-db:
 	docker-compose -f .\docker-compose.Development.yml up -d auth-service-db
+
+stop-container-dev-db:
+	docker-compose -f .\docker-compose.Development.yml rm -s -v auth-service-db
 	
 # Migrations
 add-migration:

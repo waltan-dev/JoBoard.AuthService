@@ -6,7 +6,7 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmati
 
 public class ConfirmPasswordResetCommandValidator : AbstractValidator<ConfirmPasswordResetCommand>
 {
-    public ConfirmPasswordResetCommandValidator()
+    public ConfirmPasswordResetCommandValidator(IPasswordStrengthValidator passwordStrengthValidator)
     {
         RuleFor(c => c.UserId)
             .NotEqual(Guid.Empty)
@@ -17,9 +17,9 @@ public class ConfirmPasswordResetCommandValidator : AbstractValidator<ConfirmPas
             .WithMessage("Token can't be empty");
         
         RuleFor(c => c.NewPassword)
-            .Must(PasswordStrengthChecker.Check)
-            .WithMessage($"Password must contain between {PasswordStrengthChecker.MinPasswordLength} " +
-                         $"and {PasswordStrengthChecker.MaxPasswordLength} characters, " +
+            .Must(passwordStrengthValidator.Validate)
+            .WithMessage($"Password must contain between {passwordStrengthValidator.MinPasswordLength} " +
+                         $"and {passwordStrengthValidator.MaxPasswordLength} characters, " +
                          "at least one lowercase letter, " +
                          "one uppercase letter, one digit and one non-alphanumeric character");
     }

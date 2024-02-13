@@ -3,6 +3,7 @@ using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Manage.DeactivateAccount.Request;
@@ -10,6 +11,7 @@ namespace JoBoard.AuthService.Application.UseCases.Manage.DeactivateAccount.Requ
 public class RequestAccountDeactivationCommandHandler : IRequestHandler<RequestAccountDeactivationCommand, Unit>
 {
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
+    private readonly ISecureTokenizer _secureTokenizer;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IUserRepository _userRepository;
@@ -17,12 +19,14 @@ public class RequestAccountDeactivationCommandHandler : IRequestHandler<RequestA
 
     public RequestAccountDeactivationCommandHandler(
         ConfirmationTokenConfig confirmationTokenConfig,
+        ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         IUserRepository userRepository, 
         IUnitOfWork unitOfWork)
     {
         _confirmationTokenConfig = confirmationTokenConfig;
+        _secureTokenizer = secureTokenizer;
         _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _userRepository = userRepository;
@@ -37,7 +41,7 @@ public class RequestAccountDeactivationCommandHandler : IRequestHandler<RequestA
         if (user == null)
             throw new NotFoundException("User not found");
 
-        var token = ConfirmationToken.Generate(_confirmationTokenConfig.ExpiresInHours);
+        var token = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.ExpiresInHours);
         user.RequestAccountDeactivation(token);
 
         await _userRepository.UpdateAsync(user, ct);

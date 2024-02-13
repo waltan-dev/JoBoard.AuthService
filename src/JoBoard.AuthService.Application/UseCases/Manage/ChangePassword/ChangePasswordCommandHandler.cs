@@ -12,6 +12,7 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IPasswordHasher _passwordHasher;
+    private readonly IPasswordStrengthValidator _passwordStrengthValidator;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
@@ -19,12 +20,14 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
         IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         IPasswordHasher passwordHasher,
+        IPasswordStrengthValidator passwordStrengthValidator,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
         _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _passwordHasher = passwordHasher;
+        _passwordStrengthValidator = passwordStrengthValidator;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
     }
@@ -36,8 +39,9 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
             throw new NotFoundException("User not found");
-        
-        user.ChangePassword(request.CurrentPassword, request.NewPassword, _passwordHasher);
+
+        var newPassword = Password.Create(request.NewPassword, _passwordStrengthValidator, _passwordHasher);
+        user.ChangePassword(request.CurrentPassword, newPassword, _passwordHasher);
 
         await _userRepository.UpdateAsync(user, ct);
         

@@ -19,22 +19,23 @@ public class UserBuilder
         var registerConfirmToken = _withExpiredRegisterTokenOption
             ? ConfirmationTokenFixtures.CreateExpired()
             : ConfirmationTokenFixtures.CreateNew();
-        
+
         if (_withGoogleAccountOption)
-            user = new User(
-                userId: UserId.Generate(),
+            user = User.RegisterByGoogleAccount(userId: UserId.Generate(),
                 fullName: new FullName("Ivan", "Ivanov"),
                 email: new Email("ivan@gmail.com"),
                 role: userRole,
                 googleUserId: GoogleFixtures.UserProfileForNewUser.Id);
         else
-            user = new User(
+        {
+            user = User.RegisterByEmailAndPassword(
                 userId: UserId.Generate(),
                 fullName: new FullName("Ivan", "Ivanov"),
                 email: new Email("ivan@gmail.com"),
                 role: userRole,
-                passwordHash: PasswordFixtures.DefaultPasswordHash,
+                password: PasswordFixtures.CreateDefault(),
                 registerConfirmToken: registerConfirmToken);
+        }
         
         if(_withActiveStatusOption && user.Status.Equals(UserStatus.Active) == false)
             user.ConfirmEmail(registerConfirmToken.Value);

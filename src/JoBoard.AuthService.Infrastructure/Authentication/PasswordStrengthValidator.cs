@@ -1,12 +1,19 @@
-﻿namespace JoBoard.AuthService.Domain.Common.Services;
+﻿using JoBoard.AuthService.Domain.Common.Services;
 
-public static class PasswordStrengthChecker
+namespace JoBoard.AuthService.Infrastructure.Authentication;
+
+public class PasswordStrengthValidator : IPasswordStrengthValidator
 {
-    public static int MinPasswordLength { get; } = 6;
-    public static int MaxPasswordLength { get; } = 32;
+    public int MinPasswordLength { get; } = 6;
+    public int MaxPasswordLength { get; } = 32;
+    
+    // TODO add config
 
-    public static bool Check(string password)
+    public bool Validate(string password)
     {
+        if (string.IsNullOrWhiteSpace(password))
+            return false;
+        
         bool containsMin = password.Length >= MinPasswordLength;
         bool lessThanMaxLimit = password.Length <= MaxPasswordLength;
         bool containsUpper = false;

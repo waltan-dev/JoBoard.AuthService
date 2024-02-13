@@ -1,4 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
 
@@ -7,40 +9,41 @@ public class ConfirmationTokenTests
     [Fact]
     public void CreateValid()
     {
-        var newToken = ConfirmationToken.Generate();
+        var newToken = ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), 24);
         
-        Assert.NotEqual(Guid.Empty, Guid.Parse(newToken.Value));
+        Assert.NotEmpty(newToken.Value);
         Assert.True(newToken.Expiration > DateTime.UtcNow);
     }
     
     [Fact]
     public void VerifyValid()
     {
-        var newToken = ConfirmationToken.Generate();
-
-        var isValid = newToken.Verify(newToken.Value);
+        var exception = Record.Exception(() 
+            => ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), 24));
         
-        Assert.True(isValid);
+        Assert.Null(exception);
     }
     
     [Fact]
     public void VerifyInvalid()
     {
-        var newToken = ConfirmationToken.Generate();
-            
-        var isValid = newToken.Verify("invalid-token");
-        
-        Assert.False(isValid);
+        var newToken = ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), 24);
+
+        Assert.Throws<DomainException>(() =>
+        {
+            newToken.Verify("invalid-token");
+        });
     }
     
     [Fact]
     public void VerifyExpired()
     {
         var value = Guid.NewGuid().ToString();
-        var expiredConfirmationToken = ConfirmationToken.Generate(-1);
+        var expiredConfirmationToken = ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), -1);
         
-        var isValid = expiredConfirmationToken.Verify(value);
-        
-        Assert.False(isValid);
+        Assert.Throws<DomainException>(() =>
+        {
+            expiredConfirmationToken.Verify(value);
+        });
     }
 }

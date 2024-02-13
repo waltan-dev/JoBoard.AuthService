@@ -11,17 +11,20 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
+    private readonly IPasswordStrengthValidator _passwordStrengthValidator;
     private readonly IPasswordHasher _passwordHasher;
 
     public ConfirmPasswordResetCommandHandler(
         IDomainEventDispatcher domainEventDispatcher,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
+        IPasswordStrengthValidator passwordStrengthValidator,
         IPasswordHasher passwordHasher)
     {
         _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;
         _unitOfWork = unitOfWork;
+        _passwordStrengthValidator = passwordStrengthValidator;
         _passwordHasher = passwordHasher;
     }
     
@@ -32,8 +35,9 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
             throw new NotFoundException("User not found");
-        
-        user.ConfirmPasswordReset(request.ConfirmationToken, request.NewPassword, _passwordHasher);
+
+        var newPassword = Password.Create(request.NewPassword, _passwordStrengthValidator, _passwordHasher);
+        user.ConfirmPasswordReset(request.ConfirmationToken, newPassword);
 
         await _userRepository.UpdateAsync(user, ct);
         

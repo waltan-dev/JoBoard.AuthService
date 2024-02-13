@@ -1,5 +1,4 @@
-﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.Aggregates.User.Events;
+﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.Extensions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
@@ -9,18 +8,21 @@ namespace JoBoard.AuthService.Domain.Aggregates.User;
 
 public class User : Entity, IAggregateRoot
 {
-    public new UserId Id { get; init; }
-    public DateTime RegisteredAt { get; init; }
+    public new UserId Id { get; }
+    public DateTime RegisteredAt { get; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
     public Email? NewEmail { get; private set; }
     public bool EmailConfirmed { get; private set; }
     public UserRole Role { get; private set; }
     public UserStatus Status { get; private set; }
-    public string? PasswordHash { get; private set; }
+    public Password? Password { get; private set; }
     
     private List<ExternalAccount> _externalAccounts;
     public IReadOnlyCollection<ExternalAccount> ExternalAccounts => _externalAccounts.AsReadOnly();
+
+    private List<RefreshToken> _refreshTokens;
+    public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     
     public ConfirmationToken? RegisterConfirmToken { get; private set; }
     public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
@@ -29,57 +31,89 @@ public class User : Entity, IAggregateRoot
     
     private User() {} // only for ef core 
     
-    /// <summary>
-    /// Register new user by email and password
-    /// </summary>
-    public User(UserId userId, FullName fullName, Email email, UserRole role, 
-        string passwordHash, ConfirmationToken registerConfirmToken)
+    // universal constructor for different scenarios, e.g. register by google account or register by email and password
+    private User(UserId userId, FullName fullName, Email email, bool emailConfirmed, UserRole role, UserStatus status,
+        Password? password, ConfirmationToken? registerConfirmToken, ExternalAccount? externalAccount)
     {
-        if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
-            throw new DomainException("Invalid role");
-        
         Id = userId;
         RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
         FullName = fullName;
         Email = email;
-        EmailConfirmed = false;
+        EmailConfirmed = emailConfirmed;
         Role = role;
-        Status = UserStatus.Pending;
-        PasswordHash = passwordHash;
+        Status = status;
+        Password = password;
         RegisterConfirmToken = registerConfirmToken;
-        _externalAccounts = new List<ExternalAccount>();
-
+        _externalAccounts = externalAccount == null 
+            ? new List<ExternalAccount>() 
+            : new List<ExternalAccount> { externalAccount };
+        
         AddDomainEvent(new UserRegisteredDomainEvent(this));
     }
-    
-    /// <summary>
-    /// Register new user by google account
-    /// </summary>
-    public User(UserId userId, FullName fullName, Email email, UserRole role, string googleUserId)
+
+    public static User RegisterByEmailAndPassword(UserId userId, FullName fullName, Email email, UserRole role, 
+        Password password, ConfirmationToken registerConfirmToken)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
         
-        Id = userId;
-        RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
-        FullName = fullName;
-        Email = email;
-        EmailConfirmed = true;
-        Role = role;
-        Status = UserStatus.Active;
-        _externalAccounts = new List<ExternalAccount> { new(googleUserId, ExternalAccountProvider.Google) };
+        return new User(
+            userId: userId,
+            fullName: fullName,
+            email: email,
+            emailConfirmed: false,
+            role: role,
+            status: UserStatus.Pending, 
+            password: password, 
+            registerConfirmToken: registerConfirmToken,
+            null);
+    }
+    
+    public static User RegisterByGoogleAccount(UserId userId, FullName fullName, Email email, UserRole role, 
+        string googleUserId)
+    {
+        if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
+            throw new DomainException("Invalid role");
         
-        AddDomainEvent(new UserRegisteredDomainEvent(this));
+        return new User(
+            userId: userId,
+            fullName: fullName,
+            email: email,
+            emailConfirmed: true,
+            role: role,
+            status: UserStatus.Active, 
+            password: null, 
+            registerConfirmToken: null,
+            new ExternalAccount(googleUserId, ExternalAccountProvider.Google));
+    }
+    
+    public RefreshToken RefreshToken(string currentToken, ISecureTokenizer secureTokenizer, int tokenExpiresInHours)
+    {
+        var currentUserRefreshToken = _refreshTokens.FirstOrDefault(x => x.Token == currentToken);
+        if (currentUserRefreshToken == null)
+            throw new DomainException("Invalid refresh token");
+        
+        _refreshTokens.Remove(currentUserRefreshToken);
+
+        var newSecureToken = secureTokenizer.Generate();
+        var newUserRefreshToken = new RefreshToken(Guid.NewGuid(), Id, newSecureToken, tokenExpiresInHours);
+        _refreshTokens.Add(newUserRefreshToken);
+        return newUserRefreshToken;
+    }
+    
+    public void RemoveRefreshToken(RefreshToken refreshToken)
+    {
+        _refreshTokens.Remove(refreshToken);
     }
     
     public void ConfirmEmail(string token)
     {
         ThrowIfBlockedOrDeactivated();
+
+        if (RegisterConfirmToken == null)
+            throw new DomainException("Email confirmation has not been requested");
         
-        Guard.IsNotNullOrWhiteSpace(token);
-        
-        if(RegisterConfirmToken?.Verify(token) is null or false)
-            throw new DomainException("Invalid token");
+        RegisterConfirmToken.Verify(token);
         
         EmailConfirmed = true;
         RegisterConfirmToken = null;
@@ -88,15 +122,11 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserConfirmedEmailDomainEvent(this));
     }
 
-    public void LoginWithPassword(string password, IPasswordHasher passwordHasher)
+    public void LoginWithPassword(string passwordForCheck, IPasswordHasher passwordHasher)
     {
         ThrowIfBlockedOrDeactivated();
         
-        if(PasswordHash == null)
-            throw new DomainException("Invalid email or password");
-        
-        var isValidPassword = passwordHasher.Verify(PasswordHash, password);
-        if(isValidPassword == false)
+        if(Password == null || Password.Verify(passwordForCheck, passwordHasher) == false)
             throw new DomainException("Invalid email or password");
     }
     
@@ -127,7 +157,7 @@ public class User : Entity, IAggregateRoot
         _externalAccounts.Remove(externalAccount);
     }
 
-    public void RequestPasswordReset(ConfirmationToken newToken)
+    public void RequestPasswordReset(ConfirmationToken confirmationToken)
     {
         ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
@@ -135,42 +165,35 @@ public class User : Entity, IAggregateRoot
         if (ResetPasswordConfirmToken != null && ResetPasswordConfirmToken.Expiration > DateTime.UtcNow)
             throw new DomainException("Password reset has been requested already");
         
-        ResetPasswordConfirmToken = newToken;
+        ResetPasswordConfirmToken = confirmationToken;
         AddDomainEvent(new UserRequestedPasswordResetDomainEvent(this));
     }
 
-    public void ConfirmPasswordReset(string token, string newPassword, IPasswordHasher passwordHasher)
+    public void ConfirmPasswordReset(string token, Password newPassword)
     {
         ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
         
-        Guard.IsNotNullOrWhiteSpace(token);
-        Guard.IsNotNullOrWhiteSpace(newPassword);
+        if (ResetPasswordConfirmToken == null)
+            throw new DomainException("Password reset has not been requested");
         
-        if (DateTime.UtcNow > ResetPasswordConfirmToken?.Expiration)
-            throw new DomainException("Confirmation token is expired");
+        ResetPasswordConfirmToken.Verify(token);
 
-        if(ResetPasswordConfirmToken?.Verify(token) is null or false)
-            throw new DomainException("Invalid token");
-
-        PasswordHash = passwordHasher.Hash(newPassword);
+        Password = newPassword;
         ResetPasswordConfirmToken = null;
     }
 
-    public void ChangePassword(string currentPassword, string newPassword, IPasswordHasher passwordHasher)
+    public void ChangePassword(string currentPassword, Password newPassword, IPasswordHasher passwordHasher)
     {
         ThrowIfBlockedOrDeactivated();
         
-        Guard.IsNotNullOrWhiteSpace(currentPassword);
-        Guard.IsNotNullOrWhiteSpace(newPassword);
-        
-        if(PasswordHash == null)
+        if(this.Password == null)
             throw new DomainException("No current password");
 
-        if (passwordHasher.Verify(PasswordHash, currentPassword) == false)
+        if (this.Password.Verify(currentPassword, passwordHasher) == false)
             throw new DomainException("Incorrect current password");
         
-        PasswordHash = passwordHasher.Hash(newPassword);
+        Password = newPassword;
         AddDomainEvent(new UserChangedPasswordDomainEvent(this));
     }
 
@@ -195,13 +218,10 @@ public class User : Entity, IAggregateRoot
         ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
         
-        Guard.IsNotNullOrWhiteSpace(token);
-
         if (ChangeEmailConfirmToken == null || NewEmail == null)
             throw new DomainException("Email change has not been requested");
 
-        if (ChangeEmailConfirmToken.Verify(token) == false)
-            throw new DomainException("Invalid confirmation token");
+        ChangeEmailConfirmToken.Verify(token);
 
         Email = NewEmail;
         EmailConfirmed = true;
@@ -239,13 +259,10 @@ public class User : Entity, IAggregateRoot
         ThrowIfEmailIsNotConfirmed();
         ThrowIfBlockedOrDeactivated();
         
-        Guard.IsNotNullOrWhiteSpace(token);
-        
         if (AccountDeactivationConfirmToken == null)
             throw new DomainException("Account deactivation has not been requested");
 
-        if (AccountDeactivationConfirmToken.Verify(token) == false)
-            throw new DomainException("Invalid confirmation token");
+        AccountDeactivationConfirmToken.Verify(token);
 
         Status = UserStatus.Deactivated;
         AccountDeactivationConfirmToken = null;

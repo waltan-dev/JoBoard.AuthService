@@ -13,22 +13,22 @@ public class UserRegistrationTests
         var fullName = new FullName("Ivan", "Ivanov");
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Worker;
-        var passwordHash = PasswordFixtures.DefaultPasswordHash;
+        var password = PasswordFixtures.CreateDefault();
         var registerConfirmToken = ConfirmationTokenFixtures.CreateNew();
         
-        var newUser = new AuthService.Domain.Aggregates.User.User(
+        var newUser = AuthService.Domain.Aggregates.User.User.RegisterByEmailAndPassword(
             userId: userId,
             fullName: fullName,
             email: email,
             role: role, 
-            passwordHash: passwordHash,
+            password: password,
             registerConfirmToken: registerConfirmToken);
 
         Assert.Equal(userId, newUser.Id);
         Assert.Equal(fullName, newUser.FullName);
         Assert.Equal(email, newUser.Email);
         Assert.Equal(role, newUser.Role);
-        Assert.Equal(passwordHash, newUser.PasswordHash);
+        Assert.Equal(password, newUser.Password);
         Assert.Equal(registerConfirmToken, newUser.RegisterConfirmToken);
         
         Assert.Equal(UserStatus.Pending, newUser.Status);
@@ -54,7 +54,7 @@ public class UserRegistrationTests
         var role = UserRole.Worker;
         var googleUserId = GoogleFixtures.UserProfileForNewUser.Id;
         
-        var newUser = new AuthService.Domain.Aggregates.User.User(
+        var newUser = AuthService.Domain.Aggregates.User.User.RegisterByGoogleAccount(
             userId: userId,
             fullName: fullName,
             email: email,
@@ -73,7 +73,7 @@ public class UserRegistrationTests
         Assert.Equal(UserStatus.Active, newUser.Status);
         Assert.True(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
-        Assert.Null(newUser.PasswordHash);
+        Assert.Null(newUser.Password);
     }
     
     [Fact]

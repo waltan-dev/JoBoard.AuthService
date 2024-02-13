@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Common.Exceptions;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
@@ -10,11 +11,11 @@ public class ChangePasswordTests
     {
         var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-        var newPassword = PasswordFixtures.NewPassword;
+        var newPassword = PasswordFixtures.CreateNew();
         
         user.ChangePassword(PasswordFixtures.DefaultPassword, newPassword, passwordHasher);
         
-        Assert.Equal(PasswordFixtures.NewPasswordHash, user.PasswordHash);
+        Assert.Equal(newPassword, user.Password);
     }
     
     [Fact]
@@ -25,7 +26,7 @@ public class ChangePasswordTests
 
         Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword("invalidCurrentPassword", "newPassword", passwordHasher);
+            user.ChangePassword("invalidCurrentPassword", PasswordFixtures.CreateNew(), passwordHasher);
         });
     }
     
@@ -37,7 +38,7 @@ public class ChangePasswordTests
 
         Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword("someCurrentPassword", "newPassword", passwordHasherStub);
+            user.ChangePassword("someCurrentPassword", PasswordFixtures.CreateNew(), passwordHasherStub);
         });
     }
     
@@ -47,9 +48,9 @@ public class ChangePasswordTests
         var passwordHasherStub = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
 
-        Assert.Throws<ArgumentException>(() =>
+        Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword(" ", " ", passwordHasherStub);
+            user.ChangePassword(" ", PasswordFixtures.CreateNew(), passwordHasherStub);
         });
     }
 }

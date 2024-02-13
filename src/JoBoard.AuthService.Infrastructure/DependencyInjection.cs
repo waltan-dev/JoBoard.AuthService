@@ -16,6 +16,8 @@ public static class DependencyInjection
         services.AddSingleton(googleAuthConfig);
         services.AddScoped<IGoogleAuthProvider, GoogleAuthProvider>();
         services.AddSingleton<IPasswordHasher, PasswordHasher>();
+        services.AddSingleton<IPasswordStrengthValidator, PasswordStrengthValidator>();
+        services.AddSingleton<ISecureTokenizer, SecureTokenizer>();
         return services;
     }
 }

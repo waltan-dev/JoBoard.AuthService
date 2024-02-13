@@ -1,6 +1,8 @@
 ﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.Extensions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Domain.Common.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -12,26 +14,32 @@ public class ConfirmationToken : ValueObject
     public string Value { get; }
     public DateTime Expiration { get; }
     
-    private ConfirmationToken(string value, DateTime expiration)
-    {
-        Guard.IsNotNullOrWhiteSpace(value);
-        Guard.IsNotDefault(expiration);
-        
-        Value = value;
-        Expiration = expiration;
-    }
-
-    public static ConfirmationToken Generate(int expiresInHours = 24)
-    {
-        var exp = DateTime.UtcNow.AddHours(expiresInHours).TrimMilliseconds();
-        return new ConfirmationToken(Guid.NewGuid().ToString(), exp);
-    }
+    private ConfirmationToken() {} // for ef core only
     
-    public bool Verify(string token)
+    private ConfirmationToken(string token, int expiresInHours)
     {
         Guard.IsNotNullOrWhiteSpace(token);
+        Guard.IsNotDefault(expiresInHours);
         
-        return Value == token && DateTime.UtcNow <= Expiration;
+        Value = token;
+        Expiration = DateTime.UtcNow.AddHours(expiresInHours).TrimMilliseconds();
+    }
+
+    public static ConfirmationToken Create(ISecureTokenizer secureTokenizer, int expiresInHours)
+    {
+        var secureToken = secureTokenizer.Generate();
+        return new ConfirmationToken(secureToken, expiresInHours);
+    }
+    
+    public void Verify(string token)
+    {
+        Guard.IsNotNullOrWhiteSpace(token);
+
+        if (Value != token)
+            throw new DomainException("Invalid token");
+        
+        if(DateTime.UtcNow >= Expiration)
+            throw new DomainException("Token expired");
     }
     
     protected override IEnumerable<object> GetEqualityComponents()

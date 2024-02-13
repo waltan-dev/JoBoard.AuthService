@@ -52,8 +52,8 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
         var emailIsUnique = await _userRepository.CheckEmailUniquenessAsync(email, ct);
         if (emailIsUnique == false)
             throw new DomainException("This email is already in use");
-        
-        var newUser = new User(
+
+        var newUser = User.RegisterByGoogleAccount(
             userId: UserId.Generate(),
             fullName: new FullName(googleUserProfile.FirstName, googleUserProfile.LastName),
             email: email,

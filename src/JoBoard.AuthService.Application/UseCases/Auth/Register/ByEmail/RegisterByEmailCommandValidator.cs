@@ -6,7 +6,7 @@ namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 
 public class RegisterByEmailCommandValidator : AbstractValidator<RegisterByEmailCommand>
 {
-    public RegisterByEmailCommandValidator()
+    public RegisterByEmailCommandValidator(IPasswordStrengthValidator passwordStrengthValidator)
     {
         RuleFor(c => c.FirstName)
             .NotEmpty()
@@ -21,9 +21,9 @@ public class RegisterByEmailCommandValidator : AbstractValidator<RegisterByEmail
             .WithMessage("Email must be valid email address");
         
         RuleFor(c => c.Password)
-            .Must(PasswordStrengthChecker.Check)
-            .WithMessage($"Password must contain between {PasswordStrengthChecker.MinPasswordLength} " +
-                         $"and {PasswordStrengthChecker.MaxPasswordLength} characters, " +
+            .Must(passwordStrengthValidator.Validate)
+            .WithMessage($"Password must contain between {passwordStrengthValidator.MinPasswordLength} " +
+                         $"and {passwordStrengthValidator.MaxPasswordLength} characters, " +
                          "at least one lowercase letter, " +
                          "one uppercase letter, one digit and one non-alphanumeric character");
         

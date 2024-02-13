@@ -1,9 +1,8 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Common.Services;
+﻿using JoBoard.AuthService.Infrastructure.Authentication;
 
-namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
+namespace JoBoard.AuthService.UnitTests.Infrastructure.Authentication;
 
-public class PasswordStrengthCheckerTests
+public class PasswordStrengthValidatorTests
 {
     [Theory]
     [InlineData("AAbb123$", true)]
@@ -15,6 +14,7 @@ public class PasswordStrengthCheckerTests
     [InlineData("Qwertyuiop123456789_Qwertyuiop123456789_Qwertyuiop123456789", false)]
     public void CheckValid(string password, bool expectedResult)
     {
-        Assert.Equal(expectedResult, PasswordStrengthChecker.Check(password));
+        var passwordStrengthValidator = new PasswordStrengthValidator();
+        Assert.Equal(expectedResult, passwordStrengthValidator.Validate(password));
     }
 }

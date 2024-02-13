@@ -2,23 +2,27 @@
 using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Request;
 
 public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswordResetCommand, Unit>
 {
+    private readonly ISecureTokenizer _secureTokenizer;
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
 
     public RequestPasswordResetCommandHandler(
+        ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
         ConfirmationTokenConfig confirmationTokenConfig,
         IUserRepository userRepository,
         IUnitOfWork unitOfWork)
     {
+        _secureTokenizer = secureTokenizer;
         _domainEventDispatcher = domainEventDispatcher;
         _confirmationTokenConfig = confirmationTokenConfig;
         _userRepository = userRepository;
@@ -34,7 +38,7 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         if (user == null)
             throw new NotFoundException("User not found");
 
-        var newToken = ConfirmationToken.Generate(_confirmationTokenConfig.ExpiresInHours);
+        var newToken = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.ExpiresInHours);
         user.RequestPasswordReset(newToken);
 
         await _userRepository.UpdateAsync(user, ct);
