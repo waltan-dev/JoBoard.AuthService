@@ -1,19 +1,20 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using JoBoard.AuthService.Infrastructure.Jwt;
 using Microsoft.IdentityModel.Tokens;
 
-namespace JoBoard.AuthService.Infrastructure.Jwt;
+namespace JoBoard.AuthService.Infrastructure.Auth.Jwt;
 
-public interface IJwtGenerator
+public interface IJwtManager
 {
     string Generate(IEnumerable<Claim> claims);
 }
 
-public class JwtGenerator : IJwtGenerator
+public class JwtManager : IJwtManager
 {
     private readonly JwtConfig _jwtConfig;
     
-    public JwtGenerator(JwtConfig jwtConfig)
+    public JwtManager(JwtConfig jwtConfig)
     {
         _jwtConfig = jwtConfig;
     }

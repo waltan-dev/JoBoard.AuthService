@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Infrastructure.Authentication;
+﻿using JoBoard.AuthService.Infrastructure.Auth.Services;
 
 namespace JoBoard.AuthService.UnitTests.Infrastructure.Authentication;
 

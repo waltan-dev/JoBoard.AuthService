@@ -20,9 +20,6 @@ public class User : Entity, IAggregateRoot
     
     private List<ExternalAccount> _externalAccounts;
     public IReadOnlyCollection<ExternalAccount> ExternalAccounts => _externalAccounts.AsReadOnly();
-
-    private List<RefreshToken> _refreshTokens;
-    public IReadOnlyCollection<RefreshToken> RefreshTokens => _refreshTokens.AsReadOnly();
     
     public ConfirmationToken? RegisterConfirmToken { get; private set; }
     public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
@@ -47,7 +44,6 @@ public class User : Entity, IAggregateRoot
         _externalAccounts = externalAccount == null 
             ? new List<ExternalAccount>() 
             : new List<ExternalAccount> { externalAccount };
-        _refreshTokens = new List<RefreshToken>();
         
         AddDomainEvent(new UserRegisteredDomainEvent(this));
     }
@@ -88,24 +84,6 @@ public class User : Entity, IAggregateRoot
             new ExternalAccount(googleUserId, ExternalAccountProvider.Google));
     }
     
-    public RefreshToken RefreshToken(string currentToken, ISecureTokenizer secureTokenizer, int tokenExpiresInHours)
-    {
-        var currentUserRefreshToken = _refreshTokens.FirstOrDefault(x => x.Token == currentToken);
-        if (currentUserRefreshToken == null)
-            throw new DomainException("Invalid refresh token");
-        
-        _refreshTokens.Remove(currentUserRefreshToken);
-
-        var newUserRefreshToken = Aggregates.User.RefreshToken.Create(Id, tokenExpiresInHours, secureTokenizer);
-        _refreshTokens.Add(newUserRefreshToken);
-        return newUserRefreshToken;
-    }
-    
-    public void RemoveRefreshToken(RefreshToken refreshToken)
-    {
-        _refreshTokens.Remove(refreshToken);
-    }
-    
     public void ConfirmEmail(string token)
     {
         ThrowIfBlockedOrDeactivated();
@@ -120,33 +98,6 @@ public class User : Entity, IAggregateRoot
         if(Status.Equals(UserStatus.Pending))
             Status = UserStatus.Active;
         AddDomainEvent(new UserConfirmedEmailDomainEvent(this));
-    }
-
-    public RefreshToken LoginWithPassword(
-        string passwordForCheck, 
-        IPasswordHasher passwordHasher, 
-        ISecureTokenizer secureTokenizer,
-        int tokenExpiresInHours)
-    {
-        ThrowIfBlockedOrDeactivated();
-        
-        if(Password == null || Password.Verify(passwordForCheck, passwordHasher) == false)
-            throw new DomainException("Invalid email or password");
-        
-        var newUserRefreshToken = Aggregates.User.RefreshToken.Create(Id, tokenExpiresInHours, secureTokenizer);
-        _refreshTokens.Add(newUserRefreshToken);
-        return newUserRefreshToken;
-    }
-    
-    public RefreshToken LoginWithExternalAccount(
-        ISecureTokenizer secureTokenizer,
-        int tokenExpiresInHours)
-    {
-        ThrowIfBlockedOrDeactivated();
-        
-        var newUserRefreshToken = Aggregates.User.RefreshToken.Create(Id, tokenExpiresInHours, secureTokenizer);
-        _refreshTokens.Add(newUserRefreshToken);
-        return newUserRefreshToken;
     }
     
     public void UpdateFullName(FullName fullName)
@@ -287,14 +238,14 @@ public class User : Entity, IAggregateRoot
         AccountDeactivationConfirmToken = null;
         AddDomainEvent(new UserDeactivatedDomainEvent(this));
     }
-
+    
     private void ThrowIfEmailIsNotConfirmed()
     {
         if(Status.Equals(UserStatus.Pending))
             throw new DomainException("Email is not confirmed yet");
     }
     
-    private void ThrowIfBlockedOrDeactivated()
+    public void ThrowIfBlockedOrDeactivated()
     {
         if(Status.Equals(UserStatus.Deactivated))
             throw new DomainException("Your account has been deactivated");

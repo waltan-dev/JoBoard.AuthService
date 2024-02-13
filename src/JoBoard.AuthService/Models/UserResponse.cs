@@ -1,14 +1,16 @@
 ﻿using System.Security.Claims;
 using JoBoard.AuthService.Application.Common.Models;
+using JoBoard.AuthService.Infrastructure.Auth.Jwt;
 using JoBoard.AuthService.Infrastructure.Jwt;
 
 namespace JoBoard.AuthService.Models;
 
-public class AuthResponse : UserResult
+public class UserResponse : UserResult
 {
     public string AccessToken { get; init; }
+    public string RefreshToken { get; init; }
     
-    public static AuthResponse Create(UserResult userResult, IJwtGenerator jwtGenerator)
+    public static UserResponse Create(UserResult userResult, IJwtManager jwtManager)
     {
         var claims = new List<Claim>
         {
@@ -18,16 +20,18 @@ public class AuthResponse : UserResult
             new(ClaimTypes.Surname, userResult.LastName),
             new(ClaimTypes.Role, userResult.Role)
         };
-        var accessToken = jwtGenerator.Generate(claims);
+        var accessToken = jwtManager.Generate(claims);
+        var refreshToken = jwtManager.Generate(claims);
+        // TODO implement real refresh token
 
-        return new AuthResponse
+        return new UserResponse
         {
             UserId = userResult.UserId,
             FirstName = userResult.FirstName,
             LastName = userResult.LastName,
             Email = userResult.Email,
             Role = userResult.Role,
-            RefreshToken = userResult.RefreshToken,
+            RefreshToken = refreshToken,
             AccessToken = accessToken
         };
     }

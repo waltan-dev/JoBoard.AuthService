@@ -22,7 +22,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY ["src/JoBoard.AuthService/*.csproj", "/source/src/JoBoard.AuthService/"]
 COPY ["src/JoBoard.AuthService.Application/*.csproj", "/source/src/JoBoard.AuthService.Application/"]
 COPY ["src/JoBoard.AuthService.Domain/*.csproj", "/source/src/JoBoard.AuthService.Domain/"]
-COPY ["src/JoBoard.AuthService.Infrastructure/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure/"]
+COPY ["src/JoBoard.AuthService.Infrastructure.Auth/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Auth/"]
 COPY ["src/JoBoard.AuthService.Infrastructure.Data/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Data/"]
 COPY ["src/JoBoard.AuthService.Migrator/*.csproj", "/source/src/JoBoard.AuthService.Migrator/"]
 

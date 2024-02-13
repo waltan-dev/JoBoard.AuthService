@@ -12,7 +12,6 @@ public sealed class AuthDbContext : DbContext
     
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<ExternalAccount> ExternalAccounts { get; set; } = null!;
-    public DbSet<RefreshToken> RefreshTokens { get; set; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

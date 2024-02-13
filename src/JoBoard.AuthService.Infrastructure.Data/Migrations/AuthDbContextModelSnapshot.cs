@@ -39,29 +39,7 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
 
                     b.ToTable("ExternalAccounts", (string)null);
                 });
-
-            modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.RefreshToken", b =>
-                {
-                    b.Property<Guid>("Id")
-                        .HasColumnType("uuid");
-
-                    b.Property<DateTime>("ExpiresAt")
-                        .HasColumnType("timestamp with time zone");
-
-                    b.Property<string>("Token")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<Guid>("UserId")
-                        .HasColumnType("uuid");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RefreshTokens", (string)null);
-                });
-
+            
             modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -92,16 +70,7 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
-
-            modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.RefreshToken", b =>
-                {
-                    b.HasOne("JoBoard.AuthService.Domain.Aggregates.User.User", null)
-                        .WithMany("RefreshTokens")
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
+            
             modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.User", b =>
                 {
                     b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.FullName", "FullName", b1 =>
@@ -295,8 +264,6 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
             modelBuilder.Entity("JoBoard.AuthService.Domain.Aggregates.User.User", b =>
                 {
                     b.Navigation("ExternalAccounts");
-
-                    b.Navigation("RefreshTokens");
                 });
 #pragma warning restore 612, 618
         }

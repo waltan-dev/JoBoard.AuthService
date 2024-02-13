@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Infrastructure.Authentication;
+namespace JoBoard.AuthService.Infrastructure.Auth.Services;
 
 public class PasswordStrengthValidator : IPasswordStrengthValidator
 {

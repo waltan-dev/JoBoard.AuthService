@@ -25,7 +25,6 @@ public class EfUserRepository : EfBaseRepository, IUserRepository
         // don't use .AsNoTracking()
         return await DbContext.Users
             .Include(x=>x.ExternalAccounts)
-            .Include(x=>x.RefreshTokens)
             .FirstOrDefaultAsync(x=>x.Id == userId, ct);
     }
 
@@ -35,7 +34,6 @@ public class EfUserRepository : EfBaseRepository, IUserRepository
         // don't use .AsNoTracking()
         return await DbContext.Users
             .Include(x=>x.ExternalAccounts)
-            .Include(x=>x.RefreshTokens)
             .FirstOrDefaultAsync(x=>x.Email.Value == email.Value, ct);
     }
 

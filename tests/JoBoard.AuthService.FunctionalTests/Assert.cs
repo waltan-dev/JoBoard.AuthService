@@ -9,7 +9,7 @@ public static class Assert
 {
     public static async Task SuccessAuthResponseAsync(HttpResponseMessage response)
     {
-        var responseBody = await response.Content.ReadFromJsonAsync<AuthResponse>();
+        var responseBody = await response.Content.ReadFromJsonAsync<UserResponse>();
         var responseContentType = response.Content.Headers.ContentType?.MediaType;
         
         Xunit.Assert.Equal(StatusCodes.Status200OK, (int)response.StatusCode);

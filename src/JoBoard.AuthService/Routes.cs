@@ -11,6 +11,8 @@ public static class AuthV1Routes
     public const string Login = $"{Base}/login";
     public const string LoginByGoogle = $"{Base}/login-google";
     
+    public const string RefreshToken = $"{Base}/refresh-token";
+    
     public const string ConfirmEmail = $"{Base}/confirm-email";
     
     public const string RequestPasswordReset = $"{Base}/request-password-reset";

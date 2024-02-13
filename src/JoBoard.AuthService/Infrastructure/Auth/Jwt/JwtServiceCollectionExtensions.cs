@@ -3,6 +3,7 @@ using System.Text;
 using System.Text.Json;
 using CommunityToolkit.Diagnostics;
 using JoBoard.AuthService.Application.Common.Services;
+using JoBoard.AuthService.Infrastructure.Auth.Jwt;
 using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -23,7 +24,7 @@ public static class JwtServiceCollectionExtensions
 
         services.AddSingleton(jwtConfig);
         services.AddHttpContextAccessor();
-        services.AddScoped<IJwtGenerator, JwtGenerator>();
+        services.AddScoped<IJwtManager, JwtManager>();
         services.AddScoped<IIdentityService, JwtIdentityService>();
         
         services.AddAuthentication(x =>

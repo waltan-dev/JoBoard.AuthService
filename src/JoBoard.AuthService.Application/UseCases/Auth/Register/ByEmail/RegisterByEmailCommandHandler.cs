@@ -16,7 +16,6 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
-    private readonly RefreshTokenConfig _refreshTokenConfig;
     private readonly IUnitOfWork _unitOfWork;
 
     public RegisterByEmailCommandHandler(
@@ -26,7 +25,6 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
         ConfirmationTokenConfig confirmationTokenConfig,
-        RefreshTokenConfig refreshTokenConfig,
         IUnitOfWork unitOfWork)
     {
         _passwordStrengthValidator = passwordStrengthValidator;
@@ -35,7 +33,6 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _confirmationTokenConfig = confirmationTokenConfig;
-        _refreshTokenConfig = refreshTokenConfig;
         _unitOfWork = unitOfWork;
     }
     
@@ -56,9 +53,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
             password: password,
             registerConfirmToken: newToken);
-        var refreshToken = newUser.LoginWithPassword(
-            request.Password, _passwordHasher, _secureTokenizer, _refreshTokenConfig.ExpiresInHours);
-            
+        
         await _userRepository.AddAsync(newUser, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
@@ -70,7 +65,6 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
             newUser.FullName.FirstName,
             newUser.FullName.LastName,
             newUser.Email.Value,
-            newUser.Role.Name, 
-            refreshToken.Token);
+            newUser.Role.Name);
     }
 }

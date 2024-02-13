@@ -1,12 +1,11 @@
-﻿using JoBoard.AuthService.Domain.Common.Extensions;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Domain.Aggregates.User;
+namespace JoBoard.AuthService.Infrastructure.Auth.Jwt;
 
-public class RefreshToken : Entity
+public class RefreshToken
 {
-    public new Guid Id { get; private set; }
+    public Guid Id { get; private set; }
     public UserId UserId { get; private set; }
     public string Token { get; private set; }
     public DateTime ExpiresAt { get; private set; }
@@ -18,7 +17,7 @@ public class RefreshToken : Entity
         Id = id;
         UserId = userId;
         Token = token;
-        ExpiresAt = DateTime.UtcNow.AddHours(tokenExpiresInHours).TrimMilliseconds();
+        ExpiresAt = DateTime.UtcNow.AddHours(tokenExpiresInHours);
     }
 
     internal static RefreshToken Create(UserId userId, int tokenExpiresInHours, ISecureTokenizer secureTokenizer)

@@ -85,10 +85,5 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
         builder.HasMany(x => x.ExternalAccounts)
             .WithOne()
             .HasForeignKey(x => x.Id);
-        
-        // map RefreshTokens
-        builder.HasMany(x => x.RefreshTokens)
-            .WithOne()
-            .HasForeignKey(x => x.UserId);
     }
 }

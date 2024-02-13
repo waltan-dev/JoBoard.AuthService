@@ -1,4 +1,4 @@
-﻿namespace JoBoard.AuthService.Infrastructure.Authentication;
+﻿namespace JoBoard.AuthService.Infrastructure.Auth.Configs;
 
 public class GoogleAuthConfig
 {

@@ -1,9 +1,8 @@
 ﻿using System.Security.Cryptography;
 using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Common.Services;
 
-namespace JoBoard.AuthService.Infrastructure.Authentication;
+namespace JoBoard.AuthService.Infrastructure.Auth.Services;
 
 public class PasswordHasher : IPasswordHasher
 {

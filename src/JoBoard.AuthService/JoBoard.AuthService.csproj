@@ -20,7 +20,7 @@
     <ItemGroup>
       <ProjectReference Include="..\JoBoard.AuthService.Application\JoBoard.AuthService.Application.csproj" />
       <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj" />
-      <ProjectReference Include="..\JoBoard.AuthService.Infrastructure\JoBoard.AuthService.Infrastructure.csproj" />
+      <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Auth\JoBoard.AuthService.Infrastructure.Auth.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -31,6 +31,10 @@
       <Content Update="appsettings.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+      <Folder Include="Infrastructure\Auth\" />
     </ItemGroup>
     
 </Project>
