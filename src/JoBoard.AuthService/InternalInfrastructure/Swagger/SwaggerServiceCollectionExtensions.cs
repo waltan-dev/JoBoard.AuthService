@@ -1,7 +1,7 @@
 ﻿using System.Reflection;
 using Microsoft.OpenApi.Models;
 
-namespace JoBoard.AuthService.Infrastructure.Swagger;
+namespace JoBoard.AuthService.InternalInfrastructure.Swagger;
 
 internal static class SwaggerServiceCollectionExtensions
 {

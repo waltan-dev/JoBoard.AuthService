@@ -2,10 +2,10 @@ using JoBoard.AuthService.Application;
 using JoBoard.AuthService.Application.Common.Configs;
 using JoBoard.AuthService.Infrastructure.Auth;
 using JoBoard.AuthService.Infrastructure.Auth.Configs;
-using JoBoard.AuthService.Infrastructure.Auth.Jwt;
 using JoBoard.AuthService.Infrastructure.Data;
-using JoBoard.AuthService.Infrastructure.HttpEndpoints;
-using JoBoard.AuthService.Infrastructure.Swagger;
+using JoBoard.AuthService.InternalInfrastructure.HttpEndpoints;
+using JoBoard.AuthService.InternalInfrastructure.Jwt;
+using JoBoard.AuthService.InternalInfrastructure.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 

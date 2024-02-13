@@ -1,7 +1,7 @@
-﻿using JoBoard.AuthService.Infrastructure.Filters;
-using JoBoard.AuthService.Infrastructure.Json;
+﻿using JoBoard.AuthService.InternalInfrastructure.Filters;
+using JoBoard.AuthService.InternalInfrastructure.Json;
 
-namespace JoBoard.AuthService.Infrastructure.HttpEndpoints;
+namespace JoBoard.AuthService.InternalInfrastructure.HttpEndpoints;
 
 internal static class HttpEndpointsServiceCollectionExtensions
 {

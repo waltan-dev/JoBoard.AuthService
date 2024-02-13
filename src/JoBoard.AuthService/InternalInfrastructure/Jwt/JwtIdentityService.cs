@@ -2,7 +2,7 @@
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 
-namespace JoBoard.AuthService.Infrastructure.Auth.Jwt;
+namespace JoBoard.AuthService.InternalInfrastructure.Jwt;
 
 public class JwtIdentityService : IIdentityService
 {
@@ -15,6 +15,7 @@ public class JwtIdentityService : IIdentityService
 
     public UserId GetUserId()
     {
+        // get user id from JWT
         var userId = _httpContextAccessor.HttpContext!.User.GetUserId();
         if (userId == null)
             throw new NotFoundException("User not found");

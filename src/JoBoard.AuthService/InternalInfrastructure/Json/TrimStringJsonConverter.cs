@@ -1,7 +1,7 @@
 ﻿using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace JoBoard.AuthService.Infrastructure.Json;
+namespace JoBoard.AuthService.InternalInfrastructure.Json;
 
 public class TrimStringJsonConverter : JsonConverter<string>
 {

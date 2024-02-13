@@ -11,26 +11,26 @@ using JoBoard.AuthService.Models;
 using MediatR;
 using Microsoft.IdentityModel.Tokens;
 
-namespace JoBoard.AuthService.Infrastructure.Auth.Jwt;
+namespace JoBoard.AuthService.InternalInfrastructure.Jwt;
 
 public class JwtSignInManager
 {
     private readonly IMediator _mediator;
     private readonly JwtConfig _jwtConfig;
     private readonly ISecureTokenizer _secureTokenizer;
-    private readonly IRefreshTokenStorage _refreshTokenStorage;
+    private readonly IRefreshTokenRepository _refreshTokenRepository;
     private readonly IIdentityService _identityService;
 
     public JwtSignInManager(IMediator mediator,
         JwtConfig jwtConfig, 
         ISecureTokenizer secureTokenizer, 
-        IRefreshTokenStorage refreshTokenStorage,
+        IRefreshTokenRepository refreshTokenRepository,
         IIdentityService identityService)
     {
         _mediator = mediator;
         _jwtConfig = jwtConfig;
         _secureTokenizer = secureTokenizer;
-        _refreshTokenStorage = refreshTokenStorage;
+        _refreshTokenRepository = refreshTokenRepository;
         _identityService = identityService;
     }
 
@@ -38,7 +38,7 @@ public class JwtSignInManager
     {
         var accessToken = GenerateAccessToken(loginResult);
         var refreshToken = RefreshToken.Create(_jwtConfig.RefreshTokenLifeSpan, _secureTokenizer);
-        await _refreshTokenStorage.AddTokenAsync(loginResult.UserId.ToString(), refreshToken, ct);
+        await _refreshTokenRepository.AddTokenAsync(loginResult.UserId.ToString(), refreshToken, ct);
         
         return new AuthResponse(
             loginResult.UserId, 
@@ -61,28 +61,33 @@ public class JwtSignInManager
         var loginResult = await _mediator.Send(new CanLoginCommand { UserId = userId.Value, }, ct);
         
         // validate refresh token
-        var userRefreshTokens = await _refreshTokenStorage.GetTokensAsync(userId.Value.ToString(), ct);
+        var userRefreshTokens = await _refreshTokenRepository.GetTokensAsync(userId.Value.ToString(), ct);
         var currentRefreshToken = userRefreshTokens.FirstOrDefault(x => x.Token == request.RefreshToken);
         if(currentRefreshToken == null)
-            throw new ValidationException(request.RefreshToken, "Refresh token isn't valid");
+            throw new ValidationException(request.RefreshToken, "Refresh token isn't valid or expired");
         if(DateTime.UtcNow > currentRefreshToken.ExpiresAt)
             throw new ValidationException(request.RefreshToken, "Refresh token is expired");
         
         // refresh
         var authResponse = await SignInAsync(loginResult, ct);
-        await _refreshTokenStorage.RemoveTokenAsync(loginResult.UserId.ToString(), currentRefreshToken, ct);
+        await _refreshTokenRepository.RemoveTokenAsync(loginResult.UserId.ToString(), currentRefreshToken, ct);
+        
+        // remove expired tokens
+        foreach (var expiredToken in userRefreshTokens.Where(x=> DateTime.UtcNow > x.ExpiresAt))
+            await _refreshTokenRepository.RemoveTokenAsync(loginResult.UserId.ToString(), expiredToken, ct);
+        
         return authResponse;
     }
 
     public async Task RevokeRefreshTokenAsync(RevokeRefreshTokenRequest request, CancellationToken ct)
     {
         var userId = _identityService.GetUserId();
-        var userRefreshTokens = await _refreshTokenStorage.GetTokensAsync(userId.Value.ToString(), ct);
+        var userRefreshTokens = await _refreshTokenRepository.GetTokensAsync(userId.Value.ToString(), ct);
         var refreshToken = userRefreshTokens.FirstOrDefault(x => x.Token == request.RefreshToken);
         if (refreshToken == null)
             throw new NotFoundException("Refresh token not found");
         
-        await _refreshTokenStorage.RemoveTokenAsync(userId.Value.ToString(), refreshToken, ct);
+        await _refreshTokenRepository.RemoveTokenAsync(userId.Value.ToString(), refreshToken, ct);
     }
     
     private ClaimsPrincipal? GetPrincipalFromExpiredToken(string expiredAccessToken)

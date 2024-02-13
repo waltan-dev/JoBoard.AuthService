@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByGoogle;
 using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByPassword;
-using JoBoard.AuthService.Infrastructure.Auth.Jwt;
+using JoBoard.AuthService.InternalInfrastructure.Jwt;
 using JoBoard.AuthService.Models;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;

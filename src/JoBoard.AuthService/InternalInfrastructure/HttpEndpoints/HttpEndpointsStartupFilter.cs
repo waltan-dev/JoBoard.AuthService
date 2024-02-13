@@ -1,4 +1,4 @@
-﻿namespace JoBoard.AuthService.Infrastructure.HttpEndpoints;
+﻿namespace JoBoard.AuthService.InternalInfrastructure.HttpEndpoints;
 
 internal class HttpEndpointsStartupFilter : IStartupFilter
 {

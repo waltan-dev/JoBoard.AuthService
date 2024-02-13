@@ -4,6 +4,7 @@ using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Infrastructure.Auth.Configs;
 using JoBoard.AuthService.Infrastructure.Auth.Services;
 using Microsoft.Extensions.DependencyInjection;
+using StackExchange.Redis;
 
 namespace JoBoard.AuthService.Infrastructure.Auth;
 
@@ -22,12 +23,12 @@ public static class DependencyInjection
         services.AddSingleton<IPasswordStrengthValidator, PasswordStrengthValidator>();
         services.AddSingleton<ISecureTokenizer, SecureTokenizer>();
 
-        services.AddStackExchangeRedisCache(options =>
+        services.AddScoped<IConnectionMultiplexer>(cfg =>
         {
             var connectionString = $"{redisConfig.Host}:{redisConfig.Port},password={redisConfig.Password}";
-            options.Configuration = connectionString;
+            return ConnectionMultiplexer.Connect(connectionString);
         });
-        services.AddScoped<IRefreshTokenStorage, RedisRefreshTokenStorage>();
+        services.AddScoped<IRefreshTokenRepository, RedisRefreshTokenRepository>();
         
         return services;
     }

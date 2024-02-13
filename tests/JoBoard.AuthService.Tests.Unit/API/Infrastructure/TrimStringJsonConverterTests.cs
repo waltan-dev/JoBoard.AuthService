@@ -1,6 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
-using JoBoard.AuthService.Infrastructure.Json;
+using JoBoard.AuthService.InternalInfrastructure.Json;
 
 namespace JoBoard.AuthService.Tests.Unit.API.Infrastructure;
 

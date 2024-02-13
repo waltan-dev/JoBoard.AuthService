@@ -1,11 +1,11 @@
-﻿using JoBoard.AuthService.Models;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Filters;
-using System.Text.Json;
+﻿using System.Text.Json;
 using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Filters;
 
-namespace JoBoard.AuthService.Infrastructure.Filters;
+namespace JoBoard.AuthService.InternalInfrastructure.Filters;
 
 internal class GlobalExceptionFilter : ExceptionFilterAttribute
 {

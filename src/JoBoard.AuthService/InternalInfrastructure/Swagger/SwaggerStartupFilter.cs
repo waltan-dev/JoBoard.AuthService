@@ -1,6 +1,6 @@
 ﻿using Microsoft.AspNetCore.Rewrite;
 
-namespace JoBoard.AuthService.Infrastructure.Swagger;
+namespace JoBoard.AuthService.InternalInfrastructure.Swagger;
 
 internal class SwaggerStartupFilter : IStartupFilter
 {

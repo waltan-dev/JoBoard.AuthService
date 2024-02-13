@@ -7,10 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Caching.Distributed;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using StackExchange.Redis;
 using Testcontainers.PostgreSql;
 using Testcontainers.Redis;
 
@@ -51,11 +50,11 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
             });
             
             // redis
-            services.RemoveAll<RedisCacheOptions>();
-            services.RemoveAll<IDistributedCache>();
-            services.AddStackExchangeRedisCache(options =>
+            services.RemoveAll<IConnectionMultiplexer>();
+            services.AddScoped<IConnectionMultiplexer>(_ =>
             {
-                options.Configuration = _redisContainer.GetConnectionString();
+                var connectionString = _redisContainer.GetConnectionString();
+                return ConnectionMultiplexer.Connect(connectionString);
             });
         });
     }
