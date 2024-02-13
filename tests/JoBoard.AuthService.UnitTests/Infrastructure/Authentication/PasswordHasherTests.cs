@@ -8,7 +8,7 @@ public class PasswordHasherTests
     public void Hash()
     {
         var passwordHasher = new PasswordHasher();
-        var password = "password";
+        var password = "ValidPassword123#";
         
         var hash = passwordHasher.Hash(password);
         
@@ -30,7 +30,7 @@ public class PasswordHasherTests
     public void VerifyValid()
     {
         var passwordHasher = new PasswordHasher();
-        var password = "password";
+        var password = "ValidPassword123#";
         var hash = passwordHasher.Hash(password);
 
         var isValid = passwordHasher.Verify(hash, password);
@@ -42,9 +42,9 @@ public class PasswordHasherTests
     public void VerifyInvalid()
     {
         var passwordHasher = new PasswordHasher();
-        var hash = passwordHasher.Hash("password111");
+        var hash = passwordHasher.Hash("ValidPassword123#");
 
-        var isValid = passwordHasher.Verify(hash, "password222");
+        var isValid = passwordHasher.Verify(hash, "invalid");
         
         Assert.False(isValid);
     }

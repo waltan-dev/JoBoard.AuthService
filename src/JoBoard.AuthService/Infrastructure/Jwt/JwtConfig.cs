@@ -1,4 +1,5 @@
-﻿using Microsoft.IdentityModel.Tokens;
+﻿using System.Text;
+using Microsoft.IdentityModel.Tokens;
 
 namespace JoBoard.AuthService.Infrastructure.Jwt;
 
@@ -6,7 +7,13 @@ namespace JoBoard.AuthService.Infrastructure.Jwt;
 public class JwtConfig
 {
     public string Issuer { get; set; }
+    public string Audience { get; set; }
     public TimeSpan TokenLifeSpan { get; set; }
     public TimeSpan RefreshTokenLifeSpan { get; set; }
-    public string Key { get; set; }
+    public string SecretKey { get; set; }
+
+    public SymmetricSecurityKey GetSymmetricSecurityKey()
+    {
+        return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(SecretKey));
+    }
 }

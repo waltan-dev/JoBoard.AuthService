@@ -3,17 +3,21 @@ using JoBoard.AuthService.Application.Configs;
 using JoBoard.AuthService.Infrastructure;
 using JoBoard.AuthService.Infrastructure.Authentication;
 using JoBoard.AuthService.Infrastructure.Data;
+using JoBoard.AuthService.Infrastructure.Http;
+using JoBoard.AuthService.Infrastructure.Jwt;
+using JoBoard.AuthService.Infrastructure.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
 var services = builder.Services;
 var configuration = builder.Configuration;
 
-// add controllers, swagger and other api infrastructure
-services.AddApiInternalInfrastructure();
+var jwtConfig = configuration.GetRequiredSection(nameof(JwtConfig)).Get<JwtConfig>();
+services
+    .AddJwtAuthentication(jwtConfig)
+    .AddHttp()
+    .AddSwagger();
 
 // add app services
-services.AddHttpContextAccessor();
-
 var connectionString = configuration.GetConnectionString("DefaultConnection");
 services.AddDatabase(connectionString);
 
@@ -25,4 +29,7 @@ services.AddApplication(confirmTokenConfig);
 
 builder.Build().Run();
 
-public partial class Program {} // only for tests
+namespace JoBoard.AuthService
+{
+    public partial class Program {} // only for tests
+}

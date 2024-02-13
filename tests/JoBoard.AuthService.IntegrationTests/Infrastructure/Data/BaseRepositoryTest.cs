@@ -1,27 +1,42 @@
 ﻿using JoBoard.AuthService.Infrastructure.Data;
+using JoBoard.AuthService.Infrastructure.Data.Repositories;
+using JoBoard.AuthService.Tests.Common;
 using Microsoft.EntityFrameworkCore;
+using Testcontainers.PostgreSql;
 
 namespace JoBoard.AuthService.IntegrationTests.Infrastructure.Data;
 
-public abstract class BaseRepositoryTest
+public abstract class BaseRepositoryTest : IAsyncLifetime
 {
-    protected readonly AuthDbContext _dbContext;
-    protected readonly UnitOfWork _unitOfWork;
+    private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
+        .WithDatabase("db_for_integration_tests")
+        .WithUsername("postgres")
+        .WithPassword("postgres")
+        .WithCleanUp(true)
+        .Build(); 
     
-    public BaseRepositoryTest()
+    protected AuthDbContext DbContext { get; private set; }
+    protected UnitOfWork UnitOfWork { get; private set; }
+    protected UserRepository UserRepository { get; private set; }
+    
+    public async Task InitializeAsync() // init test db before each test
     {
+        await _postgreSqlContainer.StartAsync();
+        
         var options = new DbContextOptionsBuilder<AuthDbContext>()
-            .UseNpgsql("Host=localhost;Port=54322;Database=auth-service-test-db;Username=test-user;Password=password")
+            .UseNpgsql(_postgreSqlContainer.GetConnectionString(), x => 
+                x.MigrationsAssembly(typeof(AuthService.Migrator.AssemblyReference).Assembly.FullName))
             .Options;
         
-        _dbContext = new AuthDbContext(options);
-        _unitOfWork = new UnitOfWork(_dbContext);
-        ClearDatabase(_dbContext);
+        SeedData.Reinitialize(new AuthDbContext(options));
+        
+        DbContext = new AuthDbContext(options);
+        UnitOfWork = new UnitOfWork(DbContext);
+        UserRepository = new UserRepository(DbContext);
     }
     
-    private static void ClearDatabase(DbContext dbContext)
+    public Task DisposeAsync() // delete test db after each test
     {
-        dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE \"public\".\"Users\" CASCADE ;");
-        dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE \"public\".\"ExternalAccounts\" CASCADE;");
+        return _postgreSqlContainer.DisposeAsync().AsTask();
     }
 }

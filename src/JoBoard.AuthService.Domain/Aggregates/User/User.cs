@@ -64,10 +64,9 @@ public class User : Entity<UserId>, IAggregateRoot
     
     public void ConfirmEmail(string token)
     {
-        Guard.IsNotNullOrWhiteSpace(token);
+        ThrowIfBlockedOrDeactivated();
         
-        if(EmailConfirmed)
-            return;
+        Guard.IsNotNullOrWhiteSpace(token);
         
         if(RegisterConfirmToken?.Verify(token) is null or false)
             throw new DomainException("Invalid token");
@@ -78,14 +77,28 @@ public class User : Entity<UserId>, IAggregateRoot
             Status = UserStatus.Active;
     }
 
-    public void SetFullName(FullName fullName)
+    public void LoginWithPassword(string password, IPasswordHasher passwordHasher)
     {
+        ThrowIfBlockedOrDeactivated();
+        
+        if(PasswordHash == null)
+            throw new DomainException("Invalid email or password");
+        
+        var isValidPassword = passwordHasher.Verify(PasswordHash, password);
+        if(isValidPassword == false)
+            throw new DomainException("Invalid email or password");
+    }
+    
+    public void UpdateFullName(FullName fullName)
+    {
+        ThrowIfBlockedOrDeactivated();
+        
         FullName = fullName;
     }
 
     public void AttachExternalAccount(ExternalAccount externalAccount)
     {
-        CheckStatus();
+        ThrowIfBlockedOrDeactivated();
         
         if (ExternalAccounts.Contains(externalAccount))
             return;
@@ -95,7 +108,8 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void RequestPasswordReset(ConfirmationToken newToken)
     {
-        CheckStatus();
+        ThrowIfEmailIsNotConfirmed();
+        ThrowIfBlockedOrDeactivated();
         
         if (ResetPasswordConfirmToken != null && ResetPasswordConfirmToken.Expiration > DateTime.UtcNow)
             throw new DomainException("Password reset has been requested already");
@@ -105,7 +119,8 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher)
     {
-        CheckStatus();
+        ThrowIfEmailIsNotConfirmed();
+        ThrowIfBlockedOrDeactivated();
         
         Guard.IsNotNullOrWhiteSpace(token);
         Guard.IsNotNullOrWhiteSpace(newPassword);
@@ -122,7 +137,7 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void ChangePassword(string currentPassword, string newPassword, IPasswordHasher passwordHasher)
     {
-        CheckStatus();
+        ThrowIfBlockedOrDeactivated();
         
         Guard.IsNotNullOrWhiteSpace(currentPassword);
         Guard.IsNotNullOrWhiteSpace(newPassword);
@@ -138,7 +153,8 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken)
     {
-        CheckStatus();
+        ThrowIfEmailIsNotConfirmed();
+        ThrowIfBlockedOrDeactivated();
         
         if(Email.Equals(newEmail))
             throw new DomainException("New email is the same as current");
@@ -152,7 +168,8 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void ChangeEmail(string token)
     {
-        CheckStatus();
+        ThrowIfEmailIsNotConfirmed();
+        ThrowIfBlockedOrDeactivated();
         
         Guard.IsNotNullOrWhiteSpace(token);
 
@@ -170,7 +187,8 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void ChangeRole(UserRole newRole)
     {
-        CheckStatus();
+        ThrowIfEmailIsNotConfirmed();
+        ThrowIfBlockedOrDeactivated();
         
         if (newRole.Equals(UserRole.Hirer) == false && newRole.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -180,15 +198,19 @@ public class User : Entity<UserId>, IAggregateRoot
 
     public void Deactivate()
     {
-        CheckStatus();
+        ThrowIfBlockedOrDeactivated();
         
         Status = UserStatus.Deactivated;
     }
-    
-    public void CheckStatus()
+
+    private void ThrowIfEmailIsNotConfirmed()
     {
         if(Status.Equals(UserStatus.Pending))
             throw new DomainException("Email is not confirmed yet");
+    }
+    
+    private void ThrowIfBlockedOrDeactivated()
+    {
         if(Status.Equals(UserStatus.Deactivated))
             throw new DomainException("Your account has been deactivated");
         if(Status.Equals(UserStatus.Blocked))

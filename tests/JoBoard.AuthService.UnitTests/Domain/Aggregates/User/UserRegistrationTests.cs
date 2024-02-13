@@ -10,12 +10,12 @@ public class UserRegistrationTests
     {
         var newUser = new UserBuilder().Build();
 
-        Assert.Equal(UserFixture.DefaultUserId, newUser.Id);
-        Assert.Equal(UserFixture.DefaultFullName, newUser.FullName);
-        Assert.Equal(UserFixture.DefaultEmail, newUser.Email);
-        Assert.Equal(UserFixture.DefaultUserRole, newUser.Role);
-        Assert.Equal(UserFixture.DefaultPasswordHash, newUser.PasswordHash);
-        Assert.Equal(UserFixture.DefaultConfirmationToken, newUser.RegisterConfirmToken);
+        Assert.Equal(UserBuilder.DefaultUserId, newUser.Id);
+        Assert.Equal(UserBuilder.DefaultFullName, newUser.FullName);
+        Assert.Equal(UserBuilder.DefaultEmail, newUser.Email);
+        Assert.Equal(UserBuilder.DefaultUserRole, newUser.Role);
+        Assert.Equal(UserBuilder.DefaultPasswordHash, newUser.PasswordHash);
+        Assert.Equal(UserBuilder.DefaultConfirmationToken, newUser.RegisterConfirmToken);
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
@@ -35,12 +35,12 @@ public class UserRegistrationTests
     {
         var newUser = new UserBuilder().WithGoogleAccount().Build();
 
-        Assert.Equal(UserFixture.DefaultUserId, newUser.Id);
-        Assert.Equal(UserFixture.DefaultFullName, newUser.FullName);
-        Assert.Equal(UserFixture.DefaultEmail, newUser.Email);
-        Assert.Equal(UserFixture.DefaultUserRole, newUser.Role);
+        Assert.Equal(UserBuilder.DefaultUserId, newUser.Id);
+        Assert.Equal(UserBuilder.DefaultFullName, newUser.FullName);
+        Assert.Equal(UserBuilder.DefaultEmail, newUser.Email);
+        Assert.Equal(UserBuilder.DefaultUserRole, newUser.Role);
         Assert.Null(newUser.RegisterConfirmToken);
-        Assert.Equal(UserFixture.DefaultGoogleAccount, newUser.ExternalAccounts.First());
+        Assert.Equal(UserBuilder.DefaultGoogleAccount, newUser.ExternalAccounts.First());
         Assert.Equal(UserStatus.Active, newUser.Status);
         Assert.True(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);

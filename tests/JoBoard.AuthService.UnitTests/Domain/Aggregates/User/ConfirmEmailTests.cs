@@ -11,7 +11,7 @@ public class ConfirmEmailTests
         var userBuilder = new UserBuilder();
         var user = userBuilder.Build();
 
-        user.ConfirmEmail(UserFixture.DefaultConfirmationToken.Value);
+        user.ConfirmEmail(UserBuilder.DefaultConfirmationToken.Value);
 
         Assert.Equal(UserStatus.Active, user.Status);
         Assert.True(user.EmailConfirmed);

@@ -9,32 +9,42 @@ public class UserBuilder
     private bool _withAdminRoleOption = false;
     private bool _withExpiredRegisterTokenOption = false;
     
+    public static readonly UserId DefaultUserId = UserId.Generate();
+    public static readonly FullName DefaultFullName = new("Ivan", "Ivanov");
+    public static readonly Email DefaultEmail = new("ivan@gmail.com");
+    public static readonly UserRole DefaultUserRole = UserRole.Hirer;
+    public static readonly string DefaultPasswordHash = "DefaultPasswordHash";
+    public static readonly string DefaultPassword = "DefaultPassword";
+    public static readonly ConfirmationToken DefaultConfirmationToken = ConfirmationToken.Generate();
+    public static readonly ExternalAccount DefaultGoogleAccount =
+        new("googleUserId", ExternalAccountProvider.Google);
+    
     public User Build()
     {
         User user;
         UserRole userRole = _withAdminRoleOption 
             ? UserRole.Admin 
-            : UserFixture.DefaultUserRole;
+            : DefaultUserRole;
         var registerConfirmToken = _withExpiredRegisterTokenOption
-            ? UserFixture.CreateExpiredConfirmationToken()
-            : UserFixture.DefaultConfirmationToken;
+            ? UserFixtures.CreateExpiredConfirmationToken()
+            : DefaultConfirmationToken;
         if (_withGoogleAccountOption == false)
             user = new User(
-                userId: UserFixture.DefaultUserId,
-                fullName: UserFixture.DefaultFullName,
-                email: UserFixture.DefaultEmail,
+                userId: DefaultUserId,
+                fullName: DefaultFullName,
+                email: DefaultEmail,
                 role: userRole,
-                passwordHash: UserFixture.DefaultPasswordHash,
+                passwordHash: DefaultPasswordHash,
                 registerConfirmToken: registerConfirmToken);
         else
             user = new User(
-                userId: UserFixture.DefaultUserId,
-                fullName: UserFixture.DefaultFullName,
-                email: UserFixture.DefaultEmail,
+                userId: DefaultUserId,
+                fullName: DefaultFullName,
+                email: DefaultEmail,
                 role: userRole,
-                externalAccount: UserFixture.DefaultGoogleAccount);
+                externalAccount: DefaultGoogleAccount);
         
-        if(_withActiveStatusOption)
+        if(_withActiveStatusOption && _withGoogleAccountOption == false)
             user.ConfirmEmail(registerConfirmToken.Value);
         
         return user;

@@ -20,6 +20,7 @@ public class UserRepository : IUserRepository
 
     public Task UpdateAsync(User user, CancellationToken ct = default)
     {
+        _dbContext.Entry(user).State = EntityState.Detached;
         _dbContext.Users.Update(user);
         return Task.CompletedTask;
     }
@@ -37,15 +38,7 @@ public class UserRepository : IUserRepository
         return await _dbContext.Users
             .AsNoTracking()
             .Include(x=>x.ExternalAccounts)
-            .FirstOrDefaultAsync(x=>x.Email == email, ct);
-    }
-
-    public async Task<User?> FindByEmailAndPasswordAsync(Email email, string passwordHash, CancellationToken ct = default)
-    {
-        return await _dbContext.Users
-            .AsNoTracking()
-            .Include(x=>x.ExternalAccounts)
-            .FirstOrDefaultAsync(x=>x.Email == email && x.PasswordHash == passwordHash, ct);
+            .FirstOrDefaultAsync(x=>x.Email.Value == email.Value, ct);
     }
 
     public async Task<User?> FindByExternalAccountAsync(ExternalAccount externalAccount, CancellationToken ct = default)

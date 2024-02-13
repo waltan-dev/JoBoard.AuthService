@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Models;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.SeedWork;
@@ -7,7 +8,7 @@ using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 
-public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailCommand, Unit>
+public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailCommand, UserResult>
 {
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
@@ -26,7 +27,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<Unit> Handle(RegisterByEmailCommand request, CancellationToken ct)
+    public async Task<UserResult> Handle(RegisterByEmailCommand request, CancellationToken ct)
     {
         await _unitOfWork.StartTransactionAsync(ct);
         
@@ -48,6 +49,11 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
         await _unitOfWork.CommitAsync(ct);
         
         // TODO send confirmation email
-        return Unit.Value;
+        return new UserResult(
+            newUser.Id.Value,
+            newUser.FullName.FirstName,
+            newUser.FullName.LastName,
+            newUser.Email.Value,
+            newUser.Role.Name);
     }
 }

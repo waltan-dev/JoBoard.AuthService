@@ -19,7 +19,6 @@ EXPOSE 5000
 ### second layer - cache nuget packages in Docker layer
 FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 
-COPY ["*.sln", "/source/"]
 COPY ["src/JoBoard.AuthService/*.csproj", "/source/src/JoBoard.AuthService/"]
 COPY ["src/JoBoard.AuthService.Application/*.csproj", "/source/src/JoBoard.AuthService.Application/"]
 COPY ["src/JoBoard.AuthService.Domain/*.csproj", "/source/src/JoBoard.AuthService.Domain/"]
@@ -27,11 +26,8 @@ COPY ["src/JoBoard.AuthService.Infrastructure/*.csproj", "/source/src/JoBoard.Au
 COPY ["src/JoBoard.AuthService.Infrastructure.Data/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Data/"]
 COPY ["src/JoBoard.AuthService.Migrator/*.csproj", "/source/src/JoBoard.AuthService.Migrator/"]
 
-COPY ["tests/JoBoard.AuthService.UnitTests/*.csproj", "/source/tests/JoBoard.AuthService.UnitTests/"]
-COPY ["tests/JoBoard.AuthService.FunctionalTests/*.csproj", "/source/tests/JoBoard.AuthService.FunctionalTests/"]
-COPY ["tests/JoBoard.AuthService.IntegrationTests/*.csproj", "/source/tests/JoBoard.AuthService.IntegrationTests/"]
-COPY ["tests/JoBoard.AuthService.Tests.Common/*.csproj", "/source/tests/JoBoard.AuthService.Tests.Common/"]
-RUN dotnet restore "/source/JoBoard.AuthService.sln"
+RUN dotnet restore "/source/src/JoBoard.AuthService/JoBoard.AuthService.csproj"
+RUN dotnet restore "/source/src/JoBoard.AuthService.Migrator/JoBoard.AuthService.Migrator.csproj"
 
 ### third layer - build and publish
 COPY . /source/

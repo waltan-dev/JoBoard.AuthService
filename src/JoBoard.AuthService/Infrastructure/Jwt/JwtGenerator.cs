@@ -1,55 +1,47 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
-using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace JoBoard.AuthService.Infrastructure.Jwt;
 
 public interface IJwtGenerator
 {
-    AccessToken GenerateAccessToken(List<Claim> claims);
-    AccessToken GenerateRefreshToken(List<Claim> claims);
+    string GenerateAccessToken(IEnumerable<Claim> claims);
+    string GenerateRefreshToken(IEnumerable<Claim> claims);
 }
 
 public class JwtGenerator : IJwtGenerator
 {
-    private readonly JwtConfig _config;
+    private readonly JwtConfig _jwtConfig;
     
-    public JwtGenerator(IOptions<JwtConfig> options)
+    public JwtGenerator(JwtConfig jwtConfig)
     {
-        _config = options.Value;
+        _jwtConfig = jwtConfig;
     }
 
-    public AccessToken GenerateAccessToken(List<Claim> claims)
+    public string GenerateAccessToken(IEnumerable<Claim> claims)
     {
-        DateTime exp = DateTime.UtcNow.Add(_config.TokenLifeSpan);
-        string accessToken = Generate(exp, claims);
-        return new AccessToken(accessToken, exp, GetUserId(claims));
+        DateTime exp = DateTime.UtcNow.Add(_jwtConfig.TokenLifeSpan);
+        return Generate(exp, claims);
     }
 
-    public AccessToken GenerateRefreshToken(List<Claim> claims)
+    public string GenerateRefreshToken(IEnumerable<Claim> claims)
     {
-        DateTime exp = DateTime.UtcNow.Add(_config.RefreshTokenLifeSpan);
-        string refreshToken = Generate(exp, claims);
-        return new AccessToken(refreshToken, exp, GetUserId(claims));
+        DateTime exp = DateTime.UtcNow.Add(_jwtConfig.RefreshTokenLifeSpan);
+        return Generate(exp, claims);
     }
     
     private string Generate(DateTime exp, IEnumerable<Claim> claims)
     {
-        var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_config.Key));
+        var key = _jwtConfig.GetSymmetricSecurityKey();
         var jwt = new JwtSecurityToken(
-            issuer: _config.Issuer,
-            audience: _config.Issuer,
+            issuer: _jwtConfig.Issuer,
+            audience: _jwtConfig.Issuer,
             claims: claims,
             notBefore: DateTime.UtcNow,
             expires: exp,
             signingCredentials: new SigningCredentials(key, SecurityAlgorithms.HmacSha256));
         return new JwtSecurityTokenHandler().WriteToken(jwt);
-    }
-
-    private static string GetUserId(IEnumerable<Claim> claims)
-    {
-        return claims.First(x => x.Type == nameof(AccessToken.UserId)).Value;
     }
 }

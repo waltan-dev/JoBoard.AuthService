@@ -20,7 +20,6 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{506007
 		.gitignore = .gitignore
 		docker-compose.Development.yml = docker-compose.Development.yml
 		.dockerignore = .dockerignore
-		docker-compose.Testing.yml = docker-compose.Testing.yml
 		docker-entrypoint.RunMigrator.sh = docker-entrypoint.RunMigrator.sh
 		Dockerfile = Dockerfile
 		Makefile = Makefile

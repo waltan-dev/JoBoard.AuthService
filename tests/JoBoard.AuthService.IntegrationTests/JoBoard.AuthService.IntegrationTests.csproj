@@ -10,6 +10,7 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
+        <PackageReference Include="Testcontainers.PostgreSql" Version="3.7.0" />
         <PackageReference Include="xunit" Version="2.4.1"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -25,10 +26,14 @@
       <Content Update="appsettings.Testing.json">
         <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       </Content>
+      <Content Update="xunit.runner.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
       <ProjectReference Include="..\..\src\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj" />
+      <ProjectReference Include="..\..\src\JoBoard.AuthService.Migrator\JoBoard.AuthService.Migrator.csproj" />
       <ProjectReference Include="..\JoBoard.AuthService.Tests.Common\JoBoard.AuthService.Tests.Common.csproj" />
     </ItemGroup>
 

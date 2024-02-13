@@ -1,8 +1,9 @@
-﻿using MediatR;
+﻿using JoBoard.AuthService.Application.Models;
+using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 
-public class RegisterByEmailCommand : IRequest<Unit>
+public class RegisterByEmailCommand : IRequest<UserResult>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

@@ -14,15 +14,4 @@ public class DeactivateUserTests
         
         Assert.Equal(UserStatus.Deactivated, user.Status);
     }
-    
-    [Fact]
-    public void DeactivateWithInactiveStatus()
-    {
-        var user = new UserBuilder().Build();
-
-        Assert.Throws<DomainException>(() =>
-        {
-            user.Deactivate();
-        });
-    }
 }

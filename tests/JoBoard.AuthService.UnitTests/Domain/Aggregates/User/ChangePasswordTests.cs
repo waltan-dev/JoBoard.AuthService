@@ -17,7 +17,7 @@ public class ChangePasswordTests
             .Setup(x => x.Hash(GetNewPassword()))
             .Returns(GetNewPasswordHash()); // return new hash for new password
         passwordHasherStub
-            .Setup(x => x.Verify(UserFixture.DefaultPasswordHash, UserFixture.DefaultPassword))
+            .Setup(x => x.Verify(UserBuilder.DefaultPasswordHash, UserBuilder.DefaultPassword))
             .Returns(true); // verifies current password before change to new
         return passwordHasherStub.Object;
     }
@@ -29,7 +29,7 @@ public class ChangePasswordTests
         var user = new UserBuilder().WithActiveStatus().Build();
         var newPassword = GetNewPassword();
         
-        user.ChangePassword(UserFixture.DefaultPassword, newPassword, passwordHasherStub);
+        user.ChangePassword(UserBuilder.DefaultPassword, newPassword, passwordHasherStub);
         
         var newPasswordHash = GetNewPasswordHash();
         Assert.Equal(newPasswordHash, user.PasswordHash);
@@ -68,19 +68,6 @@ public class ChangePasswordTests
         Assert.Throws<ArgumentException>(() =>
         {
             user.ChangePassword(" ", " ", passwordHasherStub);
-        });
-    }
-    
-    [Fact]
-    public void ChangePasswordWithInactiveStatus()
-    {
-        var passwordHasherStub = GetPasswordHasherStub();
-        var user = new UserBuilder().Build();
-        var newPassword = GetNewPassword();
-
-        Assert.Throws<DomainException>(() =>
-        {
-            user.ChangePassword(UserFixture.DefaultPassword, newPassword, passwordHasherStub);
         });
     }
 }
