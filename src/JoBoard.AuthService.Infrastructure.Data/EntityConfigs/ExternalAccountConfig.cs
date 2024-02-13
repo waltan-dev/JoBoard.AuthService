@@ -12,17 +12,17 @@ public class ExternalAccountConfig : IEntityTypeConfiguration<ExternalAccount>
         builder.ToTable("ExternalAccounts");
         
         // map Id
-        builder.HasKey(x => new { x.Id, x.Value });
-        
+        builder.HasKey(x=> x.Id);
         builder.Property(x => x.Id).HasConversion(
             userId => userId.Value, 
             value => new UserId(value));
-
+        
+        // map Value
         builder.OwnsOne(x => x.Value, navBuilder =>
         {
             navBuilder.Property(x => x.ExternalUserId).HasColumnName("ExternalUserId");
             navBuilder.Property(x => x.Provider).HasColumnName("Provider");
-
+        
             navBuilder.HasIndex(x => new { x.ExternalUserId, x.Provider });
         });
     }
