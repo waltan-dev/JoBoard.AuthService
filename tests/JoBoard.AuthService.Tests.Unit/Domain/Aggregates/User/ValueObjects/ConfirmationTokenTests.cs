@@ -9,7 +9,8 @@ public class ConfirmationTokenTests
     [Fact]
     public void CreateValid()
     {
-        var newToken = ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(24));
+        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var newToken = ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(24));
         
         Assert.NotEmpty(newToken.Value);
         Assert.True(newToken.Expiration > DateTime.UtcNow);
@@ -18,8 +19,9 @@ public class ConfirmationTokenTests
     [Fact]
     public void VerifyValid()
     {
+        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
         var exception = Record.Exception(() 
-            => ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(24)));
+            => ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(24)));
         
         Assert.Null(exception);
     }
@@ -27,7 +29,8 @@ public class ConfirmationTokenTests
     [Fact]
     public void VerifyInvalid()
     {
-        var newToken = ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(24));
+        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var newToken = ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(24));
 
         Assert.Throws<DomainException>(() =>
         {
@@ -38,8 +41,9 @@ public class ConfirmationTokenTests
     [Fact]
     public void VerifyExpired()
     {
+        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
         var value = Guid.NewGuid().ToString();
-        var expiredConfirmationToken = ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(-1));
+        var expiredConfirmationToken = ConfirmationToken.Create(secureTokenizerStub, TimeSpan.FromHours(-1));
         
         Assert.Throws<DomainException>(() =>
         {
@@ -50,7 +54,8 @@ public class ConfirmationTokenTests
     [Fact]
     public void Compare()
     {
-        var secureToken = new SecureTokenizerStub().Generate();
+        var secureTokenizerStub = SecureTokenizerStubFactory.Create();
+        var secureToken = secureTokenizerStub.Generate();
         var expires = DateTime.UtcNow.AddHours(24);
 
         var token1 = new ConfirmationToken(secureToken, expires);

@@ -2,7 +2,7 @@
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Tests.Common;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.Stubs;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -39,7 +39,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
         {
             // google
             services.RemoveAll<IGoogleAuthProvider>();
-            services.AddSingleton<IGoogleAuthProvider>(GoogleFixtures.GetGoogleAuthProviderStub());
+            services.AddSingleton(GoogleAuthProviderStubFactory.Create());
             
             // db
             services.RemoveAll<DbContextOptions<AuthDbContext>>();

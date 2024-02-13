@@ -1,6 +1,8 @@
 ﻿using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByPassword;
 using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
+
+using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Application.UseCases.Account.Login;
 
@@ -40,7 +42,7 @@ public class CanLoginByPasswordCommandHandlerTests
     private static CanLoginByPasswordCommandHandler CreateHandler()
     {
         return new CanLoginByPasswordCommandHandler(
-            PasswordFixtures.GetPasswordHasherStub(),
-            DatabaseFixtures.CreateUserRepositoryStub());
+            PasswordHasherStubFactory.Create(),
+            UserRepositoryStubFactory.Create());
     }
 }

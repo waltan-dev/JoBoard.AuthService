@@ -1,22 +1,15 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Infrastructure.Data.Repositories;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
-using Moq;
 
-namespace JoBoard.AuthService.Tests.Common.Fixtures;
+namespace JoBoard.AuthService.Tests.Common.Stubs;
 
-public static class DatabaseFixtures
+public static class UserRepositoryStubFactory
 {
-    public static IUnitOfWork CreateUnitOfWorkStub()
-    {
-        var mock = new Mock<IUnitOfWork>();
-        return mock.Object;
-    }
-    
-    public static IUserRepository CreateUserRepositoryStub()
+    public static IUserRepository Create()
     {
         var existingUsers = new List<User>
         {

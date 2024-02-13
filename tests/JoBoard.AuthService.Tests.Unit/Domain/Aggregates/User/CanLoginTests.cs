@@ -1,7 +1,9 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Builders;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
+
+using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
 
@@ -35,11 +37,11 @@ public class CanLoginTests
     {
         var user = new UserBuilder().Build();
         var password = PasswordFixtures.DefaultPassword;
-        var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
+        var passwordHasherStub = PasswordHasherStubFactory.Create();
 
         var exception = Record.Exception(() =>
         {
-            user.CanLoginWithPassword(password, passwordHasher);
+            user.CanLoginWithPassword(password, passwordHasherStub);
         });
         
         Assert.Null(exception);
@@ -49,11 +51,11 @@ public class CanLoginTests
     public void CanLoginWithInvalidPassword()
     {
         var user = new UserBuilder().Build();
-        var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
+        var passwordHasherStub = PasswordHasherStubFactory.Create();
 
         Assert.Throws<DomainException>(() =>
         {
-            user.CanLoginWithPassword("invalid-password", passwordHasher);
+            user.CanLoginWithPassword("invalid-password", passwordHasherStub);
         });
     }
     

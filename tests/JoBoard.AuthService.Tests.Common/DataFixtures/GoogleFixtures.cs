@@ -1,7 +1,6 @@
 ﻿using JoBoard.AuthService.Application.Common.Services;
-using Moq;
 
-namespace JoBoard.AuthService.Tests.Common.Fixtures;
+namespace JoBoard.AuthService.Tests.Common.DataFixtures;
 
 public static class GoogleFixtures
 {
@@ -31,23 +30,4 @@ public static class GoogleFixtures
         LastName = "test",
         Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value.Email.Value
     };
-
-    public static IGoogleAuthProvider GetGoogleAuthProviderStub()
-    {
-        var googleAuthProvider = new Mock<IGoogleAuthProvider>();
-        
-        googleAuthProvider
-            .Setup(x => x.VerifyIdTokenAsync(IdTokenForExistingUser))
-            .Returns(() => Task.FromResult(UserProfileForExistingUser)!);
-        
-        googleAuthProvider
-            .Setup(x => x.VerifyIdTokenAsync(IdTokenForNewUser))
-            .Returns(() => Task.FromResult(UserProfileForNewUser)!);
-        
-        googleAuthProvider
-            .Setup(x => x.VerifyIdTokenAsync(IdTokenForNewUserWithExistingEmail))
-            .Returns(() => Task.FromResult(UserProfileForNewUserWithExistingEmail)!);
-
-        return googleAuthProvider.Object;
-    }
 }

@@ -1,6 +1,8 @@
 ﻿using JoBoard.AuthService.Application.UseCases.Account.Register.ByGoogle;
 using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
+
+using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Application.UseCases.Account.Register;
 
@@ -54,9 +56,9 @@ public class RegisterByGoogleAccountCommandHandlerTests
     
     private static RegisterByGoogleAccountCommandHandler CreateHandler()
     {
-        var googleAuthProvider = GoogleFixtures.GetGoogleAuthProviderStub();
-        var eventDispatcher = EventFixtures.GetDomainEventDispatcherStub();
-        var userRepository = DatabaseFixtures.CreateUserRepositoryStub();
+        var googleAuthProvider = GoogleAuthProviderStubFactory.Create();
+        var eventDispatcher = DomainEventDispatcherStubFactory.Create();
+        var userRepository = UserRepositoryStubFactory.Create();
         
         return new RegisterByGoogleAccountCommandHandler(
             eventDispatcher,

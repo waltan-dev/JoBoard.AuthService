@@ -1,5 +1,6 @@
 ﻿using JoBoard.AuthService.Tests.Common.Builders;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
+
 
 namespace JoBoard.AuthService.Tests.Integration.Infrastructure.Data.UserRepository;
 

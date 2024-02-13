@@ -2,7 +2,7 @@
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Tests.Common.Builders;
 
-namespace JoBoard.AuthService.Tests.Common.Fixtures;
+namespace JoBoard.AuthService.Tests.Common.DataFixtures;
 
 // Thread-safe Singleton for parallel tests
 public static class DbUserFixtures

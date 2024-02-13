@@ -2,7 +2,8 @@
 using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Confirmation;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Tests.Common.Builders;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
+
 using Microsoft.Extensions.DependencyInjection;
 
 namespace JoBoard.AuthService.Tests.Functional.API.AccountV1Controller;

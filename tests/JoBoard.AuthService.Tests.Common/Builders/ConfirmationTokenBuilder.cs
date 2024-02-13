@@ -6,7 +6,7 @@ namespace JoBoard.AuthService.Tests.Common.Builders;
 
 public class ConfirmationTokenBuilder
 {
-    private readonly ISecureTokenizer _secureTokenizer = new SecureTokenizerStub();
+    private readonly ISecureTokenizer _secureTokenizer = SecureTokenizerStubFactory.Create();
     
     public ConfirmationToken BuildActive()
     {

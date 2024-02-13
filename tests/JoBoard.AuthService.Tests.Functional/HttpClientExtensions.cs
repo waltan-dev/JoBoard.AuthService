@@ -3,7 +3,8 @@ using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByPassword;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Models;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
+
 
 namespace JoBoard.AuthService.Tests.Functional;
 

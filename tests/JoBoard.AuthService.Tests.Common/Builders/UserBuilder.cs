@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
 
 namespace JoBoard.AuthService.Tests.Common.Builders;
 

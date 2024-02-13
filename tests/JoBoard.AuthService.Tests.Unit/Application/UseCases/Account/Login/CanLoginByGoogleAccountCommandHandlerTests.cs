@@ -1,6 +1,8 @@
 ﻿using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByGoogle;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.DataFixtures;
+
+using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Application.UseCases.Account.Login;
 
@@ -53,7 +55,7 @@ public class CanLoginByGoogleAccountCommandHandlerTests
     private static CanLoginByGoogleAccountCommandHandler CreateHandler()
     {
         return new CanLoginByGoogleAccountCommandHandler(
-            GoogleFixtures.GetGoogleAuthProviderStub(),
-            DatabaseFixtures.CreateUserRepositoryStub());
+            GoogleAuthProviderStubFactory.Create(),
+            UserRepositoryStubFactory.Create());
     }
 }

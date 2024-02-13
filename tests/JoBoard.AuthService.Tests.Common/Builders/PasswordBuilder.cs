@@ -1,17 +1,16 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Services;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Common.Builders;
 
 public class PasswordBuilder
 {
-    private readonly IPasswordHasher _passwordHasher = PasswordFixtures.GetPasswordHasherStub();
-    private readonly IPasswordStrengthValidator _passwordStrengthValidator =
-        PasswordFixtures.GetPasswordStrengthValidatorStub();
+    private readonly IPasswordHasher _passwordHasher = PasswordHasherStubFactory.Create();
+    private readonly IPasswordStrengthValidator _passwordValidator = PasswordStrengthValidatorStubFactory.Create();
     
     public PasswordHash Create(string password)
     {
-        return PasswordHash.Create(password, _passwordStrengthValidator, _passwordHasher);
+        return PasswordHash.Create(password, _passwordValidator, _passwordHasher);
     }
 }
