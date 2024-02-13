@@ -16,6 +16,8 @@ namespace JoBoard.AuthService.FunctionalTests;
 [SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
 public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
+    private static readonly SemaphoreSlim Semaphore = new(4); // max 4 parallel tests and docker databases
+    
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
         .WithDatabase($"db_for_functional_tests-{Guid.NewGuid()}")
         .WithUsername("postgres")
@@ -40,6 +42,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     
     public async Task InitializeAsync() // init one test db per one test file
     {
+        await Semaphore.WaitAsync();
+        
         await _postgreSqlContainer.StartAsync();
         
         using var scope = Services.CreateScope();
@@ -49,6 +53,8 @@ public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyn
     
     public new Task DisposeAsync() // delete test db after all tests in one test file 
     {
+        Semaphore.Release();
+        
         return _postgreSqlContainer.DisposeAsync().AsTask();
     }
 }
