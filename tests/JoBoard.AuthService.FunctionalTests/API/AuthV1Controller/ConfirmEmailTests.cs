@@ -1,16 +1,16 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Auth.ConfirmEmail;
 using JoBoard.AuthService.Tests.Common;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AuthV1Controller;
 
 public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
 {
-    private readonly HttpClient _httpClient; // one per fact
+    private readonly HttpClient _httpClient;
     
-    public ConfirmEmailTests(CustomWebApplicationFactory factory) // SetUp
+    public ConfirmEmailTests(CustomWebApplicationFactory factory) // Setup for each fact
     {
-        factory.ResetDatabase();
         _httpClient = factory.CreateClient();
     }
     
@@ -19,8 +19,8 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new ConfirmEmailCommand
         {
-            UserId = UserFixtures.ExistingUserRegisteredByEmail.Id.Value,
-            Token = UserFixtures.ExistingUserRegisteredByEmail.RegisterConfirmToken!.Value,
+            UserId = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Id.Value,
+            Token = DatabaseUserFixtures.ExistingUserRegisteredByEmail.RegisterConfirmToken!.Value,
         };
         
         var response = await _httpClient.PostAsJsonAsync(AuthV1Routes.ConfirmEmail, request);
@@ -33,8 +33,8 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new ConfirmEmailCommand
         {
-            UserId = UserFixtures.ExistingUserWithExpiredToken.Id.Value,
-            Token = UserFixtures.ExistingUserWithExpiredToken.RegisterConfirmToken!.Value,
+            UserId = DatabaseUserFixtures.ExistingUserWithExpiredToken.Id.Value,
+            Token = DatabaseUserFixtures.ExistingUserWithExpiredToken.RegisterConfirmToken!.Value,
         };
         
         var response = await _httpClient.PostAsJsonAsync(AuthV1Routes.ConfirmEmail, request);
@@ -47,7 +47,7 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new ConfirmEmailCommand
         {
-            UserId = UserFixtures.ExistingUserWithExpiredToken.Id.Value,
+            UserId = DatabaseUserFixtures.ExistingUserWithExpiredToken.Id.Value,
             Token = "invalid-token",
         };
         

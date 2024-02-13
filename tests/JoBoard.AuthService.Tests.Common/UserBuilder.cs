@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Common;
 
@@ -9,42 +10,33 @@ public class UserBuilder
     private bool _withAdminRoleOption = false;
     private bool _withExpiredRegisterTokenOption = false;
     
-    public static readonly UserId DefaultUserId = UserId.Generate();
-    public static readonly FullName DefaultFullName = new("Ivan", "Ivanov");
-    public static readonly Email DefaultEmail = new("ivan@gmail.com");
-    public static readonly UserRole DefaultUserRole = UserRole.Hirer;
-    public static readonly string DefaultPasswordHash = "DefaultPasswordHash";
-    public static readonly string DefaultPassword = "DefaultPassword";
-    public static readonly ConfirmationToken DefaultConfirmationToken = ConfirmationToken.Generate();
-    public static readonly ExternalAccount DefaultGoogleAccount =
-        new("googleUserId", ExternalAccountProvider.Google);
-    
     public User Build()
     {
         User user;
         UserRole userRole = _withAdminRoleOption 
             ? UserRole.Admin 
-            : DefaultUserRole;
+            : UserRole.Hirer;
         var registerConfirmToken = _withExpiredRegisterTokenOption
-            ? UserFixtures.CreateExpiredConfirmationToken()
-            : DefaultConfirmationToken;
-        if (_withGoogleAccountOption == false)
+            ? ConfirmationTokenFixtures.CreateExpired()
+            : ConfirmationTokenFixtures.CreateNew();
+        
+        if (_withGoogleAccountOption)
             user = new User(
-                userId: DefaultUserId,
-                fullName: DefaultFullName,
-                email: DefaultEmail,
+                userId: UserId.Generate(),
+                fullName: new FullName("Ivan", "Ivanov"),
+                email: new Email("ivan@gmail.com"),
                 role: userRole,
-                passwordHash: DefaultPasswordHash,
-                registerConfirmToken: registerConfirmToken);
+                externalAccount: new ExternalAccount(GoogleFixtures.UserProfileForNewUser.Id, ExternalAccountProvider.Google));
         else
             user = new User(
-                userId: DefaultUserId,
-                fullName: DefaultFullName,
-                email: DefaultEmail,
+                userId: UserId.Generate(),
+                fullName: new FullName("Ivan", "Ivanov"),
+                email: new Email("ivan@gmail.com"),
                 role: userRole,
-                externalAccount: DefaultGoogleAccount);
+                passwordHash: PasswordFixtures.DefaultPasswordHash,
+                registerConfirmToken: registerConfirmToken);
         
-        if(_withActiveStatusOption && _withGoogleAccountOption == false)
+        if(_withActiveStatusOption && user.Status.Equals(UserStatus.Active) == false)
             user.ConfirmEmail(registerConfirmToken.Value);
         
         return user;

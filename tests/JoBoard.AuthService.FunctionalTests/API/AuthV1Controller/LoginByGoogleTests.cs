@@ -1,16 +1,16 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Auth.Login.ByGoogle;
 using JoBoard.AuthService.Tests.Common;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AuthV1Controller;
 
 public class LoginByGoogleTests : IClassFixture<CustomWebApplicationFactory>
 {
-    private readonly HttpClient _httpClient; // one per fact
+    private readonly HttpClient _httpClient;
     
-    public LoginByGoogleTests(CustomWebApplicationFactory factory) // SetUp
+    public LoginByGoogleTests(CustomWebApplicationFactory factory) // Setup for each fact
     {
-        factory.ResetDatabase();
         _httpClient = factory.CreateClient();
     }
     
@@ -19,7 +19,7 @@ public class LoginByGoogleTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new LoginByGoogleAccountCommand
         {
-            GoogleIdToken = GoogleFixture.IdTokenForExistingUser
+            GoogleIdToken = GoogleFixtures.IdTokenForExistingUser
         };
         
         var response = await _httpClient.PostAsJsonAsync(AuthV1Routes.LoginByGoogle, request);

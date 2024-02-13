@@ -1,5 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
 
@@ -8,14 +9,28 @@ public class UserRegistrationTests
     [Fact]
     public void CreateNewUserByEmailAndPassword()
     {
-        var newUser = new UserBuilder().Build();
+        var userId = UserId.Generate();
+        var fullName = new FullName("Ivan", "Ivanov");
+        var email = new Email("ivan@gmail.com");
+        var role = UserRole.Worker;
+        var passwordHash = PasswordFixtures.DefaultPasswordHash;
+        var registerConfirmToken = ConfirmationTokenFixtures.CreateNew();
+        
+        var newUser = new AuthService.Domain.Aggregates.User.User(
+            userId: userId,
+            fullName: fullName,
+            email: email,
+            role: role, 
+            passwordHash: passwordHash,
+            registerConfirmToken: registerConfirmToken);
 
-        Assert.Equal(UserBuilder.DefaultUserId, newUser.Id);
-        Assert.Equal(UserBuilder.DefaultFullName, newUser.FullName);
-        Assert.Equal(UserBuilder.DefaultEmail, newUser.Email);
-        Assert.Equal(UserBuilder.DefaultUserRole, newUser.Role);
-        Assert.Equal(UserBuilder.DefaultPasswordHash, newUser.PasswordHash);
-        Assert.Equal(UserBuilder.DefaultConfirmationToken, newUser.RegisterConfirmToken);
+        Assert.Equal(userId, newUser.Id);
+        Assert.Equal(fullName, newUser.FullName);
+        Assert.Equal(email, newUser.Email);
+        Assert.Equal(role, newUser.Role);
+        Assert.Equal(passwordHash, newUser.PasswordHash);
+        Assert.Equal(registerConfirmToken, newUser.RegisterConfirmToken);
+        
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
@@ -33,14 +48,27 @@ public class UserRegistrationTests
     [Fact]
     public void CreateNewUserByGoogleAccount()
     {
-        var newUser = new UserBuilder().WithGoogleAccount().Build();
+        var userId = UserId.Generate();
+        var fullName = new FullName("Ivan", "Ivanov");
+        var email = new Email("ivan@gmail.com");
+        var role = UserRole.Worker;
+        var externalAcc = new ExternalAccount(GoogleFixtures.UserProfileForNewUser.Id, ExternalAccountProvider.Google);
+        
+        var newUser = new AuthService.Domain.Aggregates.User.User(
+            userId: userId,
+            fullName: fullName,
+            email: email,
+            role: role, 
+            externalAccount: externalAcc);
 
-        Assert.Equal(UserBuilder.DefaultUserId, newUser.Id);
-        Assert.Equal(UserBuilder.DefaultFullName, newUser.FullName);
-        Assert.Equal(UserBuilder.DefaultEmail, newUser.Email);
-        Assert.Equal(UserBuilder.DefaultUserRole, newUser.Role);
+        Assert.Equal(userId, newUser.Id);
+        Assert.Equal(fullName, newUser.FullName);
+        Assert.Equal(email, newUser.Email);
+        Assert.Equal(role, newUser.Role);
+        Assert.Equal(externalAcc, newUser.ExternalAccounts.First());
+        
+        Assert.Single(newUser.ExternalAccounts);
         Assert.Null(newUser.RegisterConfirmToken);
-        Assert.Equal(UserBuilder.DefaultGoogleAccount, newUser.ExternalAccounts.First());
         Assert.Equal(UserStatus.Active, newUser.Status);
         Assert.True(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);

@@ -11,7 +11,7 @@ namespace JoBoard.AuthService.IntegrationTests.Infrastructure.Data;
 public abstract class BaseRepositoryTest : IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
-        .WithDatabase("db_for_integration_tests")
+        .WithDatabase($"db_for_integration_tests-{Guid.NewGuid()}")
         .WithUsername("postgres")
         .WithPassword("postgres")
         .WithCleanUp(true)
@@ -29,7 +29,7 @@ public abstract class BaseRepositoryTest : IAsyncLifetime
                 x.MigrationsAssembly(typeof(AuthDbContext).Assembly.FullName))
             .Options;
         
-        DatabaseHelper.Reinitialize(new AuthDbContext(options));
+        TestDatabaseHelper.Initialize(new AuthDbContext(options));
         
         var dbContext = new AuthDbContext(options);
         UnitOfWork = new EfUnitOfWork(dbContext);

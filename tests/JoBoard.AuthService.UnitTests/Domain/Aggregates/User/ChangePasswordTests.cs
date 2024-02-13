@@ -1,56 +1,38 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Exceptions;
-using JoBoard.AuthService.Domain.Services;
-using Moq;
+﻿using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
 
 public class ChangePasswordTests
 {
-    private static string GetNewPassword() => "newPassword";
-    private static string GetNewPasswordHash() => "newPasswordHash";
-    
-    private static IPasswordHasher GetPasswordHasherStub()
-    {
-        var passwordHasherStub = new Mock<IPasswordHasher>();
-        passwordHasherStub
-            .Setup(x => x.Hash(GetNewPassword()))
-            .Returns(GetNewPasswordHash()); // return new hash for new password
-        passwordHasherStub
-            .Setup(x => x.Verify(UserBuilder.DefaultPasswordHash, UserBuilder.DefaultPassword))
-            .Returns(true); // verifies current password before change to new
-        return passwordHasherStub.Object;
-    }
-    
     [Fact]
     public void ChangePassword()
     {
-        var passwordHasherStub = GetPasswordHasherStub();
+        var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-        var newPassword = GetNewPassword();
+        var newPassword = PasswordFixtures.NewPassword;
         
-        user.ChangePassword(UserBuilder.DefaultPassword, newPassword, passwordHasherStub);
+        user.ChangePassword(PasswordFixtures.DefaultPassword, newPassword, passwordHasher);
         
-        var newPasswordHash = GetNewPasswordHash();
-        Assert.Equal(newPasswordHash, user.PasswordHash);
+        Assert.Equal(PasswordFixtures.NewPasswordHash, user.PasswordHash);
     }
     
     [Fact]
     public void ChangePasswordWithInvalidCurrent()
     {
-        var passwordHasherStub = GetPasswordHasherStub();
+        var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword("invalidCurrentPassword", "newPassword", passwordHasherStub);
+            user.ChangePassword("invalidCurrentPassword", "newPassword", passwordHasher);
         });
     }
     
     [Fact]
     public void ChangePasswordWithoutCurrent()
     {
-        var passwordHasherStub = GetPasswordHasherStub();
+        var passwordHasherStub = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithGoogleAccount().WithActiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
@@ -62,7 +44,7 @@ public class ChangePasswordTests
     [Fact]
     public void ChangePasswordWithEmpty()
     {
-        var passwordHasherStub = GetPasswordHasherStub();
+        var passwordHasherStub = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
 
         Assert.Throws<ArgumentException>(() =>

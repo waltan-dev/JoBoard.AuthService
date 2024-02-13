@@ -1,16 +1,16 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 using JoBoard.AuthService.Tests.Common;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AuthV1Controller;
 
 public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
 {
-    private readonly HttpClient _httpClient; // one per fact
+    private readonly HttpClient _httpClient;
     
-    public RegisterByEmailTests(CustomWebApplicationFactory factory) // SetUp
+    public RegisterByEmailTests(CustomWebApplicationFactory factory) // Setup for each fact
     {
-        factory.ResetDatabase();
         _httpClient = factory.CreateClient();
     }
     
@@ -38,7 +38,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
         {
             FirstName = "Test",
             LastName = "Test",
-            Email = UserFixtures.ExistingUserRegisteredByEmail.Email.Value,
+            Email = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Email.Value,
             Password = "ValidPassword123$",
             Role = "Hirer"
         };

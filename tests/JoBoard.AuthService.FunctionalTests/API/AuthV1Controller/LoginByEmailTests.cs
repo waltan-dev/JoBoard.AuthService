@@ -1,16 +1,16 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Auth.Login.ByEmail;
 using JoBoard.AuthService.Tests.Common;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.FunctionalTests.API.AuthV1Controller;
 
 public class LoginByEmailTests : IClassFixture<CustomWebApplicationFactory>
 {
-    private readonly HttpClient _httpClient; // one per fact
+    private readonly HttpClient _httpClient;
     
-    public LoginByEmailTests(CustomWebApplicationFactory factory) // SetUp
+    public LoginByEmailTests(CustomWebApplicationFactory factory) // Setup for each fact
     {
-        factory.ResetDatabase();
         _httpClient = factory.CreateClient();
     }
     
@@ -19,8 +19,8 @@ public class LoginByEmailTests : IClassFixture<CustomWebApplicationFactory>
     {
         var request = new LoginByEmailCommand()
         {
-            Email = UserFixtures.ExistingUserRegisteredByEmail.Email.Value,
-            Password = UserFixtures.DefaultPassword,
+            Email = DatabaseUserFixtures.ExistingUserRegisteredByEmail.Email.Value,
+            Password = PasswordFixtures.DefaultPassword,
         };
         
         var response = await _httpClient.PostAsJsonAsync(AuthV1Routes.Login, request);

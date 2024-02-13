@@ -1,18 +1,18 @@
 ﻿using JoBoard.AuthService.Infrastructure.Data;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Tests.Common;
 
-public static class DatabaseHelper
+public static class TestDatabaseHelper
 {
-    public static void Reinitialize(AuthDbContext dbContext)
+    public static void Initialize(AuthDbContext dbContext)
     {
         dbContext.Database.Migrate();
-        ClearDatabase(dbContext);
         AddUserFixtures(dbContext);
     }
-
-    private static void ClearDatabase(DbContext dbContext)
+    
+    public static void Clear(DbContext dbContext)
     {
         dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE \"public\".\"Users\" CASCADE ;");
         dbContext.Database.ExecuteSqlRaw("TRUNCATE TABLE \"public\".\"ExternalAccounts\" CASCADE;");
@@ -21,10 +21,10 @@ public static class DatabaseHelper
     private static void AddUserFixtures(AuthDbContext dbContext)
     {
         dbContext.Users.AddRange(
-            UserFixtures.ExistingActiveUser, 
-            UserFixtures.ExistingUserRegisteredByEmail, 
-            UserFixtures.ExistingUserRegisteredByGoogleAccount,
-            UserFixtures.ExistingUserWithExpiredToken
+            DatabaseUserFixtures.ExistingActiveUser, 
+            DatabaseUserFixtures.ExistingUserRegisteredByEmail, 
+            DatabaseUserFixtures.ExistingUserRegisteredByGoogleAccount,
+            DatabaseUserFixtures.ExistingUserWithExpiredToken
             );
         dbContext.SaveChanges();
     }

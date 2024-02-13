@@ -1,9 +1,9 @@
 ﻿using JoBoard.AuthService.Application.Services;
 using Moq;
 
-namespace JoBoard.AuthService.Tests.Common;
+namespace JoBoard.AuthService.Tests.Common.Fixtures;
 
-public static class GoogleFixture
+public static class GoogleFixtures
 {
     public static readonly string IdTokenForExistingUser = "IdTokenForExistingUser";
     public static readonly GoogleUserProfile UserProfileForExistingUser = new()
