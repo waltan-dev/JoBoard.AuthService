@@ -3,7 +3,7 @@
 // DO NOT CHANGE PUBLIC CONTRACT
 public static class AuthV1Routes
 {
-    private const string Base = "/api/v1/auth";
+    private const string Base = "/api/v1/account/auth";
     
     public const string Register = $"{Base}/register";
     public const string RegisterByGoogle = $"{Base}/register-google";
@@ -15,4 +15,12 @@ public static class AuthV1Routes
     
     public const string RequestPasswordReset = $"{Base}/request-password-reset";
     public const string ConfirmPasswordReset = $"{Base}/confirm-password-reset";
+}
+
+// DO NOT CHANGE PUBLIC CONTRACT
+public static class ManageV1Routes
+{
+    private const string Base = "/api/v1/account/manage";
+    
+    public const string ChangePassword = $"{Base}/change-password";
 }

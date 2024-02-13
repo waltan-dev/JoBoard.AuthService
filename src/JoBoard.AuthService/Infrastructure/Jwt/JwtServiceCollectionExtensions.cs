@@ -1,6 +1,9 @@
-﻿using System.Text;
+﻿using System.Net.Mime;
+using System.Text;
+using System.Text.Json;
 using CommunityToolkit.Diagnostics;
 using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 
@@ -40,6 +43,20 @@ public static class JwtServiceCollectionExtensions
                     
                     IssuerSigningKey = jwtConfig.GetSymmetricSecurityKey(),
                     ValidateIssuerSigningKey = true
+                };
+                options.Events = new JwtBearerEvents
+                {
+                    OnChallenge = async context =>
+                    {
+                        // Call this to skip the default logic and avoid using the default response
+                        context.HandleResponse();
+
+                        // Write to the response in any way you wish
+                        context.Response.StatusCode = StatusCodes.Status401Unauthorized;
+                        context.Response.ContentType = MediaTypeNames.Application.Json;
+                        var unauthorizedResponse = new UnauthorizedResponse { Message = "You are not authorized" };
+                        await context.Response.WriteAsync(JsonSerializer.Serialize(unauthorizedResponse));
+                    }
                 };
             });
         

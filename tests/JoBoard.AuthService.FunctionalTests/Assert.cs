@@ -44,7 +44,6 @@ public static class Assert
         Xunit.Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
         Xunit.Assert.NotNull(responseBody?.Message);
         Xunit.Assert.NotEmpty(responseBody!.Message);
-        
     }
     
     public static async Task ValidationResponseAsync(HttpResponseMessage response, int expectedErrors)
@@ -56,5 +55,15 @@ public static class Assert
         Xunit.Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
         Xunit.Assert.NotNull(responseBody?.Errors);
         Xunit.Assert.Equal(expectedErrors, responseBody?.Errors.Count());
+    }
+    
+    public static async Task UnauthorizedResponseAsync(HttpResponseMessage response)
+    {
+        var responseBody = await response.Content.ReadFromJsonAsync<UnauthorizedResponse>();
+        var responseContentType = response.Content.Headers.ContentType?.MediaType;
+        
+        Xunit.Assert.Equal(StatusCodes.Status401Unauthorized, (int)response.StatusCode);
+        Xunit.Assert.Equal(MediaTypeNames.Application.Json, responseContentType);
+        Xunit.Assert.NotNull(responseBody?.Message);
     }
 }
