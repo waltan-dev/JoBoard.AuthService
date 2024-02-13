@@ -22,8 +22,9 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY ["src/JoBoard.AuthService/*.csproj", "/source/src/JoBoard.AuthService/"]
 COPY ["src/JoBoard.AuthService.Application/*.csproj", "/source/src/JoBoard.AuthService.Application/"]
 COPY ["src/JoBoard.AuthService.Domain/*.csproj", "/source/src/JoBoard.AuthService.Domain/"]
-COPY ["src/JoBoard.AuthService.Infrastructure.Auth/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Auth/"]
+COPY ["src/JoBoard.AuthService.Infrastructure.Common/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Common/"]
 COPY ["src/JoBoard.AuthService.Infrastructure.Data/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Data/"]
+COPY ["src/JoBoard.AuthService.Infrastructure.Jwt/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Jwt/"]
 COPY ["src/JoBoard.AuthService.Migrator/*.csproj", "/source/src/JoBoard.AuthService.Migrator/"]
 
 RUN dotnet restore "/source/src/JoBoard.AuthService/JoBoard.AuthService.csproj"
