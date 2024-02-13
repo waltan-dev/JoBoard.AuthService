@@ -24,7 +24,7 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Unit>
     {
         await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
-        var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
+        var user = await _userRepository.FindByIdAsync(UserId.FromValue(request.UserId), ct);
         if (user == null)
             throw new NotFoundException("User not found");
         

@@ -18,7 +18,7 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).HasConversion(
             userId => userId.Value, 
-            value => new UserId(value));
+            value => UserId.FromValue(value));
 
         // map Email
         builder.OwnsOne(x => x.Email, navBuilder =>

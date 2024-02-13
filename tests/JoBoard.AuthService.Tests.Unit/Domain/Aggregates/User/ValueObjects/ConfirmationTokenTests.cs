@@ -46,4 +46,16 @@ public class ConfirmationTokenTests
             expiredConfirmationToken.Verify(value);
         });
     }
+    
+    [Fact]
+    public void Compare()
+    {
+        var secureToken = ConfirmationTokenFixtures.GetSecureTokenizerStub().Generate();
+        var expires = DateTime.UtcNow.AddHours(24);
+
+        var token1 = new ConfirmationToken(secureToken, expires);
+        var token2 = new ConfirmationToken(secureToken, expires);
+        
+        Assert.Equal(token1, token2);
+    }
 }

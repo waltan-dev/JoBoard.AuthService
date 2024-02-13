@@ -21,4 +21,21 @@ public class FullNameTests
             _ = new FullName(" ", string.Empty);
         });
     }
+    
+    [Fact]
+    public void NameToString()
+    {
+        var fullName = new FullName("Ivan", "Ivanov");
+        
+        Assert.Equal("Ivan Ivanov", fullName.ToString());
+    }
+    
+    [Fact]
+    public void Compare()
+    {
+        var fullName1 = new FullName("Ivan", "Ivanov");
+        var fullName2 = new FullName("Ivan", "Ivanov");
+        
+        Assert.Equal(fullName1, fullName2);
+    }
 }

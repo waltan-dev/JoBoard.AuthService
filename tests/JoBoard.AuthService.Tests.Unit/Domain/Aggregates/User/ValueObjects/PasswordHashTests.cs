@@ -33,4 +33,15 @@ public class PasswordHashTests
             PasswordHash.Create("weakPassword", passwordValidator, passwordHasher);
         });
     }
+    
+    [Fact]
+    public void Compare()
+    {
+        var hash = PasswordFixtures.GetPasswordHasherStub().Hash(PasswordFixtures.DefaultPassword);
+
+        var password1 = new PasswordHash(hash);
+        var password2 = new PasswordHash(hash);
+        
+        Assert.Equal(password1, password2);
+    }
 }

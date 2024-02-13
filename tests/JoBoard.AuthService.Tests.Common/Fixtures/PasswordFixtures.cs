@@ -8,12 +8,7 @@ namespace JoBoard.AuthService.Tests.Common.Fixtures;
 public static class PasswordFixtures
 {
     public static string DefaultPassword = "ValidPassword123#";
-    public static PasswordHash CreateDefault() 
-        => PasswordHash.Create(DefaultPassword, GetPasswordStrengthValidatorStub(), GetPasswordHasherStub());
-    
     public static string NewPassword = "ValidPassword123#";
-    public static PasswordHash CreateNew() 
-        => PasswordHash.Create(NewPassword, GetPasswordStrengthValidatorStub(), GetPasswordHasherStub());
     
     public static IPasswordHasher GetPasswordHasherStub()
     {

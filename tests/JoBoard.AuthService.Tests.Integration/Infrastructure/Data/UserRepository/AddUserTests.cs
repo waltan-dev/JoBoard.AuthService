@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Tests.Common;
+using JoBoard.AuthService.Tests.Common.Builders;
 
 namespace JoBoard.AuthService.Tests.Integration.Infrastructure.Data.UserRepository;
 

@@ -1,5 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
@@ -11,10 +12,10 @@ public class ChangePasswordTests
     {
         var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-        var newPassword = PasswordFixtures.CreateNew();
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
-        user.ChangePassword(PasswordFixtures.DefaultPassword, newPassword, passwordHasher);
-        Assert.Equal(newPassword, user.PasswordHash);
+        user.ChangePassword(PasswordFixtures.DefaultPassword, newPasswordHash, passwordHasher);
+        Assert.Equal(newPasswordHash, user.PasswordHash);
         Assert.Single(user.DomainEvents, ev => ev is UserChangedPasswordDomainEvent);
     }
     
@@ -23,10 +24,11 @@ public class ChangePasswordTests
     {
         var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
+        
         Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword("invalidCurrentPassword", PasswordFixtures.CreateNew(), passwordHasher);
+            user.ChangePassword("invalidCurrentPassword", newPasswordHash, passwordHasher);
         });
     }
     
@@ -35,10 +37,11 @@ public class ChangePasswordTests
     {
         var passwordHasherStub = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithGoogleAccount().WithActiveStatus().Build();
-
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
+        
         Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword("someCurrentPassword", PasswordFixtures.CreateNew(), passwordHasherStub);
+            user.ChangePassword("someCurrentPassword", newPasswordHash, passwordHasherStub);
         });
     }
     
@@ -47,10 +50,11 @@ public class ChangePasswordTests
     {
         var passwordHasherStub = PasswordFixtures.GetPasswordHasherStub();
         var user = new UserBuilder().WithActiveStatus().Build();
-
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
+        
         Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword(" ", PasswordFixtures.CreateNew(), passwordHasherStub);
+            user.ChangePassword(" ", newPasswordHash, passwordHasherStub);
         });
     }
     
@@ -58,12 +62,12 @@ public class ChangePasswordTests
     public void ChangePasswordWithInactiveStatus()
     {
         var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
-        var newPassword = PasswordFixtures.CreateNew();
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         var user = new UserBuilder().WithInactiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>
         {
-            user.ChangePassword(PasswordFixtures.DefaultPassword, newPassword, passwordHasher);
+            user.ChangePassword(PasswordFixtures.DefaultPassword, newPasswordHash, passwordHasher);
         });
     }
 }

@@ -16,7 +16,7 @@ public class ConfirmationToken : ValueObject
     
     private ConfirmationToken() {} // for ef core only
 
-    private ConfirmationToken(string token, DateTime expiration)
+    internal ConfirmationToken(string token, DateTime expiration)
     {
         Value = token;
         Expiration = expiration;

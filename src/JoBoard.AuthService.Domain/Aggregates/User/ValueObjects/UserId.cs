@@ -7,7 +7,7 @@ public class UserId : ValueObject
 {
     public Guid Value { get; private set; }
     
-    public UserId(Guid value)
+    internal UserId(Guid value)
     {
         Guard.IsNotDefault(value);
         Value = value;
@@ -16,6 +16,11 @@ public class UserId : ValueObject
     public static UserId Generate()
     {
         return new UserId(Guid.NewGuid());
+    }
+
+    public static UserId FromValue(Guid value)
+    {
+        return new UserId(value);
     }
     
     protected override IEnumerable<object> GetEqualityComponents()

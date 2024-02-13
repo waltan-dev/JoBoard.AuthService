@@ -10,7 +10,7 @@ public class PasswordHash : ValueObject
     
     private PasswordHash() {} // for ef core only
     
-    private PasswordHash(string value)
+    internal PasswordHash(string value)
     {
         Value = value;
     }

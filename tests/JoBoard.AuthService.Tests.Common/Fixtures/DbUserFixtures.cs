@@ -1,5 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+using JoBoard.AuthService.Tests.Common.Builders;
 
 namespace JoBoard.AuthService.Tests.Common.Fixtures;
 
@@ -17,11 +18,12 @@ public static class DbUserFixtures
                 if (_existingActiveUser != null)
                     return _existingActiveUser;
                 
+                var passwordHash = new PasswordBuilder().Create(PasswordFixtures.DefaultPassword);
                 var user = User.RegisterByEmailAndPassword(userId: UserId.Generate(),
                     fullName: new FullName("Test", "Hirer"),
                     email: new Email("ExistingActiveUser@gmail.com"),
                     role: UserRole.Hirer,
-                    passwordHash: PasswordFixtures.CreateDefault());
+                    passwordHash: passwordHash);
                 
                 user.RequestEmailConfirmation(ConfirmationTokenFixtures.CreateNew());
                 user.ConfirmEmail(user.EmailConfirmToken!.Value);
@@ -34,12 +36,13 @@ public static class DbUserFixtures
 
     public static readonly Lazy<User> ExistingUserWithoutConfirmedEmail = new(() =>
     {
+        var passwordHash = new PasswordBuilder().Create(PasswordFixtures.DefaultPassword);
         var user = User.RegisterByEmailAndPassword(
             userId: UserId.Generate(),
             fullName: new FullName("Test", "Hirer"),
             email: new Email("ExistingUserRegisteredByEmail@gmail.com"),
             role: UserRole.Hirer,
-            passwordHash: PasswordFixtures.CreateDefault());
+            passwordHash: passwordHash);
         user.RequestEmailConfirmation(ConfirmationTokenFixtures.CreateNew());
         return user;
     });
@@ -57,12 +60,13 @@ public static class DbUserFixtures
     
     public static readonly Lazy<User> ExistingUserWithExpiredToken = new(() =>
     {
+        var passwordHash = new PasswordBuilder().Create(PasswordFixtures.DefaultPassword);
         var user = User.RegisterByEmailAndPassword(
             userId: UserId.Generate(),
             fullName: new FullName("Test", "Hirer"),
             email: new Email("ExistingUserWithExpiredToken@gmail.com"),
             role: UserRole.Hirer,
-            passwordHash: PasswordFixtures.CreateDefault());
+            passwordHash: passwordHash);
         user.RequestEmailConfirmation(ConfirmationTokenFixtures.CreateExpired());
         return user;
     });

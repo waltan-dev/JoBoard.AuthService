@@ -1,5 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
@@ -77,10 +78,10 @@ public class ResetPasswordTests
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         user.RequestPasswordReset(confirmationToken);
 
-        var newPassword = PasswordFixtures.CreateNew();
-        user.ConfirmPasswordReset(confirmationToken.Value, newPassword);
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
+        user.ConfirmPasswordReset(confirmationToken.Value, newPasswordHash);
         
-        Assert.Equal(newPassword, user.PasswordHash);
+        Assert.Equal(newPasswordHash, user.PasswordHash);
         Assert.Null(user.ResetPasswordConfirmToken);
         Assert.Single(user.DomainEvents, ev => ev is UserChangedPasswordDomainEvent);
     }
@@ -91,11 +92,11 @@ public class ResetPasswordTests
         var user = new UserBuilder().WithActiveStatus().Build();
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         user.RequestPasswordReset(confirmationToken);
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         Assert.Throws<DomainException>(() =>
         {
-            var newPassword = PasswordFixtures.CreateNew();
-            user.ConfirmPasswordReset("invalid-token", newPassword);
+            user.ConfirmPasswordReset("invalid-token", newPasswordHash);
         });
     }
     
@@ -105,11 +106,11 @@ public class ResetPasswordTests
         var user = new UserBuilder().WithActiveStatus().Build();
         var expiredConfirmationToken = ConfirmationTokenFixtures.CreateExpired();
         user.RequestPasswordReset(expiredConfirmationToken);
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         Assert.Throws<DomainException>(() =>
         {
-            var newPassword = PasswordFixtures.CreateNew();
-            user.ConfirmPasswordReset(expiredConfirmationToken.Value, newPassword);
+            user.ConfirmPasswordReset(expiredConfirmationToken.Value, newPasswordHash);
         });
     }
     
@@ -117,11 +118,11 @@ public class ResetPasswordTests
     public void ConfirmPasswordResetWithoutRequest()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         Assert.Throws<DomainException>(() =>
         {
-            var newPassword = PasswordFixtures.CreateNew();
-            user.ConfirmPasswordReset("some-token", newPassword);
+            user.ConfirmPasswordReset("some-token", newPasswordHash);
         });
     }
     
@@ -130,12 +131,12 @@ public class ResetPasswordTests
     {
         var user = new UserBuilder().Build();
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         Assert.Throws<DomainException>(() =>
         {
             user.RequestPasswordReset(confirmationToken);
-            var newPassword = PasswordFixtures.CreateNew();
-            user.ConfirmPasswordReset(confirmationToken.Value, newPassword);
+            user.ConfirmPasswordReset(confirmationToken.Value, newPasswordHash);
         });
     }
     
@@ -144,12 +145,12 @@ public class ResetPasswordTests
     {
         var user = new UserBuilder().WithInactiveStatus().Build();
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         Assert.Throws<DomainException>(() =>
         {
             user.RequestPasswordReset(confirmationToken);
-            var newPassword = PasswordFixtures.CreateNew();
-            user.ConfirmPasswordReset(confirmationToken.Value, newPassword);
+            user.ConfirmPasswordReset(confirmationToken.Value, newPasswordHash);
         });
     }
 }

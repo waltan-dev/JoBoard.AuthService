@@ -1,6 +1,7 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
@@ -82,6 +83,20 @@ public class DeactivateUserTests
         Assert.Null(user.AccountDeactivationConfirmToken);
         Assert.Equal(UserStatus.Deactivated, user.Status);
         Assert.Single(user.DomainEvents, ev => ev is UserDeactivatedDomainEvent);
+    }
+    
+    [Fact]
+    public void ConfirmAccountDeactivationTwice()
+    {
+        var user = new UserBuilder().WithActiveStatus().Build();
+        var token = ConfirmationTokenFixtures.CreateNew();
+        user.RequestAccountDeactivation(token);
+        user.ConfirmAccountDeactivation(token.Value);
+
+        Assert.Throws<DomainException>(() =>
+        {
+            user.ConfirmAccountDeactivation(token.Value);
+        });
     }
     
     [Fact]

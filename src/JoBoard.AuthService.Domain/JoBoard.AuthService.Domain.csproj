@@ -15,5 +15,9 @@
       <Folder Include="Aggregates\" />
       <Folder Include="Common\" />
     </ItemGroup>
+    
+    <ItemGroup>
+        <InternalsVisibleTo Include="JoBoard.AuthService.Tests.Unit" />
+    </ItemGroup>
 
 </Project>

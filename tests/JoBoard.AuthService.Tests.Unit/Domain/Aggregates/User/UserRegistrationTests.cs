@@ -2,6 +2,7 @@
 using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
@@ -15,20 +16,20 @@ public class UserRegistrationTests
         var fullName = new FullName("Ivan", "Ivanov");
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Worker;
-        var password = PasswordFixtures.CreateDefault();
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         var newUser = AuthService.Domain.Aggregates.User.User.RegisterByEmailAndPassword(
             userId: userId,
             fullName: fullName,
             email: email,
             role: role, 
-            passwordHash: password);
+            passwordHash: newPasswordHash);
 
         Assert.Equal(userId, newUser.Id);
         Assert.Equal(fullName, newUser.FullName);
         Assert.Equal(email, newUser.Email);
         Assert.Equal(role, newUser.Role);
-        Assert.Equal(password, newUser.PasswordHash);
+        Assert.Equal(newPasswordHash, newUser.PasswordHash);
         
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
@@ -40,9 +41,20 @@ public class UserRegistrationTests
     [Fact]
     public void CreateNewUserByEmailWithInvalidRole()
     {
+        var userId = UserId.Generate();
+        var fullName = new FullName("Ivan", "Ivanov");
+        var email = new Email("ivan@gmail.com");
+        var role = UserRole.Admin;
+        var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
+        
         Assert.Throws<DomainException>(() =>
         {
-            _ = new UserBuilder().WithAdminRole().Build();
+            AuthService.Domain.Aggregates.User.User.RegisterByEmailAndPassword(
+                userId: userId,
+                fullName: fullName,
+                email: email,
+                role: role, 
+                passwordHash: newPasswordHash);
         });
     }
     
@@ -80,11 +92,22 @@ public class UserRegistrationTests
     }
     
     [Fact]
-    public void CreateNewUserByExternalAccountWithInvalidRole()
+    public void CreateNewUserByGoogleWithInvalidRole()
     {
+        var userId = UserId.Generate();
+        var fullName = new FullName("Ivan", "Ivanov");
+        var email = new Email("ivan@gmail.com");
+        var role = UserRole.Admin;
+        var googleUserId = GoogleFixtures.UserProfileForNewUser.Id;
+        
         Assert.Throws<DomainException>(() =>
         {
-            _ = new UserBuilder().WithGoogleAccount().WithAdminRole().Build();
+            AuthService.Domain.Aggregates.User.User.RegisterByGoogleAccount(
+                userId: userId,
+                fullName: fullName,
+                email: email,
+                role: role, 
+                googleUserId: googleUserId);
         });
     }
 }

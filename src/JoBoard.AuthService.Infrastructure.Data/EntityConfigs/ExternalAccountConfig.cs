@@ -15,7 +15,7 @@ public class ExternalAccountConfig : IEntityTypeConfiguration<ExternalAccount>
         builder.HasKey(x=> x.Id);
         builder.Property(x => x.Id).HasConversion(
             userId => userId.Value, 
-            value => new UserId(value));
+            value => UserId.FromValue(value));
         
         // map Value
         builder.OwnsOne(x => x.Value, navBuilder =>
