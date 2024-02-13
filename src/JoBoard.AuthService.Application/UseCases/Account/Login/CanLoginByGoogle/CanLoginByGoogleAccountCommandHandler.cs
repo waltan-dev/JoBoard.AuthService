@@ -4,7 +4,6 @@ using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using MediatR;
-using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ExternalAccountValue;
 
 namespace JoBoard.AuthService.Application.UseCases.Account.Login.CanLoginByGoogle;
 

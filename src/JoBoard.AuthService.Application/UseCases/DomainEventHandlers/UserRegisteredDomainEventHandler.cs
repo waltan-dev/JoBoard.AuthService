@@ -5,7 +5,7 @@ namespace JoBoard.AuthService.Application.UseCases.DomainEventHandlers;
 
 public class UserRegisteredDomainEventHandler : INotificationHandler<UserRegisteredDomainEvent>
 {
-    public Task Handle(UserRegisteredDomainEvent notification, CancellationToken cancellationToken)
+    public Task Handle(UserRegisteredDomainEvent notification, CancellationToken ct)
     {
         return Task.CompletedTask;
     }

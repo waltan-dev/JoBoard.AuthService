@@ -1,5 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+using JoBoard.AuthService.Domain.Common.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ExternalAccountValue;
 
@@ -7,7 +8,9 @@ namespace JoBoard.AuthService.Infrastructure.Data.Repositories;
 
 public class EfUserRepository : EfBaseRepository, IUserRepository
 {
-    public EfUserRepository(AuthDbContext dbContext) : base(dbContext) { }
+    public EfUserRepository(AuthDbContext dbContext, IUnitOfWork unitOfWork) : base(dbContext, unitOfWork)
+    {
+    }
 
     public Task AddAsync(User user, CancellationToken ct = default)
     {

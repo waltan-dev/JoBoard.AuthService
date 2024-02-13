@@ -48,11 +48,11 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
         builder.Property(x => x.Status).HasConversion(status => status.Id,
             id => Enumeration.FromValue<UserStatus>(id));
         
-        // map RegisterConfirmToken
-        builder.OwnsOne(x => x.RegisterConfirmToken, navBuilder =>
+        // map EmailConfirmToken
+        builder.OwnsOne(x => x.EmailConfirmToken, navBuilder =>
         {
-            navBuilder.Property(y => y.Value).HasColumnName("RegisterConfirmToken");
-            navBuilder.Property(y => y.Expiration).HasColumnName("RegisterConfirmTokenExpiration");
+            navBuilder.Property(y => y.Value).HasColumnName("EmailConfirmToken");
+            navBuilder.Property(y => y.Expiration).HasColumnName("EmailConfirmTokenExpiration");
         });
         
         // map ResetPasswordConfirmToken

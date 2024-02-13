@@ -4,14 +4,14 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Infrastructure.Data;
 
-public sealed class AuthDbContext : DbContext
+public class AuthDbContext : DbContext
 {
     public AuthDbContext(DbContextOptions options) : base(options)
     {
     }
     
-    public DbSet<User> Users { get; set; } = null!;
-    public DbSet<ExternalAccount> ExternalAccounts { get; set; } = null!;
+    public virtual DbSet<User> Users { get; init; } = null!;
+    public virtual DbSet<ExternalAccount> ExternalAccounts { get; init; } = null!;
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

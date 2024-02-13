@@ -14,25 +14,22 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
     public RequestPasswordResetCommandHandler(
         ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
         ConfirmationTokenConfig confirmationTokenConfig,
-        IUserRepository userRepository,
-        IUnitOfWork unitOfWork)
+        IUserRepository userRepository)
     {
         _secureTokenizer = secureTokenizer;
         _domainEventDispatcher = domainEventDispatcher;
         _confirmationTokenConfig = confirmationTokenConfig;
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
     }
     
     public async Task<Unit> Handle(RequestPasswordResetCommand request, CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var email = new Email(request.Email);
         var user = await _userRepository.FindByEmailAsync(email, ct);
@@ -45,7 +42,7 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         await _userRepository.UpdateAsync(user, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
         // TODO send email
         return Unit.Value;

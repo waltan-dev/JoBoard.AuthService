@@ -17,27 +17,24 @@ public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChan
     private readonly IIdentityService _identityService;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
     public RequestEmailChangeCommandHandler(
         ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
         ConfirmationTokenConfig confirmationTokenConfig,
-        IUserRepository userRepository,
-        IUnitOfWork unitOfWork)
+        IUserRepository userRepository)
     {
         _secureTokenizer = secureTokenizer;
         _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _confirmationTokenConfig = confirmationTokenConfig;
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
     }
     
     public async Task<Unit> Handle(RequestEmailChangeCommand requestEmail, CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
@@ -54,7 +51,7 @@ public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChan
         await _userRepository.UpdateAsync(user, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
         // TODO send email
         return Unit.Value;

@@ -1,7 +1,7 @@
-﻿using JoBoard.AuthService.Application.Common.Exceptions;
-using JoBoard.AuthService.Application.Common.Models;
+﻿using JoBoard.AuthService.Application.Common.Models;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
 
@@ -25,7 +25,7 @@ public class CanLoginByPasswordCommandHandler : IRequestHandler<CanLoginByPasswo
         var email = new Email(request.Email);
         var user = await _userRepository.FindByEmailAsync(email, ct);
         if (user == null)
-            throw new NotFoundException("User not found");
+            throw new DomainException("Invalid email or password");
         
         user.CanLoginWithPassword(request.Password, _passwordHasher);
         

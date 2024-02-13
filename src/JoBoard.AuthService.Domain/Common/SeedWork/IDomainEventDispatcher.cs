@@ -2,5 +2,5 @@
 
 public interface IDomainEventDispatcher
 {
-    Task DispatchAsync(CancellationToken cancellationToken = default);
+    Task DispatchAsync(CancellationToken ct = default);
 }

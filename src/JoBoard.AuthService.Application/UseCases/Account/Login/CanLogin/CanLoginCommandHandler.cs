@@ -20,6 +20,7 @@ public class CanLoginCommandHandler : IRequestHandler<CanLoginCommand, LoginResu
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
             throw new NotFoundException("User not found");
+        
         user.CanLogin();
         
         return new LoginResult(

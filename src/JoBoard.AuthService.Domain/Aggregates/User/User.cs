@@ -22,7 +22,7 @@ public class User : Entity, IAggregateRoot
     private List<ExternalAccount> _externalAccounts;
     public IReadOnlyCollection<ExternalAccount> ExternalAccounts => _externalAccounts.AsReadOnly();
     
-    public ConfirmationToken? RegisterConfirmToken { get; private set; }
+    public ConfirmationToken? EmailConfirmToken { get; private set; }
     public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
     public ConfirmationToken? ChangeEmailConfirmToken { get; private set; }
     public ConfirmationToken? AccountDeactivationConfirmToken { get; private set; }
@@ -31,7 +31,7 @@ public class User : Entity, IAggregateRoot
     
     // universal constructor for different scenarios, e.g. register by google account or register by email and password
     private User(UserId userId, FullName fullName, Email email, bool emailConfirmed, UserRole role, UserStatus status,
-        PasswordHash? passwordHash, ConfirmationToken? registerConfirmToken, ExternalAccountValue? externalAccountValue)
+        PasswordHash? passwordHash, ExternalAccountValue? externalAccountValue)
     {
         Id = userId;
         RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
@@ -41,7 +41,6 @@ public class User : Entity, IAggregateRoot
         Role = role;
         Status = status;
         PasswordHash = passwordHash;
-        RegisterConfirmToken = registerConfirmToken;
         _externalAccounts = externalAccountValue == null 
             ? new List<ExternalAccount>() 
             : new List<ExternalAccount> { new(Id, externalAccountValue) };
@@ -50,7 +49,7 @@ public class User : Entity, IAggregateRoot
     }
 
     public static User RegisterByEmailAndPassword(UserId userId, FullName fullName, Email email, UserRole role, 
-        PasswordHash passwordHash, ConfirmationToken registerConfirmToken)
+        PasswordHash passwordHash)
     {
         if (role.Equals(UserRole.Hirer) == false && role.Equals(UserRole.Worker) == false)
             throw new DomainException("Invalid role");
@@ -62,8 +61,7 @@ public class User : Entity, IAggregateRoot
             emailConfirmed: false,
             role: role,
             status: UserStatus.Pending, 
-            passwordHash: passwordHash, 
-            registerConfirmToken: registerConfirmToken,
+            passwordHash: passwordHash,
             null);
     }
     
@@ -81,21 +79,31 @@ public class User : Entity, IAggregateRoot
             role: role,
             status: UserStatus.Active, 
             passwordHash: null, 
-            registerConfirmToken: null,
             externalAccountValue: new ExternalAccountValue(googleUserId, ExternalAccountProvider.Google));
+    }
+
+    public void RequestEmailConfirmation(ConfirmationToken confirmationToken)
+    {
+        ThrowIfBlockedOrDeactivated();
+        
+        if (EmailConfirmToken != null && EmailConfirmToken.Expiration > DateTime.UtcNow)
+            throw new DomainException("Email confirmation has been requested already");
+        
+        EmailConfirmToken = confirmationToken;
+        AddDomainEvent(new UserRequestedEmailConfirmationDomainEvent(this));
     }
     
     public void ConfirmEmail(string token)
     {
         ThrowIfBlockedOrDeactivated();
 
-        if (RegisterConfirmToken == null)
+        if (EmailConfirmToken == null)
             throw new DomainException("Email confirmation has not been requested");
         
-        RegisterConfirmToken.Verify(token);
+        EmailConfirmToken.Verify(token);
         
         EmailConfirmed = true;
-        RegisterConfirmToken = null;
+        EmailConfirmToken = null;
         if(Status.Equals(UserStatus.Pending))
             Status = UserStatus.Active;
         AddDomainEvent(new UserConfirmedEmailDomainEvent(this));
@@ -108,30 +116,7 @@ public class User : Entity, IAggregateRoot
         FullName = fullName;
         AddDomainEvent(new UserUpdatedNameDomainEvent(this));
     }
-
-    public void AttachExternalAccount(ExternalAccountValue value)
-    {
-        ThrowIfBlockedOrDeactivated();
-        
-        if (ExternalAccounts.Select(x=>x.Value).Contains(value))
-            return;
-        
-        _externalAccounts.Add(new ExternalAccount(Id, value));
-        AddDomainEvent(new UserAttachedExternalAccountDomainEvent(this));
-    }
     
-    public void DetachExternalAccount(ExternalAccountValue value)
-    {
-        ThrowIfBlockedOrDeactivated();
-
-        var extAcc = ExternalAccounts.FirstOrDefault(x => x.Value.Equals(value));
-        if (extAcc == null)
-            return;
-        
-        _externalAccounts.Remove(extAcc);
-        AddDomainEvent(new UserDetachedExternalAccountDomainEvent(this));
-    }
-
     public void RequestPasswordReset(ConfirmationToken confirmationToken)
     {
         ThrowIfEmailIsNotConfirmed();
@@ -270,6 +255,29 @@ public class User : Entity, IAggregateRoot
 
         if (_externalAccounts.Select(x=>x.Value).Contains(externalAccountValue) == false)
             throw new DomainException("Unknown external account");
+    }
+    
+    public void AttachExternalAccount(ExternalAccountValue value)
+    {
+        ThrowIfBlockedOrDeactivated();
+        
+        if (ExternalAccounts.Select(x=>x.Value).Contains(value))
+            return;
+        
+        _externalAccounts.Add(new ExternalAccount(Id, value));
+        AddDomainEvent(new UserAttachedExternalAccountDomainEvent(this));
+    }
+    
+    public void DetachExternalAccount(ExternalAccountValue value)
+    {
+        ThrowIfBlockedOrDeactivated();
+
+        var extAcc = ExternalAccounts.FirstOrDefault(x => x.Value.Equals(value));
+        if (extAcc == null)
+            return;
+        
+        _externalAccounts.Remove(extAcc);
+        AddDomainEvent(new UserDetachedExternalAccountDomainEvent(this));
     }
     
     private void ThrowIfEmailIsNotConfirmed()

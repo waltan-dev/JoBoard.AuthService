@@ -11,7 +11,6 @@ public class ConfirmEmailChangeCommandHandler : IRequestHandler<ConfirmEmailChan
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
     public ConfirmEmailChangeCommandHandler(
         IDomainEventDispatcher domainEventDispatcher,
@@ -22,12 +21,11 @@ public class ConfirmEmailChangeCommandHandler : IRequestHandler<ConfirmEmailChan
         _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
     }
     
     public async Task<Unit> Handle(ConfirmEmailChangeCommand request, CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
@@ -38,7 +36,7 @@ public class ConfirmEmailChangeCommandHandler : IRequestHandler<ConfirmEmailChan
         await _userRepository.UpdateAsync(user, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
         return Unit.Value;
     }

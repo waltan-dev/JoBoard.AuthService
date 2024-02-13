@@ -5,7 +5,6 @@ using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
-using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ExternalAccountValue;
 
 namespace JoBoard.AuthService.Application.UseCases.Account.Register.ByGoogle;
 
@@ -14,25 +13,22 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IGoogleAuthProvider _googleAuthProvider;
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
     public RegisterByGoogleAccountCommandHandler(
         IDomainEventDispatcher domainEventDispatcher,
         IGoogleAuthProvider googleAuthProvider,
-        IUserRepository userRepository,
-        IUnitOfWork unitOfWork)
+        IUserRepository userRepository)
     {
         _domainEventDispatcher = domainEventDispatcher;
         _googleAuthProvider = googleAuthProvider;
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
     }
     
     public async Task<Unit> Handle(RegisterByGoogleAccountCommand request, CancellationToken ct)
     {
         // https://developers.google.com/identity/sign-in/web/backend-auth
         
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var googleUserProfile = await _googleAuthProvider.VerifyIdTokenAsync(request.GoogleIdToken);
         if (googleUserProfile == null)
@@ -59,7 +55,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
         await _userRepository.AddAsync(newUser, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
 
         return Unit.Value;
     }

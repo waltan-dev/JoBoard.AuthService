@@ -14,7 +14,7 @@ public class DomainEventDispatcher : IDomainEventDispatcher
         _changeTracker = changeTracker;
     }
     
-    public async Task DispatchAsync(CancellationToken cancellationToken = default)
+    public async Task DispatchAsync(CancellationToken ct = default)
     {
         // Dispatch Domain Events collection. 
         // Choices:
@@ -34,6 +34,6 @@ public class DomainEventDispatcher : IDomainEventDispatcher
             .ForEach(entity => entity.ClearDomainEvents());
 
         foreach (var domainEvent in domainEvents)
-            await _mediator.Publish(domainEvent, cancellationToken);
+            await _mediator.Publish(domainEvent, ct);
     }
 }

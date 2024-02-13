@@ -1,7 +1,7 @@
 ﻿using JoBoard.AuthService.Application.Common.Configs;
+using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
-using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
@@ -16,7 +16,6 @@ public class RegisterByEmailAndPasswordCommandHandler : IRequestHandler<Register
     private readonly IUserRepository _userRepository;
     private readonly IPasswordHasher _passwordHasher;
     private readonly ConfirmationTokenConfig _confirmationTokenConfig;
-    private readonly IUnitOfWork _unitOfWork;
 
     public RegisterByEmailAndPasswordCommandHandler(
         IPasswordStrengthValidator passwordStrengthValidator,
@@ -24,8 +23,7 @@ public class RegisterByEmailAndPasswordCommandHandler : IRequestHandler<Register
         IDomainEventDispatcher domainEventDispatcher,
         IUserRepository userRepository,
         IPasswordHasher passwordHasher,
-        ConfirmationTokenConfig confirmationTokenConfig,
-        IUnitOfWork unitOfWork)
+        ConfirmationTokenConfig confirmationTokenConfig)
     {
         _passwordStrengthValidator = passwordStrengthValidator;
         _secureTokenizer = secureTokenizer;
@@ -33,31 +31,30 @@ public class RegisterByEmailAndPasswordCommandHandler : IRequestHandler<Register
         _userRepository = userRepository;
         _passwordHasher = passwordHasher;
         _confirmationTokenConfig = confirmationTokenConfig;
-        _unitOfWork = unitOfWork;
     }
     
     public async Task<Unit> Handle(RegisterByEmailAndPasswordCommand request, CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var email = new Email(request.Email);
         var emailIsUnique = await _userRepository.CheckEmailUniquenessAsync(email, ct);
         if (emailIsUnique == false)
-            throw new DomainException("This email is already in use");
+            throw new ValidationException(nameof(request.Email),"This email is already in use");
         
-        var newToken = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.TokenLifeSpan);
         var password = PasswordHash.Create(request.Password, _passwordStrengthValidator, _passwordHasher);
         var newUser = User.RegisterByEmailAndPassword(userId: UserId.Generate(),
             fullName: new FullName(request.FirstName, request.LastName),
             email: new Email(request.Email),
             role: Enumeration.FromDisplayName<UserRole>(request.Role),
-            passwordHash: password,
-            registerConfirmToken: newToken);
+            passwordHash: password);
+        var emailConfirmationToken = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.TokenLifeSpan);
+        newUser.RequestEmailConfirmation(emailConfirmationToken);
         
         await _userRepository.AddAsync(newUser, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
         // TODO send confirmation email
         return Unit.Value;

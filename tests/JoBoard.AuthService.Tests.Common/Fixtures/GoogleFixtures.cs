@@ -22,8 +22,17 @@ public static class GoogleFixtures
         LastName = "test",
         Email = "emailForNewUser@gmail.com"
     };
+    
+    public static readonly string IdTokenForNewUserWithExistingEmail = "IdTokenForNewUserWithExistingEmail";
+    public static readonly GoogleUserProfile UserProfileForNewUserWithExistingEmail = new()
+    {
+        Id = "NewUserWithExistingEmailId",
+        FirstName = "Test",
+        LastName = "test",
+        Email = DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value.Email.Value
+    };
 
-    public static IGoogleAuthProvider GetGoogleAuthProvider()
+    public static IGoogleAuthProvider GetGoogleAuthProviderStub()
     {
         var googleAuthProvider = new Mock<IGoogleAuthProvider>();
         
@@ -34,6 +43,10 @@ public static class GoogleFixtures
         googleAuthProvider
             .Setup(x => x.VerifyIdTokenAsync(IdTokenForNewUser))
             .Returns(() => Task.FromResult(UserProfileForNewUser)!);
+        
+        googleAuthProvider
+            .Setup(x => x.VerifyIdTokenAsync(IdTokenForNewUserWithExistingEmail))
+            .Returns(() => Task.FromResult(UserProfileForNewUserWithExistingEmail)!);
 
         return googleAuthProvider.Object;
     }

@@ -18,7 +18,7 @@ public class UserBuilder
         UserRole userRole = _withAdminRoleOption 
             ? UserRole.Admin 
             : UserRole.Hirer;
-        var registerConfirmToken = _withExpiredRegisterTokenOption
+        var emailConfirmToken = _withExpiredRegisterTokenOption
             ? ConfirmationTokenFixtures.CreateExpired()
             : ConfirmationTokenFixtures.CreateNew();
 
@@ -35,12 +35,12 @@ public class UserBuilder
                 fullName: new FullName("Ivan", "Ivanov"),
                 email: new Email("ivan@gmail.com"),
                 role: userRole,
-                passwordHash: PasswordFixtures.CreateDefault(),
-                registerConfirmToken: registerConfirmToken);
+                passwordHash: PasswordFixtures.CreateDefault());
+            user.RequestEmailConfirmation(emailConfirmToken);
         }
         
         if(_withActiveStatusOption && user.Status.Equals(UserStatus.Active) == false)
-            user.ConfirmEmail(registerConfirmToken.Value);
+            user.ConfirmEmail(emailConfirmToken.Value);
 
         if (_withInactiveStatusOption)
             user.Block();

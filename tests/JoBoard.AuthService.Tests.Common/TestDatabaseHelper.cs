@@ -23,10 +23,10 @@ public static class TestDatabaseHelper
     {
         var users = new List<User>
         {
-            DatabaseUserFixtures.ExistingActiveUser,
-            DatabaseUserFixtures.ExistingUserRegisteredByEmail.Value,
-            DatabaseUserFixtures.ExistingUserRegisteredByGoogleAccount.Value,
-            DatabaseUserFixtures.ExistingUserWithExpiredToken.Value
+            DbUserFixtures.ExistingActiveUser,
+            DbUserFixtures.ExistingUserWithoutConfirmedEmail.Value,
+            DbUserFixtures.ExistingUserRegisteredByGoogleAccount.Value,
+            DbUserFixtures.ExistingUserWithExpiredToken.Value
         };
         dbContext.Users.AddRange(users);
         await dbContext.SaveChangesAsync();

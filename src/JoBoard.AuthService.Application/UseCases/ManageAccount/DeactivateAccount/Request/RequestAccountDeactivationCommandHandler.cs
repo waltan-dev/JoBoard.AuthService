@@ -16,27 +16,24 @@ public class RequestAccountDeactivationCommandHandler : IRequestHandler<RequestA
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IIdentityService _identityService;
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
     public RequestAccountDeactivationCommandHandler(
         ConfirmationTokenConfig confirmationTokenConfig,
         ISecureTokenizer secureTokenizer,
         IDomainEventDispatcher domainEventDispatcher,
         IIdentityService identityService,
-        IUserRepository userRepository, 
-        IUnitOfWork unitOfWork)
+        IUserRepository userRepository)
     {
         _confirmationTokenConfig = confirmationTokenConfig;
         _secureTokenizer = secureTokenizer;
         _domainEventDispatcher = domainEventDispatcher;
         _identityService = identityService;
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
     }
     
     public async Task<Unit> Handle(RequestAccountDeactivationCommand request, CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
@@ -48,7 +45,7 @@ public class RequestAccountDeactivationCommandHandler : IRequestHandler<RequestA
         await _userRepository.UpdateAsync(user, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
         return Unit.Value;
     }

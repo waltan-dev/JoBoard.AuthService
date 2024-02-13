@@ -26,13 +26,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{506007
 		wait-for-it.sh = wait-for-it.sh
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.UnitTests", "tests\JoBoard.AuthService.UnitTests\JoBoard.AuthService.UnitTests.csproj", "{B40FBE57-83D3-4A0D-A6F5-286271875EA1}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Tests.Unit", "tests\JoBoard.AuthService.Tests.Unit\JoBoard.AuthService.Tests.Unit.csproj", "{B40FBE57-83D3-4A0D-A6F5-286271875EA1}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Data", "src\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj", "{4D8FF32E-62DD-41C1-BBBB-E7A867971913}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.FunctionalTests", "tests\JoBoard.AuthService.FunctionalTests\JoBoard.AuthService.FunctionalTests.csproj", "{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Tests.Functional", "tests\JoBoard.AuthService.Tests.Functional\JoBoard.AuthService.Tests.Functional.csproj", "{39EABE58-F5E4-4547-B6B9-1994E9C7AE14}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.IntegrationTests", "tests\JoBoard.AuthService.IntegrationTests\JoBoard.AuthService.IntegrationTests.csproj", "{CAE6FA2B-AB66-42A6-82C3-CA881B24DFC6}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Tests.Integration", "tests\JoBoard.AuthService.Tests.Integration\JoBoard.AuthService.Tests.Integration.csproj", "{CAE6FA2B-AB66-42A6-82C3-CA881B24DFC6}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Tests.Common", "tests\JoBoard.AuthService.Tests.Common\JoBoard.AuthService.Tests.Common.csproj", "{FC5AF56C-F190-455F-BA78-DFDE331A905C}"
 EndProject

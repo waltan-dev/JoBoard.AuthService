@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Application.Common.Configs;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Infrastructure.Auth.Services;
@@ -20,5 +20,10 @@ public static class ConfirmationTokenFixtures
     public static ISecureTokenizer GetSecureTokenizerStub()
     {
         return new SecureTokenizer();
+    }
+
+    public static ConfirmationTokenConfig GetConfirmationTokenConfig()
+    {
+        return new ConfirmationTokenConfig { TokenLifeSpan = TimeSpan.FromHours(24) };
     }
 }

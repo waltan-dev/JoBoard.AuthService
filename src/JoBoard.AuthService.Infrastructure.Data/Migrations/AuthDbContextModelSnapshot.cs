@@ -158,15 +158,19 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.Email", "NewEmail", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ConfirmationToken", "EmailConfirmToken", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
 
+                            b1.Property<DateTime>("Expiration")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("EmailConfirmTokenExpiration");
+
                             b1.Property<string>("Value")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("NewEmail");
+                                .HasColumnName("EmailConfirmToken");
 
                             b1.HasKey("UserId");
 
@@ -176,19 +180,15 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                                 .HasForeignKey("UserId");
                         });
 
-                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ConfirmationToken", "RegisterConfirmToken", b1 =>
+                    b.OwnsOne("JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.Email", "NewEmail", b1 =>
                         {
                             b1.Property<Guid>("UserId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<DateTime>("Expiration")
-                                .HasColumnType("timestamp with time zone")
-                                .HasColumnName("RegisterConfirmTokenExpiration");
-
                             b1.Property<string>("Value")
                                 .IsRequired()
                                 .HasColumnType("text")
-                                .HasColumnName("RegisterConfirmToken");
+                                .HasColumnName("NewEmail");
 
                             b1.HasKey("UserId");
 
@@ -268,14 +268,14 @@ namespace JoBoard.AuthService.Infrastructure.Data.Migrations
                     b.Navigation("Email")
                         .IsRequired();
 
+                    b.Navigation("EmailConfirmToken");
+
                     b.Navigation("FullName")
                         .IsRequired();
 
                     b.Navigation("NewEmail");
 
                     b.Navigation("PasswordHash");
-
-                    b.Navigation("RegisterConfirmToken");
 
                     b.Navigation("ResetPasswordConfirmToken");
                 });

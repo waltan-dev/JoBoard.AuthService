@@ -11,27 +11,24 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
 {
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordStrengthValidator _passwordStrengthValidator;
     private readonly IPasswordHasher _passwordHasher;
 
     public ConfirmPasswordResetCommandHandler(
         IDomainEventDispatcher domainEventDispatcher,
         IUserRepository userRepository,
-        IUnitOfWork unitOfWork,
         IPasswordStrengthValidator passwordStrengthValidator,
         IPasswordHasher passwordHasher)
     {
         _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
         _passwordStrengthValidator = passwordStrengthValidator;
         _passwordHasher = passwordHasher;
     }
     
     public async Task<Unit> Handle(ConfirmPasswordResetCommand request, CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
@@ -43,7 +40,7 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
         await _userRepository.UpdateAsync(user, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
         return Unit.Value;
     }

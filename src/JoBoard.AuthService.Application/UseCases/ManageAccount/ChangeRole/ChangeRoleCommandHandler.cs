@@ -10,7 +10,6 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Unit>
 {
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IUserRepository _userRepository;
-    private readonly IUnitOfWork _unitOfWork;
 
     public ChangeRoleCommandHandler(
         IDomainEventDispatcher domainEventDispatcher,
@@ -19,12 +18,11 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Unit>
     {
         _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;
-        _unitOfWork = unitOfWork;
     }
     
     public async Task<Unit> Handle(ChangeRoleCommand request, CancellationToken ct)
     {
-        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
+        await _userRepository.UnitOfWork.BeginTransactionAsync(ct: ct);
         
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
@@ -35,7 +33,7 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Unit>
         await _userRepository.UpdateAsync(user, ct);
         
         await _domainEventDispatcher.DispatchAsync(ct);
-        await _unitOfWork.CommitAsync(ct);
+        await _userRepository.UnitOfWork.CommitTransactionAsync(ct);
         
         return Unit.Value;
     }
