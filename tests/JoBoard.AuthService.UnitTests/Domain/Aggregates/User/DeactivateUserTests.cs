@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
@@ -16,10 +17,11 @@ public class DeactivateUserTests
         
         Assert.Equal(confirmationToken, user.AccountDeactivationConfirmToken);
         Assert.Equal(UserStatus.Active, user.Status);
+        Assert.Single(user.DomainEvents, ev => ev is UserRequestedAccountDeactivationDomainEvent);
     }
     
     [Fact]
-    public void RequestAccountDeactivationIfUserIsNotActive()
+    public void RequestAccountDeactivationWithoutConfirmedEmail()
     {
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         var user = new UserBuilder().Build();
@@ -31,7 +33,19 @@ public class DeactivateUserTests
     }
     
     [Fact]
-    public void RequestAccountDeactivationTwice()
+    public void RequestAccountDeactivationWithInactiveStatus()
+    {
+        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var user = new UserBuilder().WithInactiveStatus().Build();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.RequestAccountDeactivation(confirmationToken);
+        });
+    }
+    
+    [Fact]
+    public void RequestAccountDeactivationTwiceBeforeExpiration()
     {
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         var user = new UserBuilder().WithActiveStatus().Build();
@@ -53,6 +67,7 @@ public class DeactivateUserTests
         user.RequestAccountDeactivation(confirmationToken);
         
         Assert.Equal(confirmationToken, user.AccountDeactivationConfirmToken);
+        Assert.Contains(user.DomainEvents, ev => ev is UserRequestedAccountDeactivationDomainEvent);
     }
     
     [Fact]
@@ -66,6 +81,7 @@ public class DeactivateUserTests
         
         Assert.Null(user.AccountDeactivationConfirmToken);
         Assert.Equal(UserStatus.Deactivated, user.Status);
+        Assert.Single(user.DomainEvents, ev => ev is UserDeactivatedDomainEvent);
     }
     
     [Fact]
@@ -107,5 +123,18 @@ public class DeactivateUserTests
             user.ConfirmAccountDeactivation(confirmationToken.Value);
         });
         Assert.Equal(UserStatus.Active, user.Status);
+    }
+    
+    [Fact]
+    public void ConfirmAccountDeactivationWithoutConfirmedEmail()
+    {
+        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var user = new UserBuilder().Build();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.RequestAccountDeactivation(confirmationToken);
+            user.ConfirmAccountDeactivation(confirmationToken.Value);
+        });
     }
 }

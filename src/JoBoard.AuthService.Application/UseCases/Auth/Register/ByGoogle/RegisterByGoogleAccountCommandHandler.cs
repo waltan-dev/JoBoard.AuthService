@@ -1,14 +1,15 @@
 ﻿using JoBoard.AuthService.Application.Common.Exceptions;
-using JoBoard.AuthService.Application.Common.Models;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
+using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ExternalAccountValue;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogle;
 
-public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByGoogleAccountCommand, UserResult>
+public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByGoogleAccountCommand, Unit>
 {
     private readonly IDomainEventDispatcher _domainEventDispatcher;
     private readonly IGoogleAuthProvider _googleAuthProvider;
@@ -27,7 +28,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
         _unitOfWork = unitOfWork;
     }
     
-    public async Task<UserResult> Handle(RegisterByGoogleAccountCommand request, CancellationToken ct)
+    public async Task<Unit> Handle(RegisterByGoogleAccountCommand request, CancellationToken ct)
     {
         // https://developers.google.com/identity/sign-in/web/backend-auth
         
@@ -37,15 +38,10 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
         if (googleUserProfile == null)
             throw new ValidationException(nameof(request.GoogleIdToken),"Google ID token isn't valid");
         
-        var externalAccount = new ExternalAccount(googleUserProfile.Id, ExternalAccountProvider.Google);
-        var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount, ct);
+        var externalAccount = new ExternalAccountValue(googleUserProfile.Id, ExternalAccountProvider.Google);
+        var existingUser = await _userRepository.FindByExternalAccountValueAsync(externalAccount, ct);
         if (existingUser != null) // user is already registered 
-            return new UserResult(
-                existingUser.Id.Value,
-                existingUser.FullName.FirstName,
-                existingUser.FullName.LastName,
-                existingUser.Email.Value,
-                existingUser.Role.Name);
+            return Unit.Value;
         
         // register new user
         var email = new Email(googleUserProfile.Email);
@@ -64,12 +60,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
         
         await _domainEventDispatcher.DispatchAsync(ct);
         await _unitOfWork.CommitAsync(ct);
-        
-        return new UserResult(
-            newUser.Id.Value,
-            newUser.FullName.FirstName,
-            newUser.FullName.LastName,
-            newUser.Email.Value,
-            newUser.Role.Name);
+
+        return Unit.Value;
     }
 }

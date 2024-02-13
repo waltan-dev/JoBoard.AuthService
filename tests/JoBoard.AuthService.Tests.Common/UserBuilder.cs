@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Common;
@@ -9,6 +10,7 @@ public class UserBuilder
     private bool _withActiveStatusOption = false;
     private bool _withAdminRoleOption = false;
     private bool _withExpiredRegisterTokenOption = false;
+    private bool _withInactiveStatusOption = false;
     
     public User Build()
     {
@@ -39,13 +41,28 @@ public class UserBuilder
         
         if(_withActiveStatusOption && user.Status.Equals(UserStatus.Active) == false)
             user.ConfirmEmail(registerConfirmToken.Value);
+
+        if (_withInactiveStatusOption)
+            user.Block();
         
         return user;
     }
     
     public UserBuilder WithActiveStatus()
     {
+        if(_withInactiveStatusOption)
+            throw new ArgumentException();
+        
         _withActiveStatusOption = true;
+        return this;
+    }
+    
+    public UserBuilder WithInactiveStatus()
+    {
+        if (_withActiveStatusOption)
+            throw new ArgumentException();
+        
+        _withInactiveStatusOption = true;
         return this;
     }
     

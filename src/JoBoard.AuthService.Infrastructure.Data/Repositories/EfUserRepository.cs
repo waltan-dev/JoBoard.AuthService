@@ -1,5 +1,7 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using Microsoft.EntityFrameworkCore;
+using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ExternalAccountValue;
 
 namespace JoBoard.AuthService.Infrastructure.Data.Repositories;
 
@@ -37,12 +39,12 @@ public class EfUserRepository : EfBaseRepository, IUserRepository
             .FirstOrDefaultAsync(x=>x.Email.Value == email.Value, ct);
     }
 
-    public async Task<User?> FindByExternalAccountAsync(ExternalAccount externalAccount, CancellationToken ct = default)
+    public async Task<User?> FindByExternalAccountValueAsync(ExternalAccountValue externalAccount, CancellationToken ct = default)
     {
         var extAccountDb = await DbContext.ExternalAccounts
             .AsNoTracking()
             .FirstOrDefaultAsync(x => 
-                x.ExternalUserId == externalAccount.ExternalUserId && x.Provider == externalAccount.Provider, ct);
+                x.Value.ExternalUserId == externalAccount.ExternalUserId && x.Value.Provider == externalAccount.Provider, ct);
         if (extAccountDb == null)
             return null;
         

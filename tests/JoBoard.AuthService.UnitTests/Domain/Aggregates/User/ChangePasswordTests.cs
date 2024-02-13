@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
@@ -14,8 +14,8 @@ public class ChangePasswordTests
         var newPassword = PasswordFixtures.CreateNew();
         
         user.ChangePassword(PasswordFixtures.DefaultPassword, newPassword, passwordHasher);
-        
         Assert.Equal(newPassword, user.PasswordHash);
+        Assert.Single(user.DomainEvents, ev => ev is UserChangedPasswordDomainEvent);
     }
     
     [Fact]
@@ -51,6 +51,19 @@ public class ChangePasswordTests
         Assert.Throws<DomainException>(() =>
         {
             user.ChangePassword(" ", PasswordFixtures.CreateNew(), passwordHasherStub);
+        });
+    }
+    
+    [Fact]
+    public void ChangePasswordWithInactiveStatus()
+    {
+        var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
+        var newPassword = PasswordFixtures.CreateNew();
+        var user = new UserBuilder().WithInactiveStatus().Build();
+
+        Assert.Throws<DomainException>(() =>
+        {
+            user.ChangePassword(PasswordFixtures.DefaultPassword, newPassword, passwordHasher);
         });
     }
 }

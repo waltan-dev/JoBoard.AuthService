@@ -1,9 +1,9 @@
-﻿using System.Security.Claims;
+﻿using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
-using Microsoft.AspNetCore.Http;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 
-namespace JoBoard.AuthService.Infrastructure.Auth.Services;
+namespace JoBoard.AuthService.Infrastructure.Auth.Jwt;
 
 public class JwtIdentityService : IIdentityService
 {
@@ -13,12 +13,12 @@ public class JwtIdentityService : IIdentityService
     {
         _httpContextAccessor = httpContextAccessor;
     }
-    
+
     public UserId GetUserId()
     {
-        // parse user id from JWT
-        string? userIdStr = _httpContextAccessor.HttpContext!.User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
-        _ = Guid.TryParse(userIdStr, out Guid userIdGuid);
-        return new UserId(userIdGuid);
+        var userId = _httpContextAccessor.HttpContext!.User.GetUserId();
+        if (userId == null)
+            throw new NotFoundException("User not found");
+        return userId;
     }
 }

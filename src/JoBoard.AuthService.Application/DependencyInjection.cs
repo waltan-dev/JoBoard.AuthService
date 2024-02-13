@@ -14,16 +14,11 @@ namespace JoBoard.AuthService.Application;
 public static class DependencyInjection
 {
     public static IServiceCollection AddApplication(this IServiceCollection services, 
-        ConfirmationTokenConfig confirmTokenConfig,
-        RefreshTokenConfig refreshTokenConfig)
+        ConfirmationTokenConfig confirmTokenConfig)
     {
         Guard.IsNotNull(confirmTokenConfig);
-        Guard.IsNotDefault(confirmTokenConfig.ExpiresInHours);
+        Guard.IsNotDefault(confirmTokenConfig.TokenLifeSpan);
         services.AddSingleton(confirmTokenConfig);
-        
-        Guard.IsNotNull(refreshTokenConfig);
-        Guard.IsNotDefault(refreshTokenConfig.ExpiresInHours);
-        services.AddSingleton(refreshTokenConfig);
         
         services.AddMediatR(config =>
         {

@@ -13,9 +13,9 @@ public class RefreshToken
         ExpiresAt = expiresAt;
     }
 
-    public static RefreshToken Create(int tokenExpiresInHours, ISecureTokenizer secureTokenizer)
+    public static RefreshToken Create(TimeSpan lifeSpan, ISecureTokenizer secureTokenizer)
     {
         var secureToken = secureTokenizer.Generate();
-        return new RefreshToken(secureToken, DateTime.UtcNow.AddHours(tokenExpiresInHours));
+        return new RefreshToken(secureToken, DateTime.UtcNow.Add(lifeSpan));
     }
 }

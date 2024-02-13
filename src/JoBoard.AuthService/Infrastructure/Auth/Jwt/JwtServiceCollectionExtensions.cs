@@ -3,8 +3,6 @@ using System.Text;
 using System.Text.Json;
 using CommunityToolkit.Diagnostics;
 using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Infrastructure.Auth.Services;
-using JoBoard.AuthService.Infrastructure.Jwt;
 using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;

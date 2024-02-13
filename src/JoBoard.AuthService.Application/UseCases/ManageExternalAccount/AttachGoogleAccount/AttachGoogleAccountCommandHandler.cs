@@ -1,9 +1,11 @@
 ﻿using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
+using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.User.ValueObjects.ExternalAccountValue;
 
 namespace JoBoard.AuthService.Application.UseCases.ManageExternalAccount.AttachGoogleAccount;
 
@@ -37,7 +39,7 @@ public class AttachGoogleAccountCommandHandler : IRequestHandler<AttachGoogleAcc
         if (googleUserProfile == null)
             throw new ValidationException(nameof(request.GoogleIdToken),"Google ID token isn't valid");
         
-        var externalAccount = new ExternalAccount(googleUserProfile.Id, ExternalAccountProvider.Google);
+        var externalAccount = new ExternalAccountValue(googleUserProfile.Id, ExternalAccountProvider.Google);
         await CheckIfAlreadyExistsAsync(externalAccount, ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
@@ -54,9 +56,9 @@ public class AttachGoogleAccountCommandHandler : IRequestHandler<AttachGoogleAcc
         return Unit.Value;
     }
 
-    private async Task CheckIfAlreadyExistsAsync(ExternalAccount externalAccount, CancellationToken ct)
+    private async Task CheckIfAlreadyExistsAsync(ExternalAccountValue externalAccount, CancellationToken ct)
     {
-        var existingUser = await _userRepository.FindByExternalAccountAsync(externalAccount, ct);
+        var existingUser = await _userRepository.FindByExternalAccountValueAsync(externalAccount, ct);
         if (existingUser != null)
             throw new DomainException("This external account is already in use");
     }

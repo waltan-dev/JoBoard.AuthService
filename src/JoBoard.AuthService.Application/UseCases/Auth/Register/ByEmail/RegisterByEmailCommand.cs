@@ -3,7 +3,7 @@ using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 
-public class RegisterByEmailCommand : IRequest<UserResult>
+public class RegisterByEmailCommand : IRequest<Unit>
 {
     public string FirstName { get; set; }
     public string LastName { get; set; }

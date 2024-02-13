@@ -2,7 +2,7 @@
 
 namespace JoBoard.AuthService.Models;
 
-public class AuthResponse : UserResult
+public class AuthResponse : LoginResult
 {
     public AuthResponse(Guid userId, 
         string firstName, string lastName, 

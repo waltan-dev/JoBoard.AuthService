@@ -1,4 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.Events;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
@@ -34,6 +36,8 @@ public class UserRegistrationTests
         Assert.Equal(UserStatus.Pending, newUser.Status);
         Assert.False(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
+
+        Assert.Single(newUser.DomainEvents, ev => ev is UserRegisteredDomainEvent);
     }
     
     [Fact]
@@ -65,8 +69,8 @@ public class UserRegistrationTests
         Assert.Equal(fullName, newUser.FullName);
         Assert.Equal(email, newUser.Email);
         Assert.Equal(role, newUser.Role);
-        Assert.Equal(googleUserId, newUser.ExternalAccounts.First().ExternalUserId);
-        Assert.Equal(ExternalAccountProvider.Google, newUser.ExternalAccounts.First().Provider);
+        Assert.Equal(googleUserId, newUser.ExternalAccounts.First().Value.ExternalUserId);
+        Assert.Equal(ExternalAccountProvider.Google, newUser.ExternalAccounts.First().Value.Provider);
         
         Assert.Single(newUser.ExternalAccounts);
         Assert.Null(newUser.RegisterConfirmToken);
@@ -74,6 +78,8 @@ public class UserRegistrationTests
         Assert.True(newUser.EmailConfirmed);
         Assert.NotEqual(default, newUser.RegisteredAt);
         Assert.Null(newUser.PasswordHash);
+        
+        Assert.Single(newUser.DomainEvents, ev => ev is UserRegisteredDomainEvent);
     }
     
     [Fact]

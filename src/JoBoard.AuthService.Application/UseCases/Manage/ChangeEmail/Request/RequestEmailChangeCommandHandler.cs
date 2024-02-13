@@ -2,6 +2,7 @@
 using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
@@ -47,7 +48,7 @@ public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChan
         if(emailIsUnique == false)
             throw new DomainException("Email is already in use");
 
-        var newToken = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.ExpiresInHours);
+        var newToken = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.TokenLifeSpan);
         user.RequestEmailChange(newEmail, newToken);
 
         await _userRepository.UpdateAsync(user, ct);

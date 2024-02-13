@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
@@ -11,11 +12,18 @@ public class ExternalAccountConfig : IEntityTypeConfiguration<ExternalAccount>
         builder.ToTable("ExternalAccounts");
         
         // map Id
-        builder.HasKey(x => new { x.Id, x.ExternalUserId, x.Provider });
+        builder.HasKey(x => new { x.Id, x.Value });
+        
         builder.Property(x => x.Id).HasConversion(
             userId => userId.Value, 
             value => new UserId(value));
 
-        builder.HasIndex(x => new { x.ExternalUserId, x.Provider });
+        builder.OwnsOne(x => x.Value, navBuilder =>
+        {
+            navBuilder.Property(x => x.ExternalUserId).HasColumnName("ExternalUserId");
+            navBuilder.Property(x => x.Provider).HasColumnName("Provider");
+
+            navBuilder.HasIndex(x => new { x.ExternalUserId, x.Provider });
+        });
     }
 }

@@ -2,6 +2,7 @@
 using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
@@ -41,7 +42,7 @@ public class RequestAccountDeactivationCommandHandler : IRequestHandler<RequestA
         if (user == null)
             throw new NotFoundException("User not found");
 
-        var token = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.ExpiresInHours);
+        var token = ConfirmationToken.Create(_secureTokenizer, _confirmationTokenConfig.TokenLifeSpan);
         user.RequestAccountDeactivation(token);
 
         await _userRepository.UpdateAsync(user, ct);

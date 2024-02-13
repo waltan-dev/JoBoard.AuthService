@@ -1,17 +1,24 @@
 ﻿namespace JoBoard.AuthService;
 
 // DO NOT CHANGE PUBLIC CONTRACT
-public static class AuthV1Routes
+public static class AuthTokenV1Routes
 {
-    private const string Base = "/api/v1/account/auth";
+    private const string Base = "/api/v1/auth/token";
+    
+    public const string TokenByPassword = $"{Base}/by-password";
+    public const string TokenByGoogle = $"{Base}/by-google";
+    
+    public const string RefreshToken = $"{Base}/refresh";
+    public const string RevokeRefreshToken = $"{Base}/revoke";
+}
+
+// DO NOT CHANGE PUBLIC CONTRACT
+public static class AccountV1Routes
+{
+    private const string Base = "/api/v1/account";
     
     public const string Register = $"{Base}/register";
     public const string RegisterByGoogle = $"{Base}/register-google";
-    
-    public const string Login = $"{Base}/login";
-    public const string LoginByGoogle = $"{Base}/login-google";
-    
-    public const string RefreshToken = $"{Base}/refresh-token";
     
     public const string ConfirmEmail = $"{Base}/confirm-email";
     
@@ -20,7 +27,7 @@ public static class AuthV1Routes
 }
 
 // DO NOT CHANGE PUBLIC CONTRACT
-public static class ManageV1Routes
+public static class ManageAccountV1Routes
 {
     public const string Base = "/api/v1/account/manage";
     

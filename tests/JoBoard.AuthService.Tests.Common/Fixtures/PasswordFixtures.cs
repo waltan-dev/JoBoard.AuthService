@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Infrastructure.Auth.Services;
 
@@ -30,7 +31,7 @@ public static class PasswordFixtures
         // return passwordHasherStub.Object;
     }
 
-    private static IPasswordStrengthValidator GetPasswordStrengthValidatorStub()
+    public static IPasswordStrengthValidator GetPasswordStrengthValidatorStub()
     {
         return new PasswordStrengthValidator();
     }

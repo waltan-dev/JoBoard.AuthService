@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+using JoBoard.AuthService.Domain.Common.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
@@ -9,7 +10,7 @@ public interface IUserRepository : IRepository<User>
     
     Task<User?> FindByIdAsync(UserId userId, CancellationToken ct = default);
     Task<User?> FindByEmailAsync(Email email, CancellationToken ct = default);
-    Task<User?> FindByExternalAccountAsync(ExternalAccount externalAccount, CancellationToken ct = default);
+    Task<User?> FindByExternalAccountValueAsync(ValueObjects.ExternalAccountValue externalAccount, CancellationToken ct = default);
     
     Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct = default);
 }

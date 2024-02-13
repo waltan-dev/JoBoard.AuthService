@@ -5,7 +5,6 @@ using JoBoard.AuthService.Infrastructure.Auth.Configs;
 using JoBoard.AuthService.Infrastructure.Auth.Jwt;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Infrastructure.HttpEndpoints;
-using JoBoard.AuthService.Infrastructure.Jwt;
 using JoBoard.AuthService.Infrastructure.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -26,7 +25,6 @@ var redisConfig = builder.Configuration.GetRequiredSection(nameof(RedisConfig)).
 builder.Services.AddAuthInfrastructure(googleAuthConfig, redisConfig);
 
 var confirmTokenConfig = builder.Configuration.GetRequiredSection(nameof(ConfirmationTokenConfig)).Get<ConfirmationTokenConfig>();
-var refreshTokenConfig = builder.Configuration.GetRequiredSection(nameof(RefreshTokenConfig)).Get<RefreshTokenConfig>();
-builder.Services.AddApplication(confirmTokenConfig, refreshTokenConfig);
+builder.Services.AddApplication(confirmTokenConfig);
 
 builder.Build().Run();

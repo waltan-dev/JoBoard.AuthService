@@ -2,5 +2,5 @@
 
 public class ConfirmationTokenConfig
 {
-    public int ExpiresInHours { get; set; }
+    public TimeSpan TokenLifeSpan { get; set; }
 }

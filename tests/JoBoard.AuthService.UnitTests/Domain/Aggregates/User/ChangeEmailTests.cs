@@ -1,4 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.Events;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
@@ -21,13 +23,27 @@ public class ChangeEmailTests
         Assert.Equal(oldEmail, user.Email);
         Assert.Equal(newEmail, user.NewEmail);
         Assert.Equal(confirmationToken, user.ChangeEmailConfirmToken);
+        Assert.Single(user.DomainEvents, ev => ev is UserRequestedEmailChangeDomainEvent);
     }
     
     [Fact]
-    public void RequestEmailChangeIfUserIsNotActive()
+    public void RequestEmailChangeWithoutConfirmedEmail()
     {
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         var user = new UserBuilder().Build();
+        var newEmail = CreateNewEmail();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.RequestEmailChange(newEmail, confirmationToken);
+        });
+    }
+    
+    [Fact]
+    public void RequestEmailChangeWithInactiveStatus()
+    {
+        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var user = new UserBuilder().WithInactiveStatus().Build();
         var newEmail = CreateNewEmail();
         
         Assert.Throws<DomainException>(() =>
@@ -50,7 +66,7 @@ public class ChangeEmailTests
     }
     
     [Fact]
-    public void RequestEmailChangeTwice()
+    public void RequestEmailChangeTwiceBeforeExpiration()
     {
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         var user = new UserBuilder().WithActiveStatus().Build();
@@ -77,6 +93,7 @@ public class ChangeEmailTests
         Assert.Equal(oldEmail, user.Email);
         Assert.Equal(newEmail, user.NewEmail);
         Assert.Equal(confirmationToken, user.ChangeEmailConfirmToken);
+        Assert.Contains(user.DomainEvents, ev => ev is UserRequestedEmailChangeDomainEvent);
     }
     
     [Fact]
@@ -93,6 +110,7 @@ public class ChangeEmailTests
         Assert.True(user.EmailConfirmed);
         Assert.Null(user.NewEmail);
         Assert.Null(user.ChangeEmailConfirmToken);
+        Assert.Single(user.DomainEvents, ev => ev is UserChangedEmailDomainEvent);
     }
     
     [Fact]
@@ -142,11 +160,25 @@ public class ChangeEmailTests
     }
     
     [Fact]
-    public void ConfirmEmailChangeWithInactiveStatus()
+    public void ConfirmEmailChangeWithoutConfirmedEmail()
     {
         var confirmationToken = ConfirmationTokenFixtures.CreateNew();
         var newEmail = CreateNewEmail();
         var user = new UserBuilder().Build();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.RequestEmailChange(newEmail, confirmationToken);
+            user.ConfirmEmailChange(confirmationToken.Value);
+        });
+    }
+    
+    [Fact]
+    public void ConfirmEmailChangeWithInactiveStatus()
+    {
+        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var newEmail = CreateNewEmail();
+        var user = new UserBuilder().WithInactiveStatus().Build();
         
         Assert.Throws<DomainException>(() =>
         {

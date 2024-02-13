@@ -15,7 +15,6 @@ public static class DependencyInjection
     {
         Guard.IsNotNull(googleAuthConfig?.ClientId);
         //Guard.IsNotNull(googleAuthConfig?.ClientSecret);
-
         services.AddSingleton(googleAuthConfig);
         
         services.AddScoped<IGoogleAuthProvider, GoogleAuthProvider>();

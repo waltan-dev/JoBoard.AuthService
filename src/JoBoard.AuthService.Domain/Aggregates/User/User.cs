@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
+using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Domain.Common.Extensions;
 using JoBoard.AuthService.Domain.Common.SeedWork;
@@ -30,7 +31,7 @@ public class User : Entity, IAggregateRoot
     
     // universal constructor for different scenarios, e.g. register by google account or register by email and password
     private User(UserId userId, FullName fullName, Email email, bool emailConfirmed, UserRole role, UserStatus status,
-        PasswordHash? passwordHash, ConfirmationToken? registerConfirmToken, ExternalAccount? externalAccount)
+        PasswordHash? passwordHash, ConfirmationToken? registerConfirmToken, ExternalAccountValue? externalAccountValue)
     {
         Id = userId;
         RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
@@ -41,9 +42,9 @@ public class User : Entity, IAggregateRoot
         Status = status;
         PasswordHash = passwordHash;
         RegisterConfirmToken = registerConfirmToken;
-        _externalAccounts = externalAccount == null 
+        _externalAccounts = externalAccountValue == null 
             ? new List<ExternalAccount>() 
-            : new List<ExternalAccount> { externalAccount };
+            : new List<ExternalAccount> { new(Id, externalAccountValue) };
         
         AddDomainEvent(new UserRegisteredDomainEvent(this));
     }
@@ -81,7 +82,7 @@ public class User : Entity, IAggregateRoot
             status: UserStatus.Active, 
             passwordHash: null, 
             registerConfirmToken: null,
-            new ExternalAccount(googleUserId, ExternalAccountProvider.Google));
+            externalAccountValue: new ExternalAccountValue(googleUserId, ExternalAccountProvider.Google));
     }
     
     public void ConfirmEmail(string token)
@@ -105,26 +106,30 @@ public class User : Entity, IAggregateRoot
         ThrowIfBlockedOrDeactivated();
         
         FullName = fullName;
+        AddDomainEvent(new UserUpdatedNameDomainEvent(this));
     }
 
-    public void AttachExternalAccount(ExternalAccount externalAccount)
+    public void AttachExternalAccount(ExternalAccountValue value)
     {
         ThrowIfBlockedOrDeactivated();
         
-        if (ExternalAccounts.Contains(externalAccount))
+        if (ExternalAccounts.Select(x=>x.Value).Contains(value))
             return;
         
-        _externalAccounts.Add(externalAccount);
+        _externalAccounts.Add(new ExternalAccount(Id, value));
+        AddDomainEvent(new UserAttachedExternalAccountDomainEvent(this));
     }
     
-    public void DetachExternalAccount(ExternalAccount externalAccount)
+    public void DetachExternalAccount(ExternalAccountValue value)
     {
         ThrowIfBlockedOrDeactivated();
-        
-        if (ExternalAccounts.Contains(externalAccount) == false)
+
+        var extAcc = ExternalAccounts.FirstOrDefault(x => x.Value.Equals(value));
+        if (extAcc == null)
             return;
         
-        _externalAccounts.Remove(externalAccount);
+        _externalAccounts.Remove(extAcc);
+        AddDomainEvent(new UserDetachedExternalAccountDomainEvent(this));
     }
 
     public void RequestPasswordReset(ConfirmationToken confirmationToken)
@@ -151,6 +156,7 @@ public class User : Entity, IAggregateRoot
 
         PasswordHash = newPasswordHash;
         ResetPasswordConfirmToken = null;
+        AddDomainEvent(new UserChangedPasswordDomainEvent(this));
     }
 
     public void ChangePassword(string currentPassword, PasswordHash newPasswordHash, IPasswordHasher passwordHasher)
@@ -239,13 +245,40 @@ public class User : Entity, IAggregateRoot
         AddDomainEvent(new UserDeactivatedDomainEvent(this));
     }
     
+    public void Block()
+    {
+        Status = UserStatus.Blocked;
+        AddDomainEvent(new UserBlockedDomainEvent(this));
+    }
+
+    public void CanLogin()
+    {
+        ThrowIfBlockedOrDeactivated();
+    }
+    
+    public void CanLoginWithPassword(string password, IPasswordHasher passwordHasher)
+    {
+        ThrowIfBlockedOrDeactivated();
+
+        if (PasswordHash == null || PasswordHash.Verify(password, passwordHasher) == false)
+            throw new DomainException("Invalid email or password");
+    }
+
+    public void CanLoginWithExternalAccount(ValueObjects.ExternalAccountValue externalAccountValue)
+    {
+        ThrowIfBlockedOrDeactivated();
+
+        if (_externalAccounts.Select(x=>x.Value).Contains(externalAccountValue) == false)
+            throw new DomainException("Unknown external account");
+    }
+    
     private void ThrowIfEmailIsNotConfirmed()
     {
         if(Status.Equals(UserStatus.Pending))
             throw new DomainException("Email is not confirmed yet");
     }
     
-    public void ThrowIfBlockedOrDeactivated()
+    private void ThrowIfBlockedOrDeactivated()
     {
         if(Status.Equals(UserStatus.Deactivated))
             throw new DomainException("Your account has been deactivated");

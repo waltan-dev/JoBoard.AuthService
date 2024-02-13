@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 
 namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
@@ -13,6 +14,7 @@ public class ChangeRoleTests
         user.ChangeRole(UserRole.Hirer);
         
         Assert.Equal(UserRole.Hirer, user.Role);
+        Assert.Single(user.DomainEvents, ev => ev is UserChangedRoleDomainEvent);
     }
     
     [Fact]
@@ -23,6 +25,7 @@ public class ChangeRoleTests
         user.ChangeRole(UserRole.Worker);
         
         Assert.Equal(UserRole.Worker, user.Role);
+        Assert.Single(user.DomainEvents, ev => ev is UserChangedRoleDomainEvent);
     }
     
     [Fact]
@@ -37,9 +40,20 @@ public class ChangeRoleTests
     }
     
     [Fact]
-    public void ChangeRoleWithInactiveStatus()
+    public void ChangeRoleWithoutConfirmedEmail()
     {
         var user = new UserBuilder().Build();
+        
+        Assert.Throws<DomainException>(() =>
+        {
+            user.ChangeRole(UserRole.Worker);
+        });
+    }
+    
+    [Fact]
+    public void ChangeRoleWithInactiveStatus()
+    {
+        var user = new UserBuilder().WithInactiveStatus().Build();
         
         Assert.Throws<DomainException>(() =>
         {
