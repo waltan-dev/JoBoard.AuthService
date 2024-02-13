@@ -3,7 +3,7 @@ using JoBoard.AuthService.Application.Configs;
 using JoBoard.AuthService.Infrastructure;
 using JoBoard.AuthService.Infrastructure.Authentication;
 using JoBoard.AuthService.Infrastructure.Data;
-using JoBoard.AuthService.Infrastructure.Http;
+using JoBoard.AuthService.Infrastructure.HttpEndpoints;
 using JoBoard.AuthService.Infrastructure.Jwt;
 using JoBoard.AuthService.Infrastructure.Swagger;
 
@@ -14,7 +14,7 @@ var configuration = builder.Configuration;
 var jwtConfig = configuration.GetRequiredSection(nameof(JwtConfig)).Get<JwtConfig>();
 services
     .AddJwtAuthentication(jwtConfig)
-    .AddHttp()
+    .AddHttpEndpoints()
     .AddSwagger();
 
 // add app services

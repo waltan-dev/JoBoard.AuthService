@@ -10,6 +10,7 @@ public class RegisterByEmailTests : IClassFixture<CustomWebApplicationFactory>
     
     public RegisterByEmailTests(CustomWebApplicationFactory factory) // SetUp
     {
+        factory.ResetDatabase();
         _httpClient = factory.CreateClient();
     }
     

@@ -6,7 +6,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace JoBoard.AuthService.Infrastructure.Jwt;
 
-public static class JwtServicesExtensions
+public static class JwtServiceCollectionExtensions
 {
     public static IServiceCollection AddJwtAuthentication(this IServiceCollection services, JwtConfig jwtConfig)
     {

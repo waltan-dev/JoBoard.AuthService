@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Application.Exceptions;
+using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.SeedWork;
 using MediatR;
@@ -24,7 +25,7 @@ public class ConfirmEmailCommandHandler : IRequestHandler<ConfirmEmailCommand, U
         
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
-            throw new DomainException("User not found");
+            throw new NotFoundException("User not found");
         
         user.ConfirmEmail(request.Token);
         

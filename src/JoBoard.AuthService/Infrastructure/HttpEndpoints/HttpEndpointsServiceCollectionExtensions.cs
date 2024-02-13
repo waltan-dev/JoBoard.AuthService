@@ -1,11 +1,11 @@
 ﻿using JoBoard.AuthService.Infrastructure.Filters;
 using JoBoard.AuthService.Infrastructure.Json;
 
-namespace JoBoard.AuthService.Infrastructure.Http;
+namespace JoBoard.AuthService.Infrastructure.HttpEndpoints;
 
-internal static class HttpServicesExtensions
+internal static class HttpEndpointsServiceCollectionExtensions
 {
-    public static IServiceCollection AddHttp(this IServiceCollection services)
+    public static IServiceCollection AddHttpEndpoints(this IServiceCollection services)
     {
         services
             .AddControllers(options => options.Filters.Add<GlobalExceptionFilter>())
@@ -14,13 +14,13 @@ internal static class HttpServicesExtensions
                 options.JsonSerializerOptions.Converters.Insert(0, new TrimStringJsonConverter());
             });
         
-        UseHttp(services);
+        UseHttpEndpoints(services);
         
         return services;
     }
 
-    private static void UseHttp(IServiceCollection services)
+    private static void UseHttpEndpoints(IServiceCollection services)
     {
-        services.AddSingleton<IStartupFilter, HttpStartupFilter>();
+        services.AddSingleton<IStartupFilter, HttpEndpointsStartupFilter>();
     }
 }

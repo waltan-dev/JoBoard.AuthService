@@ -11,6 +11,7 @@
     <ItemGroup>
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Testing" Version="6.0.25" />
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
+        <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL" Version="6.0.22" />
         <PackageReference Include="Testcontainers" Version="3.7.0" />
         <PackageReference Include="Testcontainers.PostgreSql" Version="3.7.0" />

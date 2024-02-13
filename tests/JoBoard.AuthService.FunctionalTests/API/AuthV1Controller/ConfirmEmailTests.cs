@@ -10,6 +10,7 @@ public class ConfirmEmailTests : IClassFixture<CustomWebApplicationFactory>
     
     public ConfirmEmailTests(CustomWebApplicationFactory factory) // SetUp
     {
+        factory.ResetDatabase();
         _httpClient = factory.CreateClient();
     }
     

@@ -3,7 +3,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Tests.Common;
 
-public static class SeedData
+public static class DatabaseHelper
 {
     public static void Reinitialize(AuthDbContext dbContext)
     {
@@ -23,7 +23,7 @@ public static class SeedData
         dbContext.Users.AddRange(
             UserFixtures.ExistingActiveUser, 
             UserFixtures.ExistingUserRegisteredByEmail, 
-            UserFixtures.ExistingUserRegisteredByExternalAccount,
+            UserFixtures.ExistingUserRegisteredByGoogleAccount,
             UserFixtures.ExistingUserWithExpiredToken
             );
         dbContext.SaveChanges();

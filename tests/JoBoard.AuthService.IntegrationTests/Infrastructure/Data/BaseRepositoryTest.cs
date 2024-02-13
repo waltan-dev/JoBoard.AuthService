@@ -28,7 +28,7 @@ public abstract class BaseRepositoryTest : IAsyncLifetime
                 x.MigrationsAssembly(typeof(AuthService.Migrator.AssemblyReference).Assembly.FullName))
             .Options;
         
-        SeedData.Reinitialize(new AuthDbContext(options));
+        DatabaseHelper.Reinitialize(new AuthDbContext(options));
         
         DbContext = new AuthDbContext(options);
         UnitOfWork = new UnitOfWork(DbContext);

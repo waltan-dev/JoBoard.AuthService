@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
@@ -32,7 +33,7 @@ public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChan
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
-            throw new DomainException("User not found");
+            throw new NotFoundException("User not found");
 
         var newEmail = new Email(requestEmail.NewEmail);
         var emailIsUnique = await _userRepository.CheckEmailUniquenessAsync(newEmail, ct);

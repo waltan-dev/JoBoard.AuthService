@@ -5,6 +5,8 @@ using JoBoard.AuthService.Application.UseCases.Auth.Login.ByEmail;
 using JoBoard.AuthService.Application.UseCases.Auth.Login.ByGoogle;
 using JoBoard.AuthService.Application.UseCases.Auth.Register.ByEmail;
 using JoBoard.AuthService.Application.UseCases.Auth.Register.ByGoogle;
+using JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmation;
+using JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Request;
 using JoBoard.AuthService.Infrastructure.Jwt;
 using JoBoard.AuthService.Models;
 using MediatR;
@@ -32,7 +34,7 @@ public class AuthV1Controller : ControllerBase
     }
     
     [HttpPost(AuthV1Routes.LoginByGoogle)]
-    public async Task<IActionResult> Login(LoginByGoogleAccountCommand command, CancellationToken ct)
+    public async Task<IActionResult> LoginByGoogle(LoginByGoogleAccountCommand command, CancellationToken ct)
     {
         var userResult = await _mediator.Send(command, ct);
         return Ok(BuildAuthResponse(userResult));
@@ -56,7 +58,21 @@ public class AuthV1Controller : ControllerBase
     public async Task<IActionResult> ConfirmEmail(ConfirmEmailCommand command, CancellationToken ct)
     {
         await _mediator.Send(command, ct);
-        return StatusCode(StatusCodes.Status200OK);
+        return Ok();
+    }
+    
+    [HttpPost(AuthV1Routes.RequestPasswordReset)]
+    public async Task<IActionResult> RequestPasswordReset(RequestPasswordResetCommand command, CancellationToken ct)
+    {
+        await _mediator.Send(command, ct);
+        return Ok();
+    }
+    
+    [HttpPost(AuthV1Routes.ConfirmPasswordReset)]
+    public async Task<IActionResult> ConfirmPasswordReset(ConfirmPasswordResetCommand command, CancellationToken ct)
+    {
+        await _mediator.Send(command, ct);
+        return Ok();
     }
 
     private AuthResponse BuildAuthResponse(UserResult userResult)

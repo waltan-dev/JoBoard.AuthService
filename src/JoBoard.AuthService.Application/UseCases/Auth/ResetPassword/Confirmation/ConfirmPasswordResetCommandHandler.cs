@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
+﻿using JoBoard.AuthService.Application.Exceptions;
+using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Domain.Services;
@@ -6,13 +7,13 @@ using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmation;
 
-public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand, Unit>
+public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswordResetCommand, Unit>
 {
     private readonly IUserRepository _userRepository;
     private readonly IUnitOfWork _unitOfWork;
     private readonly IPasswordHasher _passwordHasher;
 
-    public ResetPasswordCommandHandler(
+    public ConfirmPasswordResetCommandHandler(
         IUserRepository userRepository,
         IUnitOfWork unitOfWork,
         IPasswordHasher passwordHasher)
@@ -22,13 +23,13 @@ public class ResetPasswordCommandHandler : IRequestHandler<ResetPasswordCommand,
         _passwordHasher = passwordHasher;
     }
     
-    public async Task<Unit> Handle(ResetPasswordCommand request, CancellationToken ct)
+    public async Task<Unit> Handle(ConfirmPasswordResetCommand request, CancellationToken ct)
     {
         await _unitOfWork.StartTransactionAsync(ct);
         
-        var user = await _userRepository.FindByEmailAsync(new Email(request.Email), ct);
+        var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)
-            throw new DomainException("User not found");
+            throw new NotFoundException("User not found");
         
         user.ResetPassword(request.ConfirmationToken, request.NewPassword, _passwordHasher);
 

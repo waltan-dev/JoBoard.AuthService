@@ -9,6 +9,12 @@ public class ValidationException : Exception
     {
         Errors = errors;
     }
+    
+    public ValidationException(string propertyName, string message) 
+        : base("One or more validation errors occurred")
+    {
+        Errors = new[] { new ValidationError(propertyName, message) };
+    }
 }
 
 public class ValidationError

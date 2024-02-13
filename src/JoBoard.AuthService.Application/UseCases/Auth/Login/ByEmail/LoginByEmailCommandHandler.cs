@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Application.Models;
+﻿using JoBoard.AuthService.Application.Exceptions;
+using JoBoard.AuthService.Application.Models;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.Services;
@@ -24,7 +25,7 @@ public class LoginByEmailCommandHandler : IRequestHandler<LoginByEmailCommand, U
         var email = new Email(request.Email);
         var user = await _userRepository.FindByEmailAsync(email, ct);
         if (user == null)
-            throw new DomainException("User not found");
+            throw new NotFoundException("User not found");
         
         user.LoginWithPassword(request.Password, _passwordHasher);
         

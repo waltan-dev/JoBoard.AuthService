@@ -17,17 +17,17 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
     
     public override void OnException(ExceptionContext context)
     {
-        if (context.Exception is ValidationException ex)
+        if (context.Exception is ValidationException validationException)
         {
             _logger.LogWarning(context.Exception, context.Exception.Message);
             
-            var resultObject = new ValidationResponse { Errors = ex.Errors };
+            var resultObject = new ValidationResponse { Errors = validationException.Errors };
             context.Result = new JsonResult(resultObject)
             {
                 StatusCode = StatusCodes.Status422UnprocessableEntity
             };
         }
-        else if (context.Exception is DomainException or ArgumentException)
+        else if (context.Exception is DomainException or ArgumentException or NotFoundException)
         {
             // TODO implement Guards with DomainException and remove ArgumentException from here
             _logger.LogWarning(context.Exception, context.Exception.Message);
@@ -36,6 +36,16 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
             context.Result = new JsonResult(resultObject)
             {
                 StatusCode = StatusCodes.Status409Conflict
+            };
+        }
+        else if (context.Exception is NotFoundException)
+        {
+            _logger.LogWarning(context.Exception, context.Exception.Message);
+            
+            var resultObject = new ConflictResponse { Message = context.Exception.Message };
+            context.Result = new JsonResult(resultObject)
+            {
+                StatusCode = StatusCodes.Status404NotFound
             };
         }
         else

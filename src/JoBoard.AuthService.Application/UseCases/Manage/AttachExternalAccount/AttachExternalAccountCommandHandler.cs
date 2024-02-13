@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Application.Services;
+﻿using JoBoard.AuthService.Application.Exceptions;
+using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.SeedWork;
@@ -31,7 +32,7 @@ public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExterna
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)
-            throw new DomainException("User not found");
+            throw new NotFoundException("User not found");
         
         user.AttachExternalAccount(externalAccount);
         

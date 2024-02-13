@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.SeedWork;
@@ -27,10 +28,9 @@ public class RequestPasswordResetCommandHandler : IRequestHandler<RequestPasswor
         await _unitOfWork.StartTransactionAsync(ct);
         
         var email = new Email(request.Email);
-
         var user = await _userRepository.FindByEmailAsync(email, ct);
         if (user == null)
-            throw new DomainException("User not found");
+            throw new NotFoundException("User not found");
 
         var newToken = ConfirmationToken.Generate(_confirmationTokenConfig.ExpiresInHours);
         user.RequestPasswordReset(newToken);

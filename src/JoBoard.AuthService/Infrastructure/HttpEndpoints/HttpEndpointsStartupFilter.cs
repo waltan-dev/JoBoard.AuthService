@@ -1,6 +1,6 @@
-﻿namespace JoBoard.AuthService.Infrastructure.Http;
+﻿namespace JoBoard.AuthService.Infrastructure.HttpEndpoints;
 
-internal class HttpStartupFilter : IStartupFilter
+internal class HttpEndpointsStartupFilter : IStartupFilter
 {
     public Action<IApplicationBuilder> Configure(Action<IApplicationBuilder> next)
     {

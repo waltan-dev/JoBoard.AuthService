@@ -17,7 +17,7 @@ public class GoogleAuthProvider : IGoogleAuthProvider
         try
         {
             var payload = await GoogleJsonWebSignature.ValidateAsync(idToken);
-            if (payload.Audience.Equals($"{_googleAuthConfig.ClientId}.apps.googleusercontent.com") == false)
+            if (payload.Audience.Equals(_googleAuthConfig.ClientId) == false)
                 return null;
             if (payload.Issuer.Equals("accounts.google.com") == false && payload.Issuer.Equals("https://accounts.google.com") == false)
                 return null;

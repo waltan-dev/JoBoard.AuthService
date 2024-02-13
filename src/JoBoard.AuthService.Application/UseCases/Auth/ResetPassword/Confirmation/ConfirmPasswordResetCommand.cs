@@ -2,9 +2,9 @@
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmation;
 
-public class ResetPasswordCommand : IRequest<Unit>
+public class ConfirmPasswordResetCommand : IRequest<Unit>
 {
-    public string Email { get; set; }
+    public Guid UserId { get; set; }
     public string ConfirmationToken { get; set; }
     public string NewPassword { get; set; }
 }

@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Infrastructure.Data;
+﻿using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Tests.Common;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -24,30 +25,24 @@ public class CustomWebApplicationFactory : WebApplicationFactory<JoBoard.AuthSer
     {
         builder.ConfigureTestServices(services =>
         {
+            // google
+            services.RemoveAll<IGoogleAuthProvider>();
+            services.AddSingleton<IGoogleAuthProvider>(GoogleFixture.GetGoogleAuthProvider());
+            
+            // db
             services.RemoveAll<DbContextOptions<AuthDbContext>>();
             services.RemoveAll<AuthDbContext>();
-            
             services.AddDbContext<AuthDbContext>(options => 
                 options.UseNpgsql(_postgreSqlContainer.GetConnectionString(), x => 
                     x.MigrationsAssembly(typeof(AuthService.Migrator.AssemblyReference).Assembly.FullName)));
         });
     }
-
-    protected override IHost CreateHost(IHostBuilder builder)
-    {
-        builder.UseEnvironment("Development");
-        var host = base.CreateHost(builder);
-        
-        ResetDatabase(host.Services);
-
-        return host;
-    }
     
-    private static void ResetDatabase(IServiceProvider serviceProvider)
+    public void ResetDatabase()
     {
-        using var scope = serviceProvider.CreateScope();
+        using var scope = Services.CreateScope();
         var dbContext = scope.ServiceProvider.GetRequiredService<AuthDbContext>();
-        SeedData.Reinitialize(dbContext);
+        DatabaseHelper.Reinitialize(dbContext);
     }
 
     public Task InitializeAsync() // init test db before each test

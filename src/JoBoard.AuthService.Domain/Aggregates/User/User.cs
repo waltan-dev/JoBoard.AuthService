@@ -53,7 +53,7 @@ public class User : Entity<UserId>, IAggregateRoot
             throw new DomainException("Invalid role");
         
         Id = userId;
-        RegisteredAt = DateTime.UtcNow;
+        RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
         FullName = fullName;
         Email = email;
         EmailConfirmed = true;

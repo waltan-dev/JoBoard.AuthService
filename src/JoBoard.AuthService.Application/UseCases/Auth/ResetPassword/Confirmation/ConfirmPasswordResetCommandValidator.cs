@@ -4,13 +4,13 @@ using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmation;
 
-public class ResetPasswordCommandValidator : AbstractValidator<ResetPasswordCommand>
+public class ConfirmPasswordResetCommandValidator : AbstractValidator<ConfirmPasswordResetCommand>
 {
-    public ResetPasswordCommandValidator()
+    public ConfirmPasswordResetCommandValidator()
     {
-        RuleFor(c => c.Email)
-            .EmailAddress()
-            .WithMessage("Email must be valid email address");
+        RuleFor(c => c.UserId)
+            .NotEqual(Guid.Empty)
+            .WithMessage("User ID can't be empty");
 
         RuleFor(c => c.ConfirmationToken)
             .NotEmpty()

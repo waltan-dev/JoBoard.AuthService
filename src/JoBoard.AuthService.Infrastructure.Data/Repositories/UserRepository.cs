@@ -43,14 +43,14 @@ public class UserRepository : IUserRepository
 
     public async Task<User?> FindByExternalAccountAsync(ExternalAccount externalAccount, CancellationToken ct = default)
     {
-        var extAccount = await _dbContext.ExternalAccounts
+        var extAccountDb = await _dbContext.ExternalAccounts
             .AsNoTracking()
             .FirstOrDefaultAsync(x => 
                 x.ExternalUserId == externalAccount.ExternalUserId && x.Provider == externalAccount.Provider, ct);
-        if (extAccount == null)
+        if (extAccountDb == null)
             return null;
 
-        return await FindByIdAsync(externalAccount.Id, ct);
+        return await FindByIdAsync(extAccountDb.Id, ct);
     }
     
     public async Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct = default)

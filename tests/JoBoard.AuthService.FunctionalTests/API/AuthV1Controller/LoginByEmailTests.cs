@@ -10,6 +10,7 @@ public class LoginByEmailTests : IClassFixture<CustomWebApplicationFactory>
     
     public LoginByEmailTests(CustomWebApplicationFactory factory) // SetUp
     {
+        factory.ResetDatabase();
         _httpClient = factory.CreateClient();
     }
     
@@ -26,4 +27,9 @@ public class LoginByEmailTests : IClassFixture<CustomWebApplicationFactory>
         
         await Assert.SuccessAuthResponseAsync(response);
     }
+    
+    // TODO add test with empty
+    // TODO add test with invalid email
+    // TODO add test with invalid password
+    // TODO add test with non-existing email
 }

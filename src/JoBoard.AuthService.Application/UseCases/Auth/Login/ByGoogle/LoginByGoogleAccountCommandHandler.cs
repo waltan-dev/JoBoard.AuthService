@@ -4,7 +4,6 @@ using JoBoard.AuthService.Application.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 using JoBoard.AuthService.Domain.SeedWork;
 using MediatR;
-using ValidationException = System.ComponentModel.DataAnnotations.ValidationException;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Login.ByGoogle;
 
@@ -32,7 +31,7 @@ public class LoginByGoogleAccountCommandHandler : IRequestHandler<LoginByGoogleA
         
         var googleUserProfile = await _googleAuthProvider.VerifyIdTokenAsync(request.GoogleIdToken);
         if (googleUserProfile == null)
-            throw new ValidationException("Google ID token isn't valid");
+            throw new ValidationException(nameof(request.GoogleIdToken),"Google ID token isn't valid");
         
         var externalAccount = new ExternalAccount(googleUserProfile.Id, ExternalAccountProvider.Google);
         var user = await _userRepository.FindByExternalAccountAsync(externalAccount, ct);

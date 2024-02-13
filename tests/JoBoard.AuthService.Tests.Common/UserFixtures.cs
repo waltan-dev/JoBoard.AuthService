@@ -39,12 +39,12 @@ public static class UserFixtures
         passwordHash: DefaultPasswordHash,
         registerConfirmToken: CreateNewConfirmationToken()); 
     
-    public static readonly User ExistingUserRegisteredByExternalAccount = new(
+    public static readonly User ExistingUserRegisteredByGoogleAccount = new(
         userId: UserId.Generate(),
-        fullName: new FullName("Test", "Worker"),
-        email: new Email("ExistingUserRegisteredByExternalAccount@gmail.com"),
+        fullName: new FullName(GoogleFixture.UserProfileForExistingUser.FirstName, GoogleFixture.UserProfileForExistingUser.LastName),
+        email: new Email(GoogleFixture.UserProfileForExistingUser.Email),
         role: UserRole.Worker, 
-        externalAccount: new ExternalAccount("1", ExternalAccountProvider.Google)); 
+        externalAccount: new ExternalAccount(GoogleFixture.UserProfileForExistingUser.Id, ExternalAccountProvider.Google)); 
     
     public static readonly User ExistingUserWithExpiredToken = new(
         userId: UserId.Generate(),
