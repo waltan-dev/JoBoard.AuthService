@@ -15,6 +15,7 @@ namespace JoBoard.AuthService.Controllers;
 
 [ApiController]
 [AllowAnonymous]
+[Produces("application/json")]
 public class AuthV1Controller : ControllerBase
 {
     private readonly IMediator _mediator;

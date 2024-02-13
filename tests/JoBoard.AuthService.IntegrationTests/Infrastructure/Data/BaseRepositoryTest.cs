@@ -1,5 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Infrastructure.Data.Repositories;
 using JoBoard.AuthService.Tests.Common;

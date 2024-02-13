@@ -1,8 +1,7 @@
-﻿using JoBoard.AuthService.Application.Exceptions;
-using JoBoard.AuthService.Application.Services;
+﻿using JoBoard.AuthService.Application.Common.Exceptions;
+using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Exceptions;
-using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Common.SeedWork;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Manage.ChangeEmail.Confirmation;

@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using JoBoard.AuthService.Application.Models;
+using JoBoard.AuthService.Application.Common.Models;
 using JoBoard.AuthService.Infrastructure.Jwt;
 
 namespace JoBoard.AuthService.Models;

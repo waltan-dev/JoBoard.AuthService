@@ -1,5 +1,4 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Exceptions;
 
 namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
 

@@ -9,7 +9,7 @@ var host = Host.CreateDefaultBuilder()
     .ConfigureServices((context, services) =>
     {
         var connectionStr = context.Configuration.GetConnectionString("DefaultConnection");
-        services.AddDatabase(connectionStr);
+        services.AddDatabaseInfrastructure(connectionStr);
     })
     .ConfigureLogging(builder =>
     {

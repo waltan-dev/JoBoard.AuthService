@@ -28,6 +28,9 @@ public class ChangePasswordTests : IClassFixture<CustomWebApplicationFactory>
         await Assert.SuccessEmptyResponseAsync(response);
     }
     
+    // TODO add test with invalid current password
+    // TODO add test with non-strength new password
+    
     [Fact]
     public async Task Unauthorized()
     {

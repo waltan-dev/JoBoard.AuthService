@@ -1,5 +1,5 @@
 ﻿using FluentValidation;
-using JoBoard.AuthService.Domain.Services;
+using JoBoard.AuthService.Domain.Common.Services;
 
 namespace JoBoard.AuthService.Application.UseCases.Manage.ChangePassword;
 

@@ -1,6 +1,6 @@
 ﻿using FluentValidation;
 using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Services;
+using JoBoard.AuthService.Domain.Common.Services;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.ResetPassword.Confirmation;
 

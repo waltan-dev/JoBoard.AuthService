@@ -13,6 +13,7 @@ internal class SwaggerStartupFilter : IStartupFilter
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                
                 var rewriteOptions = new RewriteOptions()
                     .AddRedirect("^$", "/swagger/index.html");
                 app.UseRewriter(rewriteOptions);

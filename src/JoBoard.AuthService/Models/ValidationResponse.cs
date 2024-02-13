@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Application.Exceptions;
+﻿using JoBoard.AuthService.Application.Common.Exceptions;
 
 namespace JoBoard.AuthService.Models;
 

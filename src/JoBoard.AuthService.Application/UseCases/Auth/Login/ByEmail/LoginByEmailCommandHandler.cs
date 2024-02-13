@@ -1,8 +1,7 @@
-﻿using JoBoard.AuthService.Application.Exceptions;
-using JoBoard.AuthService.Application.Models;
+﻿using JoBoard.AuthService.Application.Common.Exceptions;
+using JoBoard.AuthService.Application.Common.Models;
 using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Exceptions;
-using JoBoard.AuthService.Domain.Services;
+using JoBoard.AuthService.Domain.Common.Services;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Login.ByEmail;

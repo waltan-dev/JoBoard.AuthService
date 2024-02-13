@@ -1,5 +1,6 @@
 ﻿using System.Diagnostics;
-using JoBoard.AuthService.Application.Services;
+using System.Diagnostics.CodeAnalysis;
+using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Tests.Common;
 using JoBoard.AuthService.Tests.Common.Fixtures;
@@ -12,7 +13,8 @@ using Testcontainers.PostgreSql;
 
 namespace JoBoard.AuthService.FunctionalTests;
 
-public class CustomWebApplicationFactory : WebApplicationFactory<JoBoard.AuthService.Program>, IAsyncLifetime
+[SuppressMessage("ReSharper", "ClassNeverInstantiated.Global")]
+public class CustomWebApplicationFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     private readonly PostgreSqlContainer _postgreSqlContainer = new PostgreSqlBuilder()
         .WithDatabase($"db_for_functional_tests-{Guid.NewGuid()}")
@@ -31,7 +33,7 @@ public class CustomWebApplicationFactory : WebApplicationFactory<JoBoard.AuthSer
             
             // db
             services.RemoveDatabase();
-            services.AddDatabase(_postgreSqlContainer.GetConnectionString());
+            services.AddDatabaseInfrastructure(_postgreSqlContainer.GetConnectionString());
             Debug.WriteLine(_postgreSqlContainer.GetConnectionString());
         });
     }

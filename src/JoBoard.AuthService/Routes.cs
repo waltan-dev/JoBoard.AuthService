@@ -20,7 +20,7 @@ public static class AuthV1Routes
 // DO NOT CHANGE PUBLIC CONTRACT
 public static class ManageV1Routes
 {
-    private const string Base = "/api/v1/account/manage";
+    public const string Base = "/api/v1/account/manage";
     
     public const string ChangePassword = $"{Base}/change-password";
 }

@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Exceptions;
-using JoBoard.AuthService.Domain.Services;
+﻿using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Domain.Common.Services;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 using Moq;
 

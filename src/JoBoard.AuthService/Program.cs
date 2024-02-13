@@ -1,5 +1,5 @@
 using JoBoard.AuthService.Application;
-using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Common.Configs;
 using JoBoard.AuthService.Infrastructure;
 using JoBoard.AuthService.Infrastructure.Authentication;
 using JoBoard.AuthService.Infrastructure.Data;
@@ -8,28 +8,22 @@ using JoBoard.AuthService.Infrastructure.Jwt;
 using JoBoard.AuthService.Infrastructure.Swagger;
 
 var builder = WebApplication.CreateBuilder(args);
-var services = builder.Services;
-var configuration = builder.Configuration;
 
-var jwtConfig = configuration.GetRequiredSection(nameof(JwtConfig)).Get<JwtConfig>();
-services
+// add internal infrastructure, e.g. controllers, jwt, swagger
+var jwtConfig = builder.Configuration.GetRequiredSection(nameof(JwtConfig)).Get<JwtConfig>();
+builder.Services
     .AddJwtAuthentication(jwtConfig)
     .AddHttpEndpoints()
     .AddSwagger();
 
 // add app services
-var connectionString = configuration.GetConnectionString("DefaultConnection");
-services.AddDatabase(connectionString);
+var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+builder.Services.AddDatabaseInfrastructure(connectionString);
 
-var googleAuthConfig = configuration.GetRequiredSection(nameof(GoogleAuthConfig)).Get<GoogleAuthConfig>();
-services.AddInfrastructure(googleAuthConfig);
+var googleAuthConfig = builder.Configuration.GetRequiredSection(nameof(GoogleAuthConfig)).Get<GoogleAuthConfig>();
+builder.Services.AddInfrastructure(googleAuthConfig);
 
-var confirmTokenConfig = configuration.GetRequiredSection(nameof(ConfirmationTokenConfig)).Get<ConfirmationTokenConfig>();
-services.AddApplication(confirmTokenConfig);
+var confirmTokenConfig = builder.Configuration.GetRequiredSection(nameof(ConfirmationTokenConfig)).Get<ConfirmationTokenConfig>();
+builder.Services.AddApplication(confirmTokenConfig);
 
 builder.Build().Run();
-
-namespace JoBoard.AuthService
-{
-    public partial class Program {} // only for tests
-}

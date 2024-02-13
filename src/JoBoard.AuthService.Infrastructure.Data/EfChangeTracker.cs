@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.SeedWork;
+﻿using JoBoard.AuthService.Domain.Common.SeedWork;
 using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Infrastructure.Data;

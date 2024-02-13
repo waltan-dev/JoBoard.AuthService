@@ -1,5 +1,5 @@
 ﻿using System.Security.Claims;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Common.Services;
 using JoBoard.AuthService.Domain.Aggregates.User;
 
 namespace JoBoard.AuthService.Infrastructure.Jwt;

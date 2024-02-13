@@ -1,5 +1,5 @@
 ﻿using Google.Apis.Auth;
-using JoBoard.AuthService.Application.Services;
+using JoBoard.AuthService.Application.Common.Services;
 
 namespace JoBoard.AuthService.Infrastructure.Authentication;
 

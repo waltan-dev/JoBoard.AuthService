@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Application.Models;
+﻿using JoBoard.AuthService.Application.Common.Models;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.UseCases.Auth.Login.ByGoogle;

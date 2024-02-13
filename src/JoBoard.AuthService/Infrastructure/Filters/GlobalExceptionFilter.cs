@@ -1,8 +1,9 @@
-﻿using JoBoard.AuthService.Application.Exceptions;
-using JoBoard.AuthService.Domain.Exceptions;
-using JoBoard.AuthService.Models;
+﻿using JoBoard.AuthService.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Filters;
+using System.Text.Json;
+using JoBoard.AuthService.Application.Common.Exceptions;
+using JoBoard.AuthService.Domain.Common.Exceptions;
 
 namespace JoBoard.AuthService.Infrastructure.Filters;
 
@@ -19,7 +20,7 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
     {
         if (context.Exception is ValidationException validationException)
         {
-            _logger.LogWarning(context.Exception, context.Exception.Message);
+            _logger.LogWarning($"{context.Exception.Message}: {JsonSerializer.Serialize(validationException.Errors)}");
             
             var resultObject = new ValidationResponse { Errors = validationException.Errors };
             context.Result = new JsonResult(resultObject)
@@ -30,7 +31,7 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
         else if (context.Exception is DomainException or ArgumentException or NotFoundException)
         {
             // TODO implement Guards with DomainException and remove ArgumentException from here
-            _logger.LogWarning(context.Exception, context.Exception.Message);
+            _logger.LogWarning(context.Exception.Message);
             
             var resultObject = new ConflictResponse { Message = context.Exception.Message };
             context.Result = new JsonResult(resultObject)
@@ -40,7 +41,7 @@ internal class GlobalExceptionFilter : ExceptionFilterAttribute
         }
         else if (context.Exception is NotFoundException)
         {
-            _logger.LogWarning(context.Exception, context.Exception.Message);
+            _logger.LogWarning(context.Exception.Message);
             
             var resultObject = new ConflictResponse { Message = context.Exception.Message };
             context.Result = new JsonResult(resultObject)

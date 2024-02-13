@@ -7,6 +7,7 @@ namespace JoBoard.AuthService.Controllers;
 
 [ApiController]
 [Authorize]
+[Produces("application/json")]
 public class ManageV1Controller : ControllerBase
 {
     private readonly IMediator _mediator;

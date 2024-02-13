@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
-using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Common.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 

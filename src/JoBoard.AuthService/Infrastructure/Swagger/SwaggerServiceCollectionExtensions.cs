@@ -8,15 +8,34 @@ internal static class SwaggerServiceCollectionExtensions
     public static IServiceCollection AddSwagger(this IServiceCollection services)
     {
         var assembly = Assembly.GetExecutingAssembly().GetName();
-        var assemblyVersion = assembly.Version?.ToString() ?? "0.0.0";
         
         services.AddEndpointsApiExplorer();
         services.AddSwaggerGen(options =>
         {
-            options.SwaggerDoc(assembly.Name, new OpenApiInfo
+            options.SwaggerDoc("v1", new OpenApiInfo { Title = assembly.Name, Version = "v1" });
+            
+            options.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
             {
-                Title = $"{assembly.Name}.{assemblyVersion}", 
-                Version = "v1"
+                In = ParameterLocation.Header,
+                Description = "Please enter a valid token",
+                Name = "Authorization",
+                Type = SecuritySchemeType.Http,
+                BearerFormat = "JWT",
+                Scheme = "Bearer"
+            });
+            options.AddSecurityRequirement(new OpenApiSecurityRequirement
+            {
+                {
+                    new OpenApiSecurityScheme
+                    {
+                        Reference = new OpenApiReference
+                        {
+                            Type=ReferenceType.SecurityScheme,
+                            Id="Bearer"
+                        }
+                    },
+                    new string[]{}
+                }
             });
                 
             options.CustomSchemaIds(x => x.FullName);

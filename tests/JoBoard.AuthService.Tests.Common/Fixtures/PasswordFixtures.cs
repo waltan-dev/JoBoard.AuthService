@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Services;
+﻿using JoBoard.AuthService.Domain.Common.Services;
 using Moq;
 
 namespace JoBoard.AuthService.Tests.Common.Fixtures;
