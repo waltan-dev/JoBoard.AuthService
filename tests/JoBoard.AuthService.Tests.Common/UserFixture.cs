@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User;
 
-namespace JoBoard.AuthService.UnitTests.Domain.Aggregates.User;
+namespace JoBoard.AuthService.Tests.Common;
 
 public static class UserFixture
 {

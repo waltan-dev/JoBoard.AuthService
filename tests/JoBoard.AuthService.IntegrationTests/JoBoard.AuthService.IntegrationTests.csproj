@@ -10,7 +10,6 @@
 
     <ItemGroup>
         <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.1.0"/>
-        <PackageReference Include="Moq" Version="4.20.70" />
         <PackageReference Include="xunit" Version="2.4.1"/>
         <PackageReference Include="xunit.runner.visualstudio" Version="2.4.3">
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -23,16 +22,14 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\..\src\JoBoard.AuthService.Domain\JoBoard.AuthService.Domain.csproj" />
-      <ProjectReference Include="..\..\src\JoBoard.AuthService.Infrastructure\JoBoard.AuthService.Infrastructure.csproj" />
-      <ProjectReference Include="..\..\src\JoBoard.AuthService\JoBoard.AuthService.csproj" />
-      <ProjectReference Include="..\JoBoard.AuthService.Tests.Common\JoBoard.AuthService.Tests.Common.csproj" />
+      <Content Update="appsettings.Testing.json">
+        <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+      </Content>
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="API\" />
-      <Folder Include="Domain\" />
-      <Folder Include="Infrastructure\" />
+      <ProjectReference Include="..\..\src\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj" />
+      <ProjectReference Include="..\JoBoard.AuthService.Tests.Common\JoBoard.AuthService.Tests.Common.csproj" />
     </ItemGroup>
 
 </Project>

@@ -12,40 +12,43 @@ public class UserRepository : IUserRepository
         _dbContext = dbContext;
     }
 
-    public Task AddAsync(User user, CancellationToken ct)
+    public Task AddAsync(User user, CancellationToken ct = default)
     {
         _dbContext.Users.Add(user);
         return Task.CompletedTask;
     }
 
-    public Task UpdateAsync(User user, CancellationToken ct)
+    public Task UpdateAsync(User user, CancellationToken ct = default)
     {
         _dbContext.Users.Update(user);
         return Task.CompletedTask;
     }
 
-    public async Task<User?> FindByIdAsync(UserId userId, CancellationToken ct)
+    public async Task<User?> FindByIdAsync(UserId userId, CancellationToken ct = default)
     {
         return await _dbContext.Users
             .AsNoTracking()
+            .Include(x=>x.ExternalAccounts)
             .FirstOrDefaultAsync(x=>x.Id == userId, ct);
     }
 
-    public async Task<User?> FindByEmailAsync(Email email, CancellationToken ct)
+    public async Task<User?> FindByEmailAsync(Email email, CancellationToken ct = default)
     {
         return await _dbContext.Users
             .AsNoTracking()
+            .Include(x=>x.ExternalAccounts)
             .FirstOrDefaultAsync(x=>x.Email == email, ct);
     }
 
-    public async Task<User?> FindByEmailAndPasswordAsync(Email email, string passwordHash, CancellationToken ct)
+    public async Task<User?> FindByEmailAndPasswordAsync(Email email, string passwordHash, CancellationToken ct = default)
     {
         return await _dbContext.Users
             .AsNoTracking()
+            .Include(x=>x.ExternalAccounts)
             .FirstOrDefaultAsync(x=>x.Email == email && x.PasswordHash == passwordHash, ct);
     }
 
-    public async Task<User?> FindByExternalAccountAsync(ExternalAccount externalAccount, CancellationToken ct)
+    public async Task<User?> FindByExternalAccountAsync(ExternalAccount externalAccount, CancellationToken ct = default)
     {
         var extAccount = await _dbContext.ExternalAccounts
             .AsNoTracking()
@@ -57,7 +60,7 @@ public class UserRepository : IUserRepository
         return await FindByIdAsync(externalAccount.Id, ct);
     }
     
-    public async Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct)
+    public async Task<bool> CheckEmailUniquenessAsync(Email email, CancellationToken ct = default)
     {
         var emailExists = await _dbContext.Users
             .Where(x => x.Email.Value == email.Value)

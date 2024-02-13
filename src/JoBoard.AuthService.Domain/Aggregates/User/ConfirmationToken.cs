@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Extensions;
 using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
@@ -22,7 +23,8 @@ public class ConfirmationToken : ValueObject
 
     public static ConfirmationToken Generate(int expiresInHours = 24)
     {
-        return new ConfirmationToken(Guid.NewGuid().ToString(), DateTime.UtcNow.AddHours(expiresInHours));
+        var exp = DateTime.UtcNow.AddHours(expiresInHours).TrimMilliseconds();
+        return new ConfirmationToken(Guid.NewGuid().ToString(), exp);
     }
     
     public bool Verify(string token)

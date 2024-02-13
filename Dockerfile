@@ -26,8 +26,11 @@ COPY ["src/JoBoard.AuthService.Domain/*.csproj", "/source/src/JoBoard.AuthServic
 COPY ["src/JoBoard.AuthService.Infrastructure/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure/"]
 COPY ["src/JoBoard.AuthService.Infrastructure.Data/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Data/"]
 COPY ["src/JoBoard.AuthService.Migrator/*.csproj", "/source/src/JoBoard.AuthService.Migrator/"]
+
 COPY ["tests/JoBoard.AuthService.UnitTests/*.csproj", "/source/tests/JoBoard.AuthService.UnitTests/"]
 COPY ["tests/JoBoard.AuthService.FunctionalTests/*.csproj", "/source/tests/JoBoard.AuthService.FunctionalTests/"]
+COPY ["tests/JoBoard.AuthService.IntegrationTests/*.csproj", "/source/tests/JoBoard.AuthService.IntegrationTests/"]
+COPY ["tests/JoBoard.AuthService.Tests.Common/*.csproj", "/source/tests/JoBoard.AuthService.Tests.Common/"]
 RUN dotnet restore "/source/JoBoard.AuthService.sln"
 
 ### third layer - build and publish

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Diagnostics;
 using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.Extensions;
 using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Domain.Services;
 
@@ -16,9 +17,7 @@ public class User : Entity<UserId>, IAggregateRoot
     public string? PasswordHash { get; private set; }
     public ConfirmationToken? RegisterConfirmToken { get; private set; }
     public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
-    private ICollection<ExternalAccount> _externalAccounts { get; }
-    public IReadOnlyCollection<ExternalAccount> ExternalAccounts 
-        => (IReadOnlyCollection<ExternalAccount>)_externalAccounts;
+    public ICollection<ExternalAccount> ExternalAccounts { get; private set; }
     public Email? NewEmail { get; private set; }
     public ConfirmationToken? NewEmailConfirmationToken { get; private set; }
     
@@ -34,7 +33,7 @@ public class User : Entity<UserId>, IAggregateRoot
             throw new DomainException("Invalid role");
         
         Id = userId;
-        RegisteredAt = DateTime.UtcNow;
+        RegisteredAt = DateTime.UtcNow.TrimMilliseconds();
         FullName = fullName;
         Email = email;
         EmailConfirmed = false;
@@ -42,7 +41,7 @@ public class User : Entity<UserId>, IAggregateRoot
         Status = UserStatus.Pending;
         PasswordHash = passwordHash;
         RegisterConfirmToken = registerConfirmToken;
-        _externalAccounts = new List<ExternalAccount>();
+        ExternalAccounts = new List<ExternalAccount>();
     }
     
     /// <summary>
@@ -60,7 +59,7 @@ public class User : Entity<UserId>, IAggregateRoot
         EmailConfirmed = true;
         Role = role;
         Status = UserStatus.Active;
-        _externalAccounts = new List<ExternalAccount>() { externalAccount };
+        ExternalAccounts = new List<ExternalAccount>() { externalAccount };
     }
     
     public void ConfirmEmail(string token)
@@ -88,10 +87,10 @@ public class User : Entity<UserId>, IAggregateRoot
     {
         CheckStatus();
         
-        if (_externalAccounts.Contains(externalAccount))
+        if (ExternalAccounts.Contains(externalAccount))
             return;
         
-        _externalAccounts.Add(externalAccount);
+        ExternalAccounts.Add(externalAccount);
     }
 
     public void RequestPasswordReset(ConfirmationToken newToken)

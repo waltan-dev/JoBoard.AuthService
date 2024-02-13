@@ -11,12 +11,12 @@ public class UnitOfWork : IUnitOfWork
         _dbContext = dbContext;
     }
     
-    public async Task StartTransactionAsync(CancellationToken ct)
+    public async Task StartTransactionAsync(CancellationToken ct = default)
     {
         await _dbContext.Database.BeginTransactionAsync(ct);
     }
     
-    public async Task CommitAsync(CancellationToken ct)
+    public async Task CommitAsync(CancellationToken ct = default)
     {
         await _dbContext.SaveChangesAsync(ct);
         await _dbContext.Database.CommitTransactionAsync(ct);
