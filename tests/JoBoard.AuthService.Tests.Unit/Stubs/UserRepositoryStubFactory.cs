@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
 using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Infrastructure.Data.Repositories;
 

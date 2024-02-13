@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Application.Common.Models;
-using JoBoard.AuthService.Application.Common.Services;
+﻿using JoBoard.AuthService.Application.Contracts;
+using JoBoard.AuthService.Application.Models;
 
 namespace JoBoard.AuthService.Infrastructure.Data;
 

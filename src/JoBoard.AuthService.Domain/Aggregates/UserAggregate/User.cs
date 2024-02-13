@@ -1,9 +1,10 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Events;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.Extensions;
-using JoBoard.AuthService.Domain.Common.SeedWork;
-using JoBoard.AuthService.Domain.Common.Services;
+using JoBoard.AuthService.Domain.Extensions;
+using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate;
 
@@ -268,7 +269,7 @@ public class User : Entity, IAggregateRoot
     
     private void CheckBlockedOrDeactivatedRule()
     {
-        CheckRule(new UserCanNotBeDeactivatedRule(Status));
-        CheckRule(new UserCanNotBeBlockedRule(Status));
+        CheckRule(new UserMustNotBeDeactivatedRule(Status));
+        CheckRule(new UserMustNotBeBlockedRule(Status));
     }
 }

@@ -1,5 +1,6 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
+using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 

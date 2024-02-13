@@ -12,7 +12,6 @@
 
     <ItemGroup>
       <Folder Include="Aggregates\" />
-      <Folder Include="Common\" />
     </ItemGroup>
     
     <ItemGroup>

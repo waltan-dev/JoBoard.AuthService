@@ -1,7 +1,7 @@
 ﻿using FluentValidation;
 using FluentValidation.Validators;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
-using JoBoard.AuthService.Domain.Common.Services;
+using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Application.Commands.Register.ByEmailAndPassword;
 

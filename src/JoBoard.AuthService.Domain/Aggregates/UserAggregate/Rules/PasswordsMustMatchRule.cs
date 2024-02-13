@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Common.SeedWork;
-using JoBoard.AuthService.Domain.Common.Services;
+﻿using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 

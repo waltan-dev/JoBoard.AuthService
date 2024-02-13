@@ -1,8 +1,9 @@
-﻿using JoBoard.AuthService.Application.Common.Services;
+﻿using JoBoard.AuthService.Application.Contracts;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
-using JoBoard.AuthService.Domain.Common.SeedWork;
-using JoBoard.AuthService.Domain.Common.Services;
-using JoBoard.AuthService.Infrastructure.Common.Services;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
+using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Services;
+using JoBoard.AuthService.Infrastructure.Auth.Services;
 using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 using JoBoard.AuthService.Tests.Common.Stubs;

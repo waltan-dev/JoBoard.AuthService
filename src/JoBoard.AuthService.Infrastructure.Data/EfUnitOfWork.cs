@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Storage;
 

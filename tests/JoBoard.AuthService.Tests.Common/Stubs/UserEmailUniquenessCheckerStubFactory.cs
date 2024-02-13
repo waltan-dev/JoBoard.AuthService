@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
 using Moq;
 
 namespace JoBoard.AuthService.Tests.Common.Stubs;

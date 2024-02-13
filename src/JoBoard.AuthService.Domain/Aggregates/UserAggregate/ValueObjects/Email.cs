@@ -1,6 +1,6 @@
 ﻿using System.Text.RegularExpressions;
-using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 

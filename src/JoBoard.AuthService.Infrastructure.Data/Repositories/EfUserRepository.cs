@@ -1,6 +1,7 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Domain.SeedWork;
 using Microsoft.EntityFrameworkCore;
 using ExternalAccountValue = JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects.ExternalAccountValue;
 

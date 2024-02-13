@@ -1,7 +1,9 @@
-﻿using JoBoard.AuthService.Application.Common.Exceptions;
+﻿using JoBoard.AuthService.Application.Contracts;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Domain.SeedWork;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.Commands.ChangeRole;
@@ -13,8 +15,7 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Unit>
 
     public ChangeRoleCommandHandler(
         IDomainEventDispatcher domainEventDispatcher,
-        IUserRepository userRepository,
-        IUnitOfWork unitOfWork)
+        IUserRepository userRepository)
     {
         _domainEventDispatcher = domainEventDispatcher;
         _userRepository = userRepository;

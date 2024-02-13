@@ -1,6 +1,6 @@
 ﻿using System.Reflection;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 using JoBoard.AuthService.Tests.Unit.Fixtures;
 

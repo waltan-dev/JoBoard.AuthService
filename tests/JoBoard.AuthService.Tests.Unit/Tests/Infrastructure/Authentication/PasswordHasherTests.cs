@@ -1,5 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Infrastructure.Common.Services;
+﻿using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Infrastructure.Auth.Services;
 
 namespace JoBoard.AuthService.Tests.Unit.Tests.Infrastructure.Authentication;
 

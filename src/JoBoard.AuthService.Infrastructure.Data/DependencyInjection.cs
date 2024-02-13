@@ -1,5 +1,7 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Application.Contracts;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
+using JoBoard.AuthService.Domain.SeedWork;
 using JoBoard.AuthService.Infrastructure.Data.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
@@ -23,7 +25,7 @@ public static class DependencyInjection
         services.AddScoped<IExternalAccountUniquenessChecker, EfExternalAccountUniquenessChecker>();
         services.AddScoped<IUserRepository, EfUserRepository>();
         services.AddScoped<IUnitOfWork, EfUnitOfWork>();
-        services.AddScoped<IChangeTracker, EfChangeTracker>();
+        services.AddScoped<IDomainEventDispatcher, EfDomainEventDispatcher>();
 
         return services;
     }

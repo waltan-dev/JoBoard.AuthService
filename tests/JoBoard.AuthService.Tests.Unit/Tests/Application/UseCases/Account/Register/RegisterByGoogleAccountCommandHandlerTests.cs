@@ -1,5 +1,5 @@
 ﻿using JoBoard.AuthService.Application.Commands.Register.ByGoogle;
-using JoBoard.AuthService.Domain.Common.Exceptions;
+using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Tests.Unit.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Tests.Application.UseCases.Account.Register;

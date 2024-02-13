@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Application.Commands.Register.ByEmailAndPassword;
-using JoBoard.AuthService.Application.Common.Configs;
-using JoBoard.AuthService.Application.Common.Exceptions;
+using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 using JoBoard.AuthService.Tests.Unit.Fixtures;
 

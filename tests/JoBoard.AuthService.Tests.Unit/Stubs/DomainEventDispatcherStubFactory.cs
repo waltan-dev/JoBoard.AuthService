@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Application.Contracts;
 using Moq;
 
 namespace JoBoard.AuthService.Tests.Unit.Stubs;

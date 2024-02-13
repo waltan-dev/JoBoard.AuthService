@@ -22,7 +22,7 @@ FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
 COPY ["src/JoBoard.AuthService/*.csproj", "/source/src/JoBoard.AuthService/"]
 COPY ["src/JoBoard.AuthService.Application/*.csproj", "/source/src/JoBoard.AuthService.Application/"]
 COPY ["src/JoBoard.AuthService.Domain/*.csproj", "/source/src/JoBoard.AuthService.Domain/"]
-COPY ["src/JoBoard.AuthService.Infrastructure.Common/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Common/"]
+COPY ["src/JoBoard.AuthService.Infrastructure.Auth/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Auth/"]
 COPY ["src/JoBoard.AuthService.Infrastructure.Data/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Data/"]
 COPY ["src/JoBoard.AuthService.Infrastructure.Jwt/*.csproj", "/source/src/JoBoard.AuthService.Infrastructure.Jwt/"]
 COPY ["src/JoBoard.AuthService.Migrator/*.csproj", "/source/src/JoBoard.AuthService.Migrator/"]
@@ -42,6 +42,7 @@ FROM base AS final
 COPY --from=build "/app/publish" /app
 COPY --from=build "/migrator-app/publish" /app/migrator/
 
+# for docker compose
 COPY "docker-entrypoint.RunMigrator.sh" /usr/local/bin/
 COPY "wait-for-it.sh" /usr/local/bin/
 RUN chmod +x /usr/local/bin/docker-entrypoint.RunMigrator.sh

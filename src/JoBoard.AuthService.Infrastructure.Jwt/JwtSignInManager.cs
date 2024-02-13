@@ -1,8 +1,8 @@
 ﻿using System.Security.Claims;
 using JoBoard.AuthService.Application.Commands.Login.CanLogin;
-using JoBoard.AuthService.Application.Common.Exceptions;
-using JoBoard.AuthService.Application.Common.Models;
-using JoBoard.AuthService.Application.Common.Services;
+using JoBoard.AuthService.Application.Contracts;
+using JoBoard.AuthService.Application.Exceptions;
+using JoBoard.AuthService.Application.Models;
 using JoBoard.AuthService.Infrastructure.Jwt.Extensions;
 using JoBoard.AuthService.Infrastructure.Jwt.Models;
 using JoBoard.AuthService.Infrastructure.Jwt.Services;

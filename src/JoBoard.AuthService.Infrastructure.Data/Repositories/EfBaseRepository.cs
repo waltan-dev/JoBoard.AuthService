@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Common.SeedWork;
+﻿using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Infrastructure.Data.Repositories;
 

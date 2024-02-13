@@ -1,6 +1,5 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.Commands.ConfirmEmail;
-using JoBoard.AuthService.Domain.Common.SeedWork;
 using JoBoard.AuthService.Tests.Functional.Fixtures;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;

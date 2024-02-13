@@ -1,11 +1,10 @@
 ﻿using System.Globalization;
 using CommunityToolkit.Diagnostics;
 using FluentValidation;
+using JoBoard.AuthService.Application.Behaviors;
 using JoBoard.AuthService.Application.Commands.Register.ByEmailAndPassword;
-using JoBoard.AuthService.Application.Common.Behaviors;
-using JoBoard.AuthService.Application.Common.Configs;
-using JoBoard.AuthService.Application.Common.Services;
-using JoBoard.AuthService.Domain.Common.SeedWork;
+using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Contracts;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,7 +24,6 @@ public static class DependencyInjection
             config.AddBehavior(typeof(IPipelineBehavior<,>), typeof(ValidationBehavior<,>));
             config.RegisterServicesFromAssemblyContaining<RegisterByEmailAndPasswordCommandHandler>();
         });
-        services.AddScoped<IDomainEventDispatcher, DomainEventDispatcher>();
         
         services.AddValidatorsFromAssembly(typeof(RegisterByEmailAndPasswordCommandHandler).Assembly);
 

@@ -18,7 +18,7 @@
     <ItemGroup>
       <ProjectReference Include="..\JoBoard.AuthService.Application\JoBoard.AuthService.Application.csproj" />
       <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Data\JoBoard.AuthService.Infrastructure.Data.csproj" />
-      <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Common\JoBoard.AuthService.Infrastructure.Common.csproj" />
+      <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Auth\JoBoard.AuthService.Infrastructure.Auth.csproj" />
       <ProjectReference Include="..\JoBoard.AuthService.Infrastructure.Jwt\JoBoard.AuthService.Infrastructure.Jwt.csproj" />
     </ItemGroup>
 
@@ -33,7 +33,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Services\" />
+      <Folder Include="Setup\" />
     </ItemGroup>
     
 </Project>

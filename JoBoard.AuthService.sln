@@ -6,7 +6,7 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Domain"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Application", "src\JoBoard.AuthService.Application\JoBoard.AuthService.Application.csproj", "{36B8C4BF-CEAC-4138-B172-8BECE6515964}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Common", "src\JoBoard.AuthService.Infrastructure.Common\JoBoard.AuthService.Infrastructure.Common.csproj", "{F85A174E-03CD-41ED-A26F-0C1DB7743514}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Infrastructure.Auth", "src\JoBoard.AuthService.Infrastructure.Auth\JoBoard.AuthService.Infrastructure.Auth.csproj", "{F85A174E-03CD-41ED-A26F-0C1DB7743514}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Migrator", "src\JoBoard.AuthService.Migrator\JoBoard.AuthService.Migrator.csproj", "{5F3F3FA3-59D9-448A-9830-E2647A6EFDB1}"
 EndProject

@@ -1,12 +1,13 @@
-﻿using JoBoard.AuthService.Application.Common.Configs;
-using JoBoard.AuthService.Application.Common.Exceptions;
-using JoBoard.AuthService.Application.Common.Services;
+﻿using JoBoard.AuthService.Application.Configs;
+using JoBoard.AuthService.Application.Contracts;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Rules;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Domain.Common.SeedWork;
-using JoBoard.AuthService.Domain.Common.Services;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Domain.Services;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.Commands.ChangeEmail.Request;

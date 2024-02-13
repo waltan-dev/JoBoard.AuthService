@@ -1,5 +1,5 @@
 ﻿using JoBoard.AuthService.Application.Commands.Login.CanLogin;
-using JoBoard.AuthService.Application.Common.Exceptions;
+using JoBoard.AuthService.Application.Exceptions;
 using JoBoard.AuthService.Tests.Unit.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Tests.Application.UseCases.Account.Login;

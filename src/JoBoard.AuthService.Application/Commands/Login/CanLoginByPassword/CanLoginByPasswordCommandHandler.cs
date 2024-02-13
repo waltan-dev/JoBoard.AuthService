@@ -1,8 +1,9 @@
-﻿using JoBoard.AuthService.Application.Common.Models;
+﻿using JoBoard.AuthService.Application.Models;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
 using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
-using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Domain.Common.Services;
+using JoBoard.AuthService.Domain.Exceptions;
+using JoBoard.AuthService.Domain.Services;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.Commands.Login.CanLoginByPassword;

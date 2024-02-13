@@ -1,6 +1,6 @@
 ﻿using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
-using JoBoard.AuthService.Domain.Common.Services;
+using JoBoard.AuthService.Domain.Services;
 using JoBoard.AuthService.Infrastructure.Jwt.Configs;
 using JoBoard.AuthService.Infrastructure.Jwt.Models;
 using Microsoft.IdentityModel.Tokens;

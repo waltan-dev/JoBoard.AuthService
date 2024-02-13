@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Application.Common.Models;
+﻿using JoBoard.AuthService.Application.Models;
 using MediatR;
 
 namespace JoBoard.AuthService.Application.Commands.Login.CanLogin;

@@ -1,4 +1,4 @@
-﻿using JoBoard.AuthService.Domain.Common.Services;
+﻿using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Infrastructure.Jwt.Models;
 

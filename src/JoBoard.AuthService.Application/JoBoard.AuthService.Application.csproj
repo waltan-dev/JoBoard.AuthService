@@ -19,7 +19,6 @@
 
     <ItemGroup>
       <Folder Include="Commands\" />
-      <Folder Include="Common\" />
       <Folder Include="Queries\" />
     </ItemGroup>
 

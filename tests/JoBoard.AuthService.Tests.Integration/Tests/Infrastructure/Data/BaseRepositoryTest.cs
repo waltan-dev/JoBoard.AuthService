@@ -1,4 +1,5 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate;
+using JoBoard.AuthService.Domain.Aggregates.UserAggregate.Contracts;
 using JoBoard.AuthService.Tests.Integration.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Integration.Tests.Infrastructure.Data;
