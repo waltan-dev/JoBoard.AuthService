@@ -1,9 +1,7 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.Events;
+﻿using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Builders;
-using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
 
@@ -14,7 +12,7 @@ public class ChangeEmailTests
     [Fact]
     public void RequestEmailChange()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = CreateNewEmail();
         var user = new UserBuilder().WithActiveStatus().Build();
         var oldEmail = user.Email;
@@ -30,7 +28,7 @@ public class ChangeEmailTests
     [Fact]
     public void RequestEmailChangeWithoutConfirmedEmail()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().Build();
         var newEmail = CreateNewEmail();
         
@@ -43,7 +41,7 @@ public class ChangeEmailTests
     [Fact]
     public void RequestEmailChangeWithInactiveStatus()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithInactiveStatus().Build();
         var newEmail = CreateNewEmail();
         
@@ -56,7 +54,7 @@ public class ChangeEmailTests
     [Fact]
     public void RequestEmailChangeWithOldValue()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithActiveStatus().Build();
         var oldEmail = user.Email;
         
@@ -69,7 +67,7 @@ public class ChangeEmailTests
     [Fact]
     public void RequestEmailChangeTwiceBeforeExpiration()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithActiveStatus().Build();
         var newEmail = CreateNewEmail();
         user.RequestEmailChange(newEmail, confirmationToken);
@@ -86,9 +84,9 @@ public class ChangeEmailTests
         var user = new UserBuilder().WithActiveStatus().Build();
         var oldEmail = user.Email;
         var newEmail = CreateNewEmail();
-        user.RequestEmailChange(newEmail, ConfirmationTokenFixtures.CreateExpired());
+        user.RequestEmailChange(newEmail, new ConfirmationTokenBuilder().BuildExpired());
         
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         user.RequestEmailChange(newEmail, confirmationToken);
         
         Assert.Equal(oldEmail, user.Email);
@@ -100,7 +98,7 @@ public class ChangeEmailTests
     [Fact]
     public void ConfirmEmailChange()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = CreateNewEmail();
         var user = new UserBuilder().WithActiveStatus().Build();
         user.RequestEmailChange(newEmail, confirmationToken);
@@ -117,7 +115,7 @@ public class ChangeEmailTests
     [Fact]
     public void ConfirmEmailChangeWithInvalidToken()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithActiveStatus().Build();
         var oldEmail = user.Email;
         var newEmail = CreateNewEmail();
@@ -133,7 +131,7 @@ public class ChangeEmailTests
     [Fact]
     public void ConfirmEmailChangeWithExpiredToken()
     {
-        var expiredConfirmationToken = ConfirmationTokenFixtures.CreateExpired();
+        var expiredConfirmationToken = new ConfirmationTokenBuilder().BuildExpired();
         var user = new UserBuilder().WithActiveStatus().Build();
         var oldEmail = user.Email;
         var newEmail = CreateNewEmail();
@@ -149,7 +147,7 @@ public class ChangeEmailTests
     [Fact]
     public void ConfirmEmailChangeWithoutRequest()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithActiveStatus().Build();
         var oldEmail = user.Email;
 
@@ -163,7 +161,7 @@ public class ChangeEmailTests
     [Fact]
     public void ConfirmEmailChangeWithoutConfirmedEmail()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = CreateNewEmail();
         var user = new UserBuilder().Build();
         
@@ -177,7 +175,7 @@ public class ChangeEmailTests
     [Fact]
     public void ConfirmEmailChangeWithInactiveStatus()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = CreateNewEmail();
         var user = new UserBuilder().WithInactiveStatus().Build();
         

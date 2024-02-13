@@ -1,6 +1,5 @@
-﻿using JoBoard.AuthService.Domain.Aggregates.User;
-using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
-using JoBoard.AuthService.Tests.Common;
+﻿using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
+using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Integration.Infrastructure.Data.UserRepository;
@@ -14,7 +13,7 @@ public class ChangeEmailTests : BaseRepositoryTest
         await UserRepository.UnitOfWork.BeginTransactionAsync();
         var user = await UserRepository.FindByIdAsync(DbUserFixtures.ExistingActiveUser.Id);
         var oldEmail = user!.Email;
-        var token = ConfirmationTokenFixtures.CreateNew();
+        var token = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = new Email("new-email@gmail.com");
         
         // Act
@@ -35,7 +34,7 @@ public class ChangeEmailTests : BaseRepositoryTest
         // Arrange
         await UserRepository.UnitOfWork.BeginTransactionAsync();
         var user = await UserRepository.FindByIdAsync(DbUserFixtures.ExistingActiveUser.Id);
-        var token = ConfirmationTokenFixtures.CreateNew();
+        var token = new ConfirmationTokenBuilder().BuildActive();
         var newEmail = new Email("new-email@gmail.com");
         user!.RequestEmailChange(newEmail, token);
         
@@ -47,7 +46,7 @@ public class ChangeEmailTests : BaseRepositoryTest
         // Assert
         var savedUser = await UserRepository.FindByIdAsync(DbUserFixtures.ExistingActiveUser.Id);
         Assert.Equal(newEmail, savedUser!.Email);
-        Assert.Null(savedUser!.NewEmail);
-        Assert.Null(savedUser!.ChangeEmailConfirmToken);
+        Assert.Null(savedUser.NewEmail);
+        Assert.Null(savedUser.ChangeEmailConfirmToken);
     }
 }

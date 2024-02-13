@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using JoBoard.AuthService.Application.UseCases.Account.ResetPassword.Confirmation;
 using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Tests.Common.Builders;
 using JoBoard.AuthService.Tests.Common.Fixtures;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -25,7 +26,7 @@ public class ConfirmPasswordResetTests : IClassFixture<CustomWebApplicationFacto
         // Arrange
         await _userRepository.UnitOfWork.BeginTransactionAsync();
         var user = await _userRepository.FindByIdAsync(DbUserFixtures.ExistingActiveUser.Id);
-        var token = ConfirmationTokenFixtures.CreateNew();
+        var token = new ConfirmationTokenBuilder().BuildActive();
         user!.RequestPasswordReset(token);
         await _userRepository.UpdateAsync(user);
         await _userRepository.UnitOfWork.CommitTransactionAsync();

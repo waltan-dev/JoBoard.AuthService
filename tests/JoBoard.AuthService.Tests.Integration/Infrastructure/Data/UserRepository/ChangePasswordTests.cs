@@ -1,4 +1,5 @@
-﻿using JoBoard.AuthService.Tests.Common.Fixtures;
+﻿using JoBoard.AuthService.Tests.Common.Builders;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Integration.Infrastructure.Data.UserRepository;
 
@@ -10,7 +11,7 @@ public class ChangePasswordTests : BaseRepositoryTest
         // Arrange
         await UserRepository.UnitOfWork.BeginTransactionAsync();
         var user = await UserRepository.FindByIdAsync(DbUserFixtures.ExistingActiveUser.Id);
-        var token = ConfirmationTokenFixtures.CreateNew();
+        var token = new ConfirmationTokenBuilder().BuildActive();
         
         // Act
         user!.RequestPasswordReset(token);

@@ -24,8 +24,8 @@ public static class DbUserFixtures
                     email: new Email("ExistingActiveUser@gmail.com"),
                     role: UserRole.Hirer,
                     passwordHash: passwordHash);
-                
-                user.RequestEmailConfirmation(ConfirmationTokenFixtures.CreateNew());
+                var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
+                user.RequestEmailConfirmation(confirmationToken);
                 user.ConfirmEmail(user.EmailConfirmToken!.Value);
                 _existingActiveUser = user;
             
@@ -43,7 +43,8 @@ public static class DbUserFixtures
             email: new Email("ExistingUserRegisteredByEmail@gmail.com"),
             role: UserRole.Hirer,
             passwordHash: passwordHash);
-        user.RequestEmailConfirmation(ConfirmationTokenFixtures.CreateNew());
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
+        user.RequestEmailConfirmation(confirmationToken);
         return user;
     });
     
@@ -67,7 +68,8 @@ public static class DbUserFixtures
             email: new Email("ExistingUserWithExpiredToken@gmail.com"),
             role: UserRole.Hirer,
             passwordHash: passwordHash);
-        user.RequestEmailConfirmation(ConfirmationTokenFixtures.CreateExpired());
+        var expiredToken = new ConfirmationTokenBuilder().BuildExpired();
+        user.RequestEmailConfirmation(expiredToken);
         return user;
     });
 }

@@ -11,7 +11,7 @@ public class ResetPasswordTests
     public void RequestPasswordReset()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         
         user.RequestPasswordReset(confirmationToken);
         
@@ -24,7 +24,7 @@ public class ResetPasswordTests
     public void RequestPasswordResetTwiceBeforeExpiration()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         user.RequestPasswordReset(confirmationToken);
 
         Assert.Throws<DomainException>(() =>
@@ -37,10 +37,10 @@ public class ResetPasswordTests
     public void RequestPasswordResetTwiceAfterExpiration()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var expiredConfirmationToken = ConfirmationTokenFixtures.CreateExpired();
+        var expiredConfirmationToken = new ConfirmationTokenBuilder().BuildExpired();
         user.RequestPasswordReset(expiredConfirmationToken);
 
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         user.RequestPasswordReset(confirmationToken);
         
         Assert.Equal(confirmationToken, user.ResetPasswordConfirmToken);
@@ -51,7 +51,7 @@ public class ResetPasswordTests
     public void RequestPasswordResetWithoutConfirmedEmail()
     {
         var user = new UserBuilder().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
 
         Assert.Throws<DomainException>(() =>
         {
@@ -63,7 +63,7 @@ public class ResetPasswordTests
     public void RequestPasswordResetWithInactiveStatus()
     {
         var user = new UserBuilder().WithInactiveStatus().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
 
         Assert.Throws<DomainException>(() =>
         {
@@ -75,7 +75,7 @@ public class ResetPasswordTests
     public void ConfirmPasswordReset()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         user.RequestPasswordReset(confirmationToken);
 
         var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
@@ -90,7 +90,7 @@ public class ResetPasswordTests
     public void ConfirmPasswordResetWithInvalidToken()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         user.RequestPasswordReset(confirmationToken);
         var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
@@ -104,7 +104,7 @@ public class ResetPasswordTests
     public void ConfirmPasswordResetAfterExpiration()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var expiredConfirmationToken = ConfirmationTokenFixtures.CreateExpired();
+        var expiredConfirmationToken = new ConfirmationTokenBuilder().BuildExpired();
         user.RequestPasswordReset(expiredConfirmationToken);
         var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
@@ -130,7 +130,7 @@ public class ResetPasswordTests
     public void ConfirmPasswordResetWithoutConfirmedEmail()
     {
         var user = new UserBuilder().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         Assert.Throws<DomainException>(() =>
@@ -144,7 +144,7 @@ public class ResetPasswordTests
     public void ConfirmPasswordResetWithInactiveStatus()
     {
         var user = new UserBuilder().WithInactiveStatus().Build();
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var newPasswordHash = new PasswordBuilder().Create(PasswordFixtures.NewPassword);
         
         Assert.Throws<DomainException>(() =>

@@ -1,6 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.User.ValueObjects;
 using JoBoard.AuthService.Domain.Common.Exceptions;
-using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User.ValueObjects;
 
@@ -9,7 +9,7 @@ public class ConfirmationTokenTests
     [Fact]
     public void CreateValid()
     {
-        var newToken = ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), TimeSpan.FromHours(24));
+        var newToken = ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(24));
         
         Assert.NotEmpty(newToken.Value);
         Assert.True(newToken.Expiration > DateTime.UtcNow);
@@ -19,7 +19,7 @@ public class ConfirmationTokenTests
     public void VerifyValid()
     {
         var exception = Record.Exception(() 
-            => ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), TimeSpan.FromHours(24)));
+            => ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(24)));
         
         Assert.Null(exception);
     }
@@ -27,7 +27,7 @@ public class ConfirmationTokenTests
     [Fact]
     public void VerifyInvalid()
     {
-        var newToken = ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), TimeSpan.FromHours(24));
+        var newToken = ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(24));
 
         Assert.Throws<DomainException>(() =>
         {
@@ -39,7 +39,7 @@ public class ConfirmationTokenTests
     public void VerifyExpired()
     {
         var value = Guid.NewGuid().ToString();
-        var expiredConfirmationToken = ConfirmationToken.Create(ConfirmationTokenFixtures.GetSecureTokenizerStub(), TimeSpan.FromHours(-1));
+        var expiredConfirmationToken = ConfirmationToken.Create(new SecureTokenizerStub(), TimeSpan.FromHours(-1));
         
         Assert.Throws<DomainException>(() =>
         {
@@ -50,7 +50,7 @@ public class ConfirmationTokenTests
     [Fact]
     public void Compare()
     {
-        var secureToken = ConfirmationTokenFixtures.GetSecureTokenizerStub().Generate();
+        var secureToken = new SecureTokenizerStub().Generate();
         var expires = DateTime.UtcNow.AddHours(24);
 
         var token1 = new ConfirmationToken(secureToken, expires);

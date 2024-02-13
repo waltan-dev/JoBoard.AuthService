@@ -2,7 +2,6 @@
 using JoBoard.AuthService.Domain.Aggregates.User.Events;
 using JoBoard.AuthService.Domain.Common.Exceptions;
 using JoBoard.AuthService.Tests.Common.Builders;
-using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Unit.Domain.Aggregates.User;
 
@@ -11,7 +10,7 @@ public class DeactivateUserTests
     [Fact]
     public void RequestAccountDeactivation()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithActiveStatus().Build();
         
         user.RequestAccountDeactivation(confirmationToken);
@@ -24,7 +23,7 @@ public class DeactivateUserTests
     [Fact]
     public void RequestAccountDeactivationWithoutConfirmedEmail()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().Build();
         
         Assert.Throws<DomainException>(() =>
@@ -36,7 +35,7 @@ public class DeactivateUserTests
     [Fact]
     public void RequestAccountDeactivationWithInactiveStatus()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithInactiveStatus().Build();
         
         Assert.Throws<DomainException>(() =>
@@ -48,7 +47,7 @@ public class DeactivateUserTests
     [Fact]
     public void RequestAccountDeactivationTwiceBeforeExpiration()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithActiveStatus().Build();
         user.RequestAccountDeactivation(confirmationToken);
         
@@ -62,9 +61,9 @@ public class DeactivateUserTests
     public void RequestAccountDeactivationTwiceAfterExpiration()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        user.RequestAccountDeactivation(ConfirmationTokenFixtures.CreateExpired());
+        user.RequestAccountDeactivation(new ConfirmationTokenBuilder().BuildExpired());
         
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         user.RequestAccountDeactivation(confirmationToken);
         
         Assert.Equal(confirmationToken, user.AccountDeactivationConfirmToken);
@@ -75,7 +74,7 @@ public class DeactivateUserTests
     public void ConfirmAccountDeactivation()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var token = ConfirmationTokenFixtures.CreateNew();
+        var token = new ConfirmationTokenBuilder().BuildActive();
         user.RequestAccountDeactivation(token);
         
         user.ConfirmAccountDeactivation(token.Value);
@@ -89,7 +88,7 @@ public class DeactivateUserTests
     public void ConfirmAccountDeactivationTwice()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var token = ConfirmationTokenFixtures.CreateNew();
+        var token = new ConfirmationTokenBuilder().BuildActive();
         user.RequestAccountDeactivation(token);
         user.ConfirmAccountDeactivation(token.Value);
 
@@ -103,7 +102,7 @@ public class DeactivateUserTests
     public void ConfirmAccountDeactivationWithInvalidToken()
     {
         var user = new UserBuilder().WithActiveStatus().Build();
-        var token = ConfirmationTokenFixtures.CreateNew();
+        var token = new ConfirmationTokenBuilder().BuildActive();
         user.RequestAccountDeactivation(token);
         
         Assert.Throws<DomainException>(() =>
@@ -116,7 +115,7 @@ public class DeactivateUserTests
     [Fact]
     public void ConfirmAccountDeactivationWithExpiredToken()
     {
-        var expiredConfirmationToken = ConfirmationTokenFixtures.CreateExpired();
+        var expiredConfirmationToken = new ConfirmationTokenBuilder().BuildExpired();
         var user = new UserBuilder().WithActiveStatus().Build();
         user.RequestAccountDeactivation(expiredConfirmationToken);
         
@@ -130,7 +129,7 @@ public class DeactivateUserTests
     [Fact]
     public void ConfirmAccountDeactivationWithoutRequest()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().WithActiveStatus().Build();
         
         Assert.Throws<DomainException>(() =>
@@ -143,7 +142,7 @@ public class DeactivateUserTests
     [Fact]
     public void ConfirmAccountDeactivationWithoutConfirmedEmail()
     {
-        var confirmationToken = ConfirmationTokenFixtures.CreateNew();
+        var confirmationToken = new ConfirmationTokenBuilder().BuildActive();
         var user = new UserBuilder().Build();
         
         Assert.Throws<DomainException>(() =>

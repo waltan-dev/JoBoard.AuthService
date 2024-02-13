@@ -1,6 +1,8 @@
-﻿using JoBoard.AuthService.Application.Common.Exceptions;
+﻿using JoBoard.AuthService.Application.Common.Configs;
+using JoBoard.AuthService.Application.Common.Exceptions;
 using JoBoard.AuthService.Application.UseCases.Account.Register.ByEmailAndPassword;
 using JoBoard.AuthService.Tests.Common.Fixtures;
+using JoBoard.AuthService.Tests.Common.Stubs;
 
 namespace JoBoard.AuthService.Tests.Unit.Application.UseCases.Account.Register;
 
@@ -47,10 +49,10 @@ public class RegisterByEmailAndPasswordCommandHandlerTests
     {
         var passwordValidator = PasswordFixtures.GetPasswordStrengthValidatorStub();
         var passwordHasher = PasswordFixtures.GetPasswordHasherStub();
-        var tokenizer = ConfirmationTokenFixtures.GetSecureTokenizerStub();
+        var tokenizer = new SecureTokenizerStub();
         var eventDispatcher = EventFixtures.GetDomainEventDispatcherStub();
         var userRepository = DatabaseFixtures.CreateUserRepositoryStub();
-        var confirmTokenConfig = ConfirmationTokenFixtures.GetConfirmationTokenConfig();
+        var confirmTokenConfig = new ConfirmationTokenConfig { TokenLifeSpan = TimeSpan.FromHours(24) };
         
         return new RegisterByEmailAndPasswordCommandHandler(
             passwordValidator, 

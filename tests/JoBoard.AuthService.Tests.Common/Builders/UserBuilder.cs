@@ -6,14 +6,16 @@ namespace JoBoard.AuthService.Tests.Common.Builders;
 
 public class UserBuilder
 {
-    private bool _withGoogleAccountOption = false;
-    private bool _withActiveStatusOption = false;
-    private bool _withInactiveStatusOption = false;
+    private readonly ConfirmationTokenBuilder _confirmationTokenBuilder = new();
+    
+    private bool WithGoogleAccountOption { get; set; } = false;
+    private bool WithActiveStatusOption { get; set; } = false;
+    private bool WithInactiveStatusOption { get; set; } = false;
     
     public User Build()
     {
         User user;
-        if (_withGoogleAccountOption)
+        if (WithGoogleAccountOption)
             user = User.RegisterByGoogleAccount(userId: UserId.Generate(),
                 fullName: new FullName("Ivan", "Ivanov"),
                 email: new Email("ivan@gmail.com"),
@@ -31,14 +33,14 @@ public class UserBuilder
             //user.RequestEmailConfirmation(emailConfirmToken);
         }
 
-        if (_withActiveStatusOption && user.Status.Equals(UserStatus.Active) == false)
+        if (WithActiveStatusOption && user.Status.Equals(UserStatus.Active) == false)
         {
-            var emailConfirmationToken = ConfirmationTokenFixtures.CreateNew();
+            var emailConfirmationToken = _confirmationTokenBuilder.BuildActive();
             user.RequestEmailConfirmation(emailConfirmationToken);
             user.ConfirmEmail(emailConfirmationToken.Value);
         }
         
-        if (_withInactiveStatusOption)
+        if (WithInactiveStatusOption)
             user.Block();
         
         return user;
@@ -46,25 +48,25 @@ public class UserBuilder
     
     public UserBuilder WithActiveStatus()
     {
-        if(_withInactiveStatusOption)
+        if(WithInactiveStatusOption)
             throw new ArgumentException();
         
-        _withActiveStatusOption = true;
+        WithActiveStatusOption = true;
         return this;
     }
     
     public UserBuilder WithInactiveStatus()
     {
-        if (_withActiveStatusOption)
+        if (WithActiveStatusOption)
             throw new ArgumentException();
         
-        _withInactiveStatusOption = true;
+        WithInactiveStatusOption = true;
         return this;
     }
     
     public UserBuilder WithGoogleAccount()
     {
-        _withGoogleAccountOption = true;
+        WithGoogleAccountOption = true;
         return this;
     }
 }
