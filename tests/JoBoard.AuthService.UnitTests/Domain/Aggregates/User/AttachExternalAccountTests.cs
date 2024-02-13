@@ -14,7 +14,7 @@ public class AttachExternalAccountTests
         var externalAccount = new ExternalAccount("externalUserId", ExternalAccountProvider.Google);
         user.AttachExternalAccount(externalAccount);
         
-        Assert.Equal(1, user.ExternalAccounts.Count);
+        Assert.Single(user.ExternalAccounts);
         Assert.Equal(externalAccount, user.ExternalAccounts.First());
     }
     
@@ -27,7 +27,7 @@ public class AttachExternalAccountTests
         user.AttachExternalAccount(externalAccount);
         user.AttachExternalAccount(externalAccount);
         
-        Assert.Equal(1, user.ExternalAccounts.Count);
+        Assert.Single(user.ExternalAccounts);
         Assert.Equal(externalAccount, user.ExternalAccounts.First());
     }
 }

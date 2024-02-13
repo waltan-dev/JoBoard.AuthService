@@ -29,7 +29,7 @@ public class RequestEmailChangeCommandHandler : IRequestHandler<RequestEmailChan
     
     public async Task<Unit> Handle(RequestEmailChangeCommand requestEmail, CancellationToken ct)
     {
-        await _unitOfWork.StartTransactionAsync(ct);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)

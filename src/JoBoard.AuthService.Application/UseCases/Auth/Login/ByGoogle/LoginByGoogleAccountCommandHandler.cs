@@ -27,8 +27,6 @@ public class LoginByGoogleAccountCommandHandler : IRequestHandler<LoginByGoogleA
     {
         // https://developers.google.com/identity/sign-in/web/backend-auth
         
-        await _unitOfWork.StartTransactionAsync(ct);
-        
         var googleUserProfile = await _googleAuthProvider.VerifyIdTokenAsync(request.GoogleIdToken);
         if (googleUserProfile == null)
             throw new ValidationException(nameof(request.GoogleIdToken),"Google ID token isn't valid");

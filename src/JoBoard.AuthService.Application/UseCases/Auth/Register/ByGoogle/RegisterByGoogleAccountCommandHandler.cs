@@ -28,7 +28,7 @@ public class RegisterByGoogleAccountCommandHandler : IRequestHandler<RegisterByG
     {
         // https://developers.google.com/identity/sign-in/web/backend-auth
         
-        await _unitOfWork.StartTransactionAsync(ct);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
         var googleUserProfile = await _googleAuthProvider.VerifyIdTokenAsync(request.GoogleIdToken);
         if (googleUserProfile == null)

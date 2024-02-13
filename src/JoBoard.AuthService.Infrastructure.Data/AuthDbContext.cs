@@ -4,9 +4,11 @@ using Microsoft.EntityFrameworkCore;
 
 namespace JoBoard.AuthService.Infrastructure.Data;
 
-public class AuthDbContext : DbContext
+public sealed class AuthDbContext : DbContext
 {
-    public AuthDbContext(DbContextOptions options) : base(options) { }
+    public AuthDbContext(DbContextOptions options) : base(options)
+    {
+    }
     
     public DbSet<User> Users { get; set; } = null!;
     public DbSet<ExternalAccount> ExternalAccounts { get; set; } = null!;

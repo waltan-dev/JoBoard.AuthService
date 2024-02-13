@@ -1,8 +1,10 @@
-﻿namespace JoBoard.AuthService.Domain.SeedWork;
+﻿using System.Data;
+
+namespace JoBoard.AuthService.Domain.SeedWork;
 
 // You can implement this interface with EF or Dapper
 public interface IUnitOfWork
 {
-    Task StartTransactionAsync(CancellationToken ct = default);
-    Task CommitAsync(CancellationToken ct = default);
+    Task BeginTransactionAsync(IsolationLevel isolationLevel = IsolationLevel.ReadCommitted, CancellationToken cancellationToken = default);
+    Task CommitAsync(CancellationToken cancellationToken = default);
 }

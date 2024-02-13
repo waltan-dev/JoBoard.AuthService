@@ -9,7 +9,7 @@ public class ExternalAccountConfig : IEntityTypeConfiguration<ExternalAccount>
     public void Configure(EntityTypeBuilder<ExternalAccount> builder)
     {
         builder.ToTable("ExternalAccounts");
-
+        
         // map Id
         builder.HasKey(x => new { x.Id, x.ExternalUserId, x.Provider });
         builder.Property(x => x.Id).HasConversion(

@@ -9,20 +9,21 @@ public class UserRepository : IUserRepository
 
     public UserRepository(AuthDbContext dbContext)
     {
+        // auto transactions disabled
         _dbContext = dbContext;
     }
 
-    public Task AddAsync(User user, CancellationToken ct = default)
+    public async Task AddAsync(User user, CancellationToken ct = default)
     {
         _dbContext.Users.Add(user);
-        return Task.CompletedTask;
+        await _dbContext.SaveChangesAsync(ct); // this isn't transaction
     }
 
-    public Task UpdateAsync(User user, CancellationToken ct = default)
+    public async Task UpdateAsync(User user, CancellationToken ct = default)
     {
         _dbContext.Entry(user).State = EntityState.Detached;
         _dbContext.Users.Update(user);
-        return Task.CompletedTask;
+        await _dbContext.SaveChangesAsync(ct); // this isn't transaction
     }
 
     public async Task<User?> FindByIdAsync(UserId userId, CancellationToken ct = default)

@@ -29,7 +29,7 @@ public class RegisterByEmailCommandHandler : IRequestHandler<RegisterByEmailComm
     
     public async Task<UserResult> Handle(RegisterByEmailCommand request, CancellationToken ct)
     {
-        await _unitOfWork.StartTransactionAsync(ct);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
         var email = new Email(request.Email);
         var emailIsUnique = await _userRepository.CheckEmailUniquenessAsync(email, ct);

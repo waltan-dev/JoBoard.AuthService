@@ -3,8 +3,9 @@ using JoBoard.AuthService.Domain.SeedWork;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
-public class ExternalAccount : Entity<UserId>
+public class ExternalAccount : ValueObject
 {
+    public UserId Id { get; init; }
     public string ExternalUserId { get; init; }
     public ExternalAccountProvider Provider { get; init; }
 
@@ -16,6 +17,13 @@ public class ExternalAccount : Entity<UserId>
         
         ExternalUserId = externalUserId;
         Provider = provider;
+    }
+
+    protected override IEnumerable<object> GetEqualityComponents()
+    {
+        yield return Id;
+        yield return ExternalUserId;
+        yield return Provider;
     }
 }
 

@@ -1,4 +1,4 @@
-### Anonymous Use Cases:
+### Authentication Use Cases:
 1) Register new user by email and password
 2) Register new user by external account
 3) Confirm email
@@ -6,7 +6,7 @@
 5) Login by external account
 6) Reset password (request + confirmation)
 
-### Authenticated Use Cases:
+### Manage Account Use Cases:
 1) Change email (request + confirmation)
 2) Change password
 3) Change role
@@ -19,7 +19,7 @@
 а также паттерн Information expert из GRASP - объекты, которые содержат данные сами занимаются обработкой и валидацией этих данных.
 
 ### Application layer:
-1) Некоторые бизнес-правила проверяются в слое Application чтобы сохранить слой Domain изолированным и удобным для unit-тестирования.
+1) Некоторые бизнес-правила проверяются в слое Application чтобы сохранить слой Domain удобным для unit-тестирования.
 Примеры бизнес-правил в слое Application:
 - проверка уникальности email при регистрации;
 - проверка уникальности внешней учётной записи при регистрации и при привязке.

@@ -58,7 +58,7 @@ public class ResetPasswordTests : IClassFixture<CustomWebApplicationFactory>
     public async Task ConfirmPasswordReset()
     {
         // Arrange
-        await _unitOfWork.StartTransactionAsync();
+        await _unitOfWork.BeginTransactionAsync();
         var user = await _userRepository.FindByIdAsync(UserFixtures.ExistingActiveUser.Id);
         var token = UserFixtures.CreateNewConfirmationToken();
         user!.RequestPasswordReset(token);

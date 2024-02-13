@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Diagnostics;
+using JoBoard.AuthService.Domain.Events;
 using JoBoard.AuthService.Domain.Exceptions;
 using JoBoard.AuthService.Domain.Extensions;
 using JoBoard.AuthService.Domain.SeedWork;
@@ -6,8 +7,9 @@ using JoBoard.AuthService.Domain.Services;
 
 namespace JoBoard.AuthService.Domain.Aggregates.User;
 
-public class User : Entity<UserId>, IAggregateRoot
+public class User : Entity, IAggregateRoot
 {
+    public new UserId Id { get; init; }
     public DateTime RegisteredAt { get; init; }
     public FullName FullName { get; private set; }
     public Email Email { get; private set; }
@@ -17,7 +19,8 @@ public class User : Entity<UserId>, IAggregateRoot
     public string? PasswordHash { get; private set; }
     public ConfirmationToken? RegisterConfirmToken { get; private set; }
     public ConfirmationToken? ResetPasswordConfirmToken { get; private set; }
-    public ICollection<ExternalAccount> ExternalAccounts { get; private set; }
+    private List<ExternalAccount> _externalAccounts;
+    public IReadOnlyCollection<ExternalAccount> ExternalAccounts => _externalAccounts.AsReadOnly();
     public Email? NewEmail { get; private set; }
     public ConfirmationToken? NewEmailConfirmationToken { get; private set; }
     
@@ -41,7 +44,9 @@ public class User : Entity<UserId>, IAggregateRoot
         Status = UserStatus.Pending;
         PasswordHash = passwordHash;
         RegisterConfirmToken = registerConfirmToken;
-        ExternalAccounts = new List<ExternalAccount>();
+        _externalAccounts = new List<ExternalAccount>();
+
+        AddDomainEvent(new UserRegisteredDomainEvent(this));
     }
     
     /// <summary>
@@ -59,7 +64,9 @@ public class User : Entity<UserId>, IAggregateRoot
         EmailConfirmed = true;
         Role = role;
         Status = UserStatus.Active;
-        ExternalAccounts = new List<ExternalAccount>() { externalAccount };
+        _externalAccounts = new List<ExternalAccount>() { externalAccount };
+        
+        AddDomainEvent(new UserRegisteredDomainEvent(this));
     }
     
     public void ConfirmEmail(string token)
@@ -75,6 +82,7 @@ public class User : Entity<UserId>, IAggregateRoot
         RegisterConfirmToken = null;
         if(Status.Equals(UserStatus.Pending))
             Status = UserStatus.Active;
+        AddDomainEvent(new UserConfirmedEmailDomainEvent(this));
     }
 
     public void LoginWithPassword(string password, IPasswordHasher passwordHasher)
@@ -103,7 +111,7 @@ public class User : Entity<UserId>, IAggregateRoot
         if (ExternalAccounts.Contains(externalAccount))
             return;
         
-        ExternalAccounts.Add(externalAccount);
+        _externalAccounts.Add(externalAccount);
     }
 
     public void RequestPasswordReset(ConfirmationToken newToken)
@@ -115,6 +123,7 @@ public class User : Entity<UserId>, IAggregateRoot
             throw new DomainException("Password reset has been requested already");
         
         ResetPasswordConfirmToken = newToken;
+        AddDomainEvent(new UserRequestedPasswordResetDomainEvent(this));
     }
 
     public void ResetPassword(string token, string newPassword, IPasswordHasher passwordHasher)
@@ -149,6 +158,7 @@ public class User : Entity<UserId>, IAggregateRoot
             throw new DomainException("Incorrect current password");
         
         PasswordHash = passwordHasher.Hash(newPassword);
+        AddDomainEvent(new UserChangedPasswordDomainEvent(this));
     }
 
     public void RequestEmailChange(Email newEmail, ConfirmationToken confirmationToken)
@@ -164,6 +174,7 @@ public class User : Entity<UserId>, IAggregateRoot
 
         NewEmail = newEmail;
         NewEmailConfirmationToken = confirmationToken;
+        AddDomainEvent(new UserRequestedEmailChangeDomainEvent(this));
     }
 
     public void ChangeEmail(string token)
@@ -183,6 +194,7 @@ public class User : Entity<UserId>, IAggregateRoot
         EmailConfirmed = true;
         NewEmail = null;
         NewEmailConfirmationToken = null;
+        AddDomainEvent(new UserChangedEmailDomainEvent(this));
     }
 
     public void ChangeRole(UserRole newRole)
@@ -194,6 +206,7 @@ public class User : Entity<UserId>, IAggregateRoot
             throw new DomainException("Invalid role");
 
         Role = newRole;
+        AddDomainEvent(new UserChangedRoleDomainEvent(this));
     }
 
     public void Deactivate()
@@ -201,6 +214,7 @@ public class User : Entity<UserId>, IAggregateRoot
         ThrowIfBlockedOrDeactivated();
         
         Status = UserStatus.Deactivated;
+        AddDomainEvent(new UserDeactivatedDomainEvent(this));
     }
 
     private void ThrowIfEmailIsNotConfirmed()

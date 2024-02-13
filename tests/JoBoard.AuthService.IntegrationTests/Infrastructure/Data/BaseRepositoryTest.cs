@@ -1,4 +1,6 @@
-﻿using JoBoard.AuthService.Infrastructure.Data;
+﻿using JoBoard.AuthService.Domain.Aggregates.User;
+using JoBoard.AuthService.Domain.SeedWork;
+using JoBoard.AuthService.Infrastructure.Data;
 using JoBoard.AuthService.Infrastructure.Data.Repositories;
 using JoBoard.AuthService.Tests.Common;
 using Microsoft.EntityFrameworkCore;
@@ -15,9 +17,8 @@ public abstract class BaseRepositoryTest : IAsyncLifetime
         .WithCleanUp(true)
         .Build(); 
     
-    protected AuthDbContext DbContext { get; private set; }
-    protected UnitOfWork UnitOfWork { get; private set; }
-    protected UserRepository UserRepository { get; private set; }
+    protected IUnitOfWork UnitOfWork { get; private set; }
+    protected IUserRepository UserRepository { get; private set; }
     
     public async Task InitializeAsync() // init test db before each test
     {
@@ -30,9 +31,9 @@ public abstract class BaseRepositoryTest : IAsyncLifetime
         
         DatabaseHelper.Reinitialize(new AuthDbContext(options));
         
-        DbContext = new AuthDbContext(options);
-        UnitOfWork = new UnitOfWork(DbContext);
-        UserRepository = new UserRepository(DbContext);
+        var dbContext = new AuthDbContext(options);
+        UnitOfWork = new UnitOfWork(dbContext, null, null);
+        UserRepository = new UserRepository(dbContext);
     }
     
     public Task DisposeAsync() // delete test db after each test

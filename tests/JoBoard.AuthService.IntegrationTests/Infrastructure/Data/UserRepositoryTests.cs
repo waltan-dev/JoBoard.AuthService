@@ -10,7 +10,7 @@ public class UserRepositoryTests : BaseRepositoryTest
     public async Task AddUserRegisteredByEmailAsync()
     {
         // Arrange
-        await UnitOfWork.StartTransactionAsync();
+        await UnitOfWork.BeginTransactionAsync();
         var newUser = new UserBuilder().Build();
 
         // Act
@@ -39,7 +39,7 @@ public class UserRepositoryTests : BaseRepositoryTest
     public async Task AddUserRegisteredByGoogleAsync()
     {
         // Arrange
-        await UnitOfWork.StartTransactionAsync();
+        await UnitOfWork.BeginTransactionAsync();
         var newUser = new UserBuilder().WithGoogleAccount().Build();
 
         // Act
@@ -60,7 +60,6 @@ public class UserRepositoryTests : BaseRepositoryTest
         Assert.Equal(newUser.RegisterConfirmToken, savedUser.RegisterConfirmToken);
         Assert.Equal(newUser.NewEmailConfirmationToken, savedUser.NewEmailConfirmationToken);
         Assert.Equal(newUser.ResetPasswordConfirmToken, savedUser.ResetPasswordConfirmToken);
-        
         Assert.Equal(newUser.ExternalAccounts, savedUser.ExternalAccounts);
     }
     
@@ -68,7 +67,7 @@ public class UserRepositoryTests : BaseRepositoryTest
     public async Task RequestEmailChangeAsync()
     {
         // Arrange
-        await UnitOfWork.StartTransactionAsync();
+        await UnitOfWork.BeginTransactionAsync();
         var user = await UserRepository.FindByIdAsync(UserFixtures.ExistingActiveUser.Id);
         var oldEmail = user!.Email;
         var token = UserFixtures.CreateNewConfirmationToken();
@@ -90,7 +89,7 @@ public class UserRepositoryTests : BaseRepositoryTest
     public async Task ChangeEmailAsync()
     {
         // Arrange
-        await UnitOfWork.StartTransactionAsync();
+        await UnitOfWork.BeginTransactionAsync();
         var user = await UserRepository.FindByIdAsync(UserFixtures.ExistingActiveUser.Id);
         var token = UserFixtures.CreateNewConfirmationToken();
         var newEmail = new Email("new-email@gmail.com");
@@ -112,7 +111,7 @@ public class UserRepositoryTests : BaseRepositoryTest
     public async Task RequestPasswordResetAsync()
     {
         // Arrange
-        await UnitOfWork.StartTransactionAsync();
+        await UnitOfWork.BeginTransactionAsync();
         var user = await UserRepository.FindByIdAsync(UserFixtures.ExistingActiveUser.Id);
         var token = UserFixtures.CreateNewConfirmationToken();
         

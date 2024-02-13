@@ -29,7 +29,7 @@ public class ChangePasswordCommandHandler : IRequestHandler<ChangePasswordComman
     
     public async Task<Unit> Handle(ChangePasswordCommand request, CancellationToken ct)
     {
-        await _unitOfWork.StartTransactionAsync(ct);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
         var user = await _userRepository.FindByIdAsync(_identityService.GetUserId(), ct);
         if (user == null)

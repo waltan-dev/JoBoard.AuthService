@@ -21,7 +21,7 @@ public class ChangeRoleCommandHandler : IRequestHandler<ChangeRoleCommand, Unit>
     
     public async Task<Unit> Handle(ChangeRoleCommand request, CancellationToken ct)
     {
-        await _unitOfWork.StartTransactionAsync(ct);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)

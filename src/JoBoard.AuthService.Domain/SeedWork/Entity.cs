@@ -2,11 +2,11 @@
 
 namespace JoBoard.AuthService.Domain.SeedWork;
 
-public abstract class Entity<TKey>
+public abstract class Entity
 {
     private int? _requestedHashCode;
 
-    public TKey Id { get; protected set; }
+    public virtual long Id { get; protected set; }
 
     private readonly List<INotification> _domainEvents = new();
         
@@ -26,7 +26,7 @@ public abstract class Entity<TKey>
 
     public override bool Equals(object? obj)
     {
-        if (obj is not Entity<TKey> entity)
+        if (obj is not Entity entity)
             return false;
 
         if (ReferenceEquals(this, entity))
@@ -53,12 +53,12 @@ public abstract class Entity<TKey>
             return base.GetHashCode();
 
     }
-    public static bool operator ==(Entity<TKey>? left, Entity<TKey>? right)
+    public static bool operator ==(Entity left, Entity right)
     {
         return left?.Equals(right) ?? object.Equals(right, null);
     }
 
-    public static bool operator !=(Entity<TKey>? left, Entity<TKey>? right)
+    public static bool operator !=(Entity left, Entity right)
     {
         return !(left == right);
     }

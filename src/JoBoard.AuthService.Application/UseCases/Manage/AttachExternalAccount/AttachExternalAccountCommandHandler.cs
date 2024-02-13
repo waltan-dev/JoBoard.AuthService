@@ -25,7 +25,7 @@ public class AttachExternalAccountCommandHandler : IRequestHandler<AttachExterna
     
     public async Task<Unit> Handle(AttachExternalAccountCommand request, CancellationToken ct)
     {
-        await _unitOfWork.StartTransactionAsync(ct);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
         var externalAccount = new ExternalAccount(request.ExternalUserId, request.ExternalAccountProvider);
         await CheckIfAlreadyExistsAsync(externalAccount, ct);

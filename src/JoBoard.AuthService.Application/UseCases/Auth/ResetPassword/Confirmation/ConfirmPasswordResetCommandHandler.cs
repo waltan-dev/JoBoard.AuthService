@@ -25,7 +25,7 @@ public class ConfirmPasswordResetCommandHandler : IRequestHandler<ConfirmPasswor
     
     public async Task<Unit> Handle(ConfirmPasswordResetCommand request, CancellationToken ct)
     {
-        await _unitOfWork.StartTransactionAsync(ct);
+        await _unitOfWork.BeginTransactionAsync(cancellationToken: ct);
         
         var user = await _userRepository.FindByIdAsync(new UserId(request.UserId), ct);
         if (user == null)

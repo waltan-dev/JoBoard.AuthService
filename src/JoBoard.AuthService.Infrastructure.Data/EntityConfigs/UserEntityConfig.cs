@@ -10,6 +10,8 @@ public class UserEntityConfig : IEntityTypeConfiguration<User>
     public void Configure(EntityTypeBuilder<User> builder)
     {
         builder.ToTable("Users");
+
+        builder.Ignore(x => x.DomainEvents);
         
         // map Id
         builder.HasKey(x => x.Id);
