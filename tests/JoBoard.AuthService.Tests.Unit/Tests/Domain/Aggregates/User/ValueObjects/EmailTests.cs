@@ -33,7 +33,7 @@ public class EmailTests
         });
     }
     
-    private static IEnumerable<object[]> GetValidEmails()
+    public static IEnumerable<object[]> GetValidEmails()
     {
         return new List<object[]>()
         {
@@ -45,7 +45,7 @@ public class EmailTests
         };
     }
     
-    private static IEnumerable<object[]> GetInvalidEmails()
+    public static IEnumerable<object[]> GetInvalidEmails()
     {
         return new List<object[]>()
         {

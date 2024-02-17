@@ -24,6 +24,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "common", "common", "{506007
 		Dockerfile = Dockerfile
 		Makefile = Makefile
 		wait-for-it.sh = wait-for-it.sh
+		global.json = global.json
+		.github\workflows\docker-image.yml = .github\workflows\docker-image.yml
+		.github\workflows\dotnet.yml = .github\workflows\dotnet.yml
 	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JoBoard.AuthService.Tests.Unit", "tests\JoBoard.AuthService.Tests.Unit\JoBoard.AuthService.Tests.Unit.csproj", "{B40FBE57-83D3-4A0D-A6F5-286271875EA1}"

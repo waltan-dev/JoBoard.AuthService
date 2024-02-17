@@ -10,14 +10,14 @@
 
 # Base stage - only for debug
 ### first layer 
-FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
+FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS base
 WORKDIR /app
 ENV ASPNETCORE_URLS "http://*:5000"
 EXPOSE 5000
 
 # Build stage
 ### second layer - cache nuget packages in Docker layer
-FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 
 COPY ["src/JoBoard.AuthService/*.csproj", "/source/src/JoBoard.AuthService/"]
 COPY ["src/JoBoard.AuthService.Application/*.csproj", "/source/src/JoBoard.AuthService.Application/"]

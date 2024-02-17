@@ -9,7 +9,7 @@ _*еще в разработке_
   <summary><b>Требования</b></summary>
 
 
-1) .NET SDK 6.0
+1) .NET SDK 8.0
 2) Docker
 3) GNU Make (необязательно)
 4) EF Core tools (необязательно)
