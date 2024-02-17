@@ -77,7 +77,7 @@ public class ResetPasswordTests
         var confirmationToken = UnitTestsRegistry.ConfirmationTokenBuilder.BuildActive();
         user.RequestPasswordReset(confirmationToken, UnitTestsRegistry.CurrentDateTime);
 
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         user.ConfirmPasswordReset(confirmationToken.Value, newPasswordHash, UnitTestsRegistry.CurrentDateTime);
         
         Assert.Equal(newPasswordHash, user.Password);
@@ -91,7 +91,7 @@ public class ResetPasswordTests
         var user = UnitTestsRegistry.UserBuilder.WithActiveStatus().Build();
         var confirmationToken = UnitTestsRegistry.ConfirmationTokenBuilder.BuildActive();
         user.RequestPasswordReset(confirmationToken, UnitTestsRegistry.CurrentDateTime);
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -105,7 +105,7 @@ public class ResetPasswordTests
         var user = UnitTestsRegistry.UserBuilder.WithActiveStatus().Build();
         var confirmationToken = UnitTestsRegistry.ConfirmationTokenBuilder.BuildActive();
         user.RequestPasswordReset(confirmationToken, UnitTestsRegistry.CurrentDateTime);
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -117,7 +117,7 @@ public class ResetPasswordTests
     public void ConfirmPasswordResetWithoutRequest()
     {
         var user = UnitTestsRegistry.UserBuilder.WithActiveStatus().Build();
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -130,7 +130,7 @@ public class ResetPasswordTests
     {
         var user = UnitTestsRegistry.UserBuilder.Build();
         var confirmationToken = UnitTestsRegistry.ConfirmationTokenBuilder.BuildActive();
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -144,7 +144,7 @@ public class ResetPasswordTests
     {
         var user = UnitTestsRegistry.UserBuilder.WithInactiveStatus().Build();
         var confirmationToken = UnitTestsRegistry.ConfirmationTokenBuilder.BuildActive();
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {

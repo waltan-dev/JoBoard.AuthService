@@ -10,14 +10,14 @@ public static class DbUserFixtures
     public static readonly User ExistingUserWithoutConfirmedEmail02 = BuildExistingUserWithoutConfirmedEmail("ExistingUserWithoutConfirmedEmail02@gmail.com");
     private static readonly User ExistingUserRegisteredByGoogleAccount = BuildExistingUserRegisteredByGoogleAccount();
     
-    public static IEnumerable<User> List => new List<User>()
+    public static IEnumerable<User> List()
     {
-        ExistingActiveUser01,
-        ExistingActiveUser02,
-        ExistingUserWithoutConfirmedEmail01,
-        ExistingUserWithoutConfirmedEmail02,
-        ExistingUserRegisteredByGoogleAccount,
-    };
+        yield return ExistingActiveUser01;
+        yield return ExistingActiveUser02;
+        yield return ExistingUserWithoutConfirmedEmail01;
+        yield return ExistingUserWithoutConfirmedEmail02;
+        yield return ExistingUserRegisteredByGoogleAccount;
+    }
     
     private static User BuildExistingActiveUser(string email)
     {

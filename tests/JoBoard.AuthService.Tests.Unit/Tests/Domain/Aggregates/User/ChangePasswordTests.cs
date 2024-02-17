@@ -12,7 +12,7 @@ public class ChangePasswordTests
     {
         var passwordHasherStub = UnitTestsRegistry.PasswordHasher;
         var user = UnitTestsRegistry.UserBuilder.WithActiveStatus().Build();
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         user.ChangePassword(PasswordFixtures.DefaultPassword, newPasswordHash, passwordHasherStub);
         Assert.Equal(newPasswordHash, user.Password);
@@ -24,7 +24,7 @@ public class ChangePasswordTests
     {
         var passwordHasherStub = UnitTestsRegistry.PasswordHasher;
         var user = UnitTestsRegistry.UserBuilder.WithActiveStatus().Build();
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -40,7 +40,7 @@ public class ChangePasswordTests
             .WithGoogleAccount("test")
             .WithActiveStatus()
             .Build();
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -53,7 +53,7 @@ public class ChangePasswordTests
     {
         var passwordHasherStub = UnitTestsRegistry.PasswordHasher;
         var user = UnitTestsRegistry.UserBuilder.WithActiveStatus().Build();
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         
         Assert.Throws<DomainException>(() =>
         {
@@ -65,7 +65,7 @@ public class ChangePasswordTests
     public void ChangePasswordWithInactiveStatus()
     {
         var passwordHasherStub = UnitTestsRegistry.PasswordHasher;
-        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPasswordHash = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         var user = UnitTestsRegistry.UserBuilder.WithInactiveStatus().Build();
 
         Assert.Throws<DomainException>(() =>

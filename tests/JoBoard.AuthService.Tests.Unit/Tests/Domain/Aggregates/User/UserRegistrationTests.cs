@@ -16,7 +16,7 @@ public class UserRegistrationTests
         var fullName = new FullName("Ivan", "Ivanov");
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Worker;
-        var newPassword = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPassword = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         var userEmailUniquenessChecker = UnitTestsRegistry.UserEmailUniquenessChecker;
         
         var newUser = AuthService.Domain.Aggregates.UserAggregate.User.RegisterByEmailAndPassword(
@@ -47,7 +47,7 @@ public class UserRegistrationTests
         var fullName = new FullName("Ivan", "Ivanov");
         var email = new Email("ivan@gmail.com");
         var role = UserRole.Admin;
-        var newPassword = UnitTestsRegistry.UserPasswordBuilder.Create(PasswordFixtures.NewPassword);
+        var newPassword = UnitTestsRegistry.UserPasswordBuilder.CreateNew();
         var userEmailUniquenessChecker = UnitTestsRegistry.UserEmailUniquenessChecker;
         
         Assert.Throws<DomainException>(() =>

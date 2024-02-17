@@ -23,9 +23,6 @@ public static class FunctionalTestsRegistry
     public static ConfirmationTokenBuilder ConfirmationTokenBuilder 
         => new (SecureTokenizer);
     
-    public static UserPasswordBuilder UserPasswordBuilder 
-        => new(PasswordHasher, PasswordStrengthValidator);
-    
     public static IGoogleAuthProvider GoogleAuthProvider 
         => new GoogleAuthProviderStubFactory().Create(GoogleFixtures.Dictionary);
     

@@ -21,7 +21,7 @@ public class DatabaseFixture : IAsyncLifetime
         ConnectionString = _postgreSqlContainer.GetConnectionString();
 
         var dbContext = TestDatabaseHelper.CreatePostgresDbContext(ConnectionString);
-        await TestDatabaseHelper.InitializeAsync(dbContext, DbUserFixtures.List);
+        await TestDatabaseHelper.InitializeAsync(dbContext, DbUserFixtures.List());
     }
     
     public async Task DisposeAsync()

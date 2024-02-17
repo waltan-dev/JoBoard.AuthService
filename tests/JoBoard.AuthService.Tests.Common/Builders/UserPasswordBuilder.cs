@@ -1,5 +1,6 @@
 ﻿using JoBoard.AuthService.Domain.Aggregates.UserAggregate.ValueObjects;
 using JoBoard.AuthService.Domain.Services;
+using JoBoard.AuthService.Tests.Common.Fixtures;
 
 namespace JoBoard.AuthService.Tests.Common.Builders;
 
@@ -14,8 +15,13 @@ public class UserPasswordBuilder
         _passwordStrengthValidator = passwordStrengthValidator;
     }
     
-    public UserPassword Create(string password)
+    public UserPassword CreateDefault()
     {
-        return UserPassword.Create(password, _passwordStrengthValidator, _passwordHasher);
+        return UserPassword.Create(PasswordFixtures.DefaultPassword, _passwordStrengthValidator, _passwordHasher);
+    }
+    
+    public UserPassword CreateNew()
+    {
+        return UserPassword.Create(PasswordFixtures.NewPassword, _passwordStrengthValidator, _passwordHasher);
     }
 }
